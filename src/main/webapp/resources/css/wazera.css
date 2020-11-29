@@ -31,6 +31,11 @@ body {
 	height: 100%;
 }
 
+.ui-tree-droppoint {
+	height: 6px;
+	margin: -3px;
+}
+
 .ui-chips-input-token > .ui-widget {
 	color: #ffffff;
 }
