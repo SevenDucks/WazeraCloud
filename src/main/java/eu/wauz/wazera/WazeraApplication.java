@@ -20,7 +20,7 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 @SpringBootApplication
-@ComponentScan(basePackages={"eu.wauz"})
+@ComponentScan(basePackages = {"eu.wauz"})
 @EntityScan(basePackages = {"eu.wauz"})
 public class WazeraApplication extends SpringBootServletInitializer {
 
