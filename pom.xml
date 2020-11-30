@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>eu.wauz</groupId>
 	<artifactId>WazeraCloud</artifactId>
-	<version>1.0</version>
+	<version>0.1</version>
 	<packaging>war</packaging>
 
 	<properties>
@@ -68,6 +68,7 @@
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.faces</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
@@ -80,10 +81,6 @@
 		<dependency>
 			<groupId>org.primefaces.extensions</groupId>
 			<artifactId>primefaces-extensions</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.github.adminfaces</groupId>
-			<artifactId>admin-theme</artifactId>
 		</dependency>
 
 		<dependency>

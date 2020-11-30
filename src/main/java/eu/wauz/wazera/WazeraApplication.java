@@ -10,10 +10,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.server.ErrorPage;
+import org.springframework.boot.web.server.ErrorPageRegistrar;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpStatus;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
@@ -40,20 +43,21 @@ public class WazeraApplication extends SpringBootServletInitializer {
 		return servletRegistrationBean;
 	}
 	
+	@Bean
+	public ErrorPageRegistrar errorPageRegistrar(){
+	    return registry -> {
+	    	registry.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/dashboard.xhtml"));
+	    };
+	}
+	
     @Bean
     @Autowired
 	public DataSource wazeraDataSource() {
-		try {
-			BasicDataSource dataSource = new BasicDataSource();
-			dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
-			dataSource.setUsername("root");
-			dataSource.setUrl("jdbc:mariadb://localhost:3306/wazera");
-			return dataSource;
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+		BasicDataSource dataSource = new BasicDataSource();
+		dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
+		dataSource.setUsername("root");
+		dataSource.setUrl("jdbc:mariadb://localhost:3306/wazera");
+		return dataSource;
 	}
     
     @Bean
