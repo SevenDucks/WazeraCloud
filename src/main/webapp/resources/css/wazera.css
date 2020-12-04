@@ -15,7 +15,8 @@ body {
 	border-radius: 0;
 }
 
-.no-spacing {
+.no-spacing,
+.ui-layout-unit .ui-layout-unit-content {
 	margin: 0 !important;
 	padding: 0 !important;
 }
@@ -164,6 +165,7 @@ th,
 }
 
 .gray-bg,
-.gray-bg > .ui-layout-unit-content {
+.gray-bg > .ui-layout-unit-content,
+tr {
 	background: #16161f !important;
 }

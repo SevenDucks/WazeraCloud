@@ -41,21 +41,19 @@
 			});
 
 			function resizeTreePanel() {
-				$("#documentMenuForm\\:treePanel").height($(document).height() - 140);
+				$("#documentMenuForm\\:treePanel").height($(document).height() - 73);
 			}
 			
 			function resizeEditor() {
 				var chipsHeight = $("#mainForm\\:chipsInput").height();
-				var newHeight = $(document).height() - chipsHeight - 120;
+				var newHeight = $(document).height() - chipsHeight - 54;
 				var isChromium = window.chrome;
 
 				var openToolbar = $("#mainForm\\:editorOpen_toolbar");
-				//var openToolbarHeight = isChromium ? openToolbar.outerHeight() : openToolbar.height();
 				var openToolbarHeight = openToolbar.outerHeight();
 				$("#mainForm\\:editorOpen_editor").height(newHeight - openToolbarHeight);
 
 				var closedToolbar = $("#mainForm\\:editorClosed_toolbar");
-				//var closedToolbarHeight = isChromium ? closedToolbar.outerHeight() : closedToolbar.height();
 				var closedToolbarHeight = closedToolbar.outerHeight();
 				$("#mainForm\\:editorClosed_editor").height(newHeight - closedToolbarHeight);
 			}
@@ -70,7 +68,7 @@
 				gutter="0"
 				size="360"
 				styleClass="no-border hide-overflow gray-bg"
-				style="overflow: hidden;">
+				style="overflow: hidden; padding: 3px;">
 
 				<h:form id="documentMenuForm">
 
@@ -81,7 +79,7 @@
 						style="width: 280px; height: 23px; color: #ffffff;">
 						<p:ajax event="itemUnselect" oncomplete="updateTree()"/>
 					</p:chips>
-					<p:commandButton value="Search" onclick="updateTree()" style="width: 74px; height: 25px; top: -9px;"/>
+					<p:commandButton value="Search" onclick="updateTree()" style="width: 72px; height: 25px; top: -8px;"/>
 					<p:remoteCommand name="updateTree" actionListener="#{docsController.selectTree}" update="documentTree :mainForm" oncomplete="resizeEditor()"/>
 					
 					<p:scrollPanel id="treePanel" mode="native" styleClass="gray-bg" style="width: 99%; height: 565px;">
@@ -161,11 +159,17 @@
 			            	update="documentTree :mainForm"
 			            	icon="ui-icon-folder-collapsed"/>
 			            <p:menuitem
-			            	value="New Space Folder"
-			            	actionListener="#{docsController.setName('New Space Folder')}"
+			            	value="New Folder"
+			            	actionListener="#{docsController.setName('New Folder')}"
 			            	onclick="PF('dialogAddDirectory').show();"
 			            	update=":addDirectoryDialogForm"
 			            	icon="ui-icon-folder-open"/>
+			            <p:menuitem
+			            	value="New Document"
+			            	actionListener="#{docsController.setName('New Document')}"
+			            	onclick="PF('dialogAddDocument').show();"
+			            	update=":addDocumentDialogForm"
+			            	icon="ui-icon-document"/>
 				    </p:contextMenu>
 
 					<p:contextMenu for="documentTree" nodeType="directoryNode">
@@ -221,8 +225,10 @@
 			<p:layoutUnit
 				id="center"
 				position="center"
+				gutter="0"
 				size="100%"
-				styleClass="no-border gray-bg">
+				styleClass="no-border gray-bg"
+				style="padding: 3px;">
 
 				<h:form id="mainForm">
 
@@ -261,8 +267,8 @@
 							</p:textEditor>
 						</p:outputPanel>
 						
-						<p:outputPanel style="margin-top: 4px; margin-left: -3px;">
-							<h:panelGrid columns="4" styleClass="no-spacing">
+						<p:outputPanel style="box-sizing: border-box; border: 1px solid #444444; border-top: 0; padding-top: #{sessionController.isChrome() ? '3px;' : '3px;'}">
+							<h:panelGrid columns="4" styleClass="no-spacing" style="margin-left: 4px !important;">
 							
 								<p:chips
 									id="chipsInput"
