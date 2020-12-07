@@ -17,11 +17,11 @@
 		<script type="text/javascript">
 		
 			function saveScrollPos() {
-				sessionStorage.scrollTop = $('#layoutUnitWest .ui-layout-unit-content').scrollTop();
+				sessionStorage.scrollTop = $('#documentMenuForm\\:treePanel').scrollTop();
 			}
 
 			function loadScrollPos() {
-				$('#layoutUnitWest .ui-layout-unit-content').scrollTop(sessionStorage.scrollTop);
+				$('#documentMenuForm\\:treePanel').scrollTop(sessionStorage.scrollTop);
 			}
 
 			function searchKeyDown(e) {
@@ -75,14 +75,27 @@
 					<p:chips
 						value="#{docsController.searchTags}"
 						onkeydown="searchKeyDown(event)"
+						disabled="#{docsController.allowEditing}"
 						styleClass="search-container"
 						style="width: 280px; height: 23px; color: #ffffff;">
 						<p:ajax event="itemUnselect" oncomplete="updateTree()"/>
 					</p:chips>
-					<p:commandButton value="Search" onclick="updateTree()" style="width: 72px; height: 25px; top: -8px;"/>
-					<p:remoteCommand name="updateTree" actionListener="#{docsController.selectTree}" update="documentTree :mainForm" oncomplete="resizeEditor()"/>
+					<p:commandButton
+						value="Search"
+						onclick="updateTree()"
+						disabled="#{docsController.allowEditing}"
+						style="width: 72px; height: 25px; top: -8px;"/>
+					<p:remoteCommand
+						name="updateTree"
+						actionListener="#{docsController.selectTree}"
+						update="documentTree :mainForm"
+						oncomplete="resizeTreePanel(); resizeEditor();"/>
 					
-					<p:scrollPanel id="treePanel" mode="native" styleClass="gray-bg" style="width: 99%; height: 565px;">
+					<p:scrollPanel
+						id="treePanel"
+						mode="native"
+						styleClass="gray-bg"
+						style="width: 99%; height: 565px;">
 
 						<p:tree
 							id="documentTree"
@@ -94,6 +107,7 @@
 							selectionMode="single"
 							selection="#{docsController.selectedNode}"
 							dynamic="true"
+							disabled="#{docsController.allowEditing}"
 							draggable="#{docsController.allowSorting}"
 							droppable="#{docsController.allowSorting}">
 	
@@ -145,6 +159,7 @@
 					        </p:treeNode>
 	
 					        <p:ajax event="select" update=":mainForm" oncomplete="resizeEditor()" />
+					        <p:ajax event="contextMenu" update=":mainForm" oncomplete="resizeEditor()" />
 					        <p:ajax event="dragdrop" listener="#{docsController.onDragDrop}" update=":documentMenuForm" oncomplete="resizeTreePanel();" />
 						    <p:ajax event="expand" listener="#{docsController.onNodeExpand}" />
 							<p:ajax event="collapse" listener="#{docsController.onNodeCollapse}" />
@@ -268,23 +283,8 @@
 						</p:outputPanel>
 						
 						<p:outputPanel style="box-sizing: border-box; border: 1px solid #444444; border-top: 0; padding-top: #{sessionController.isChrome() ? '3px;' : '3px;'}">
-							<h:panelGrid columns="4" styleClass="no-spacing" style="margin-left: 4px !important;">
+							<h:panelGrid columns="5" styleClass="no-spacing" style="margin-left: 4px !important;">
 							
-								<p:chips
-									id="chipsInput"
-									value="#{docsController.tags}"
-									onkeyup="resizeEditor();"
-									style="margin-right: 5px; width: 360px; height: 23px; top: #{sessionController.isChrome() ? '-1px;' : '0px;'} color: #ffffff;"
-									styleClass="search-container"/>
-								
-								<p:commandButton
-									id="buttonSave"
-									value="Save"
-									icon="ui-icon-disk"
-									actionListener="#{docsController.saveDocument}"
-									style="margin-right: 3px; height: 25px; top: -2px;"
-									update="@this"/>
-									
 								<p:commandButton
 									id="buttonCopyLink"
 									value="Copy Link"
@@ -296,11 +296,43 @@
 								<p:inputSwitch
 									id="buttonToggleEdit"
 									value="#{docsController.allowEditing}"
+									disabled="#{docsController.allowEditing}"
 									onLabel="Edit"
 									offLabel="Read"
 									style="margin-right: 3px; height: 23px; top: #{sessionController.isChrome() ? '-1px;' : '0px;'}">
-									<p:ajax update="editor" oncomplete="resizeEditor();" />
+									<p:ajax oncomplete="updateTree();" />
 								</p:inputSwitch>
+							
+								<p:chips
+									id="chipsInput"
+									value="#{docsController.tags}"
+									disabled="#{!docsController.allowEditing}"
+									onkeyup="resizeEditor();"
+									style="margin-right: 5px; width: 360px; height: 23px; top: #{sessionController.isChrome() ? '-1px;' : '0px;'} color: #ffffff;"
+									styleClass="search-container"/>
+									
+								<p:commandButton
+									id="buttonSave"
+									value="Save"
+									icon="ui-icon-disk"
+									disabled="#{!docsController.allowEditing}"
+									actionListener="#{docsController.saveDocument(true)}"
+									style="margin-right: 3px; height: 25px; top: -2px;"
+									oncomplete="updateTree();"/>
+									
+								<p:commandButton
+									id="buttonCancel"
+									value="Cancel"
+									icon="ui-icon-close"
+									disabled="#{!docsController.allowEditing}"
+									actionListener="#{docsController.setAllowEditing(false)}"
+									style="margin-right: 3px; height: 25px; top: -2px;"
+									oncomplete="updateTree();">
+									<p:confirm
+										header="Confirm"
+										message="Cancel Editing? Unsaved Changes will be lost!"
+										icon="ui-icon-alert"/>
+								</p:commandButton>
 									
 							</h:panelGrid>
 						</p:outputPanel>
@@ -317,8 +349,8 @@
 		</p:layout>
 		
 		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-        	<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
-        	<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-remove" />
+        	<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check"/>
+        	<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-remove"/>
     	</p:confirmDialog>
 		
 		<p:dialog header="New Folder"
@@ -336,15 +368,15 @@
 					<h:outputLabel value="Name"
 						for="name" />
 					<p:inputText id="name" value="#{docsController.name}"
-						style="width:200px" />
+						style="width:200px"/>
 
 					<f:facet name="footer">
 						<p:commandButton type="push"
 							value="Save"
 							actionListener="#{docsController.addDirectoryNode}"
 							onstart="saveScrollPos()"
-							oncomplete="PF('dialogAddDirectory').hide(); resizeTreePanel(); loadScrollPos();"
-							update=":documentMenuForm" />
+							oncomplete="PF('dialogAddDirectory').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"
+							update=":documentMenuForm :mainForm"/>
 					</f:facet>
 					
 				</h:panelGrid>
@@ -373,8 +405,8 @@
 							value="Save"
 							actionListener="#{docsController.renameDirectoryNode}"
 							onstart="saveScrollPos()"
-							oncomplete="PF('dialogRenameDirectory').hide(); resizeTreePanel(); loadScrollPos();"
-							update=":documentMenuForm" />
+							oncomplete="PF('dialogRenameDirectory').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"
+							update=":documentMenuForm :mainForm"/>
 					</f:facet>
 					
 				</h:panelGrid>
@@ -396,15 +428,15 @@
 					<h:outputLabel value="Name"
 						for="name" />
 					<p:inputText id="name" value="#{docsController.name}"
-						style="width:200px" />
+						style="width:200px"/>
 
 					<f:facet name="footer">
 						<p:commandButton type="push"
 							value="Save"
 							actionListener="#{docsController.addDocumentNode}"
 							onstart="saveScrollPos()"
-							oncomplete="PF('dialogAddDocument').hide(); resizeTreePanel(); loadScrollPos();"
-							update=":documentMenuForm" />
+							oncomplete="PF('dialogAddDocument').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"
+							update=":documentMenuForm :mainForm"/>
 					</f:facet>
 					
 				</h:panelGrid>
@@ -424,17 +456,17 @@
 					style="margin-bottom:10px">
 
 					<h:outputLabel value="Name"
-						for="name" />
+						for="name"/>
 					<p:inputText id="name" value="#{docsController.name}"
-						style="width:200px" />
+						style="width:200px"/>
 
 					<f:facet name="footer">
 						<p:commandButton type="push"
 							value="Save"
 							actionListener="#{docsController.renameDocumentNode}"
 							onstart="saveScrollPos()"
-							oncomplete="PF('dialogRenameDocument').hide(); resizeTreePanel(); loadScrollPos();"
-							update=":documentMenuForm"  />
+							oncomplete="PF('dialogRenameDocument').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"
+							update=":documentMenuForm :mainForm" />
 					</f:facet>
 					
 				</h:panelGrid>

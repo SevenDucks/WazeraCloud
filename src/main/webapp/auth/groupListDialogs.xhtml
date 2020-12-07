@@ -24,7 +24,7 @@
 				icon="ui-icon-disk"
 				value="Save"
 				actionListener="#{groupController.createNewGroup()}"
-				update="@(.groupTable)"
+				update="@(.group-table)"
 				oncomplete="PF('newGroupDialog').hide();"/>
 		</h:form>
 	</p:dialog>
@@ -42,7 +42,7 @@
 				icon="ui-icon-disk"
 				value="Save"
 				actionListener="#{groupController.updateGroup()}"
-				update="@(.groupTable)"
+				update="@(.group-table)"
 				oncomplete="PF('editGroupDialog').hide();"/>
 		</h:form>
 	</p:dialog>
@@ -56,7 +56,7 @@
 				icon="ui-icon-trash"
 				value="Delete Group"
 				actionListener="#{groupController.deleteGroup()}"
-				update="@(.groupTable)"
+				update="@(.group-table)"
 				oncomplete="PF('deleteGroupDialog').hide();"/>
 			<p:commandButton
 				icon="ui-icon-close"

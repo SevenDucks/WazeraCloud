@@ -32,7 +32,7 @@
 				icon="ui-icon-disk"
 				value="Save"
 				actionListener="#{roleController.createNewRole()}"
-				update="@(.roleTable)"
+				update="@(.role-table)"
 				oncomplete="PF('newRoleDialog').hide();"/>
 		</h:form>
 	</p:dialog>
@@ -46,7 +46,7 @@
 				icon="ui-icon-trash"
 				value="Delete Role"
 				actionListener="#{roleController.deleteRole()}"
-				update="@(.roleTable)"
+				update="@(.role-table)"
 				oncomplete="PF('deleteRoleDialog').hide();"/>
 			<p:commandButton
 				icon="ui-icon-close"

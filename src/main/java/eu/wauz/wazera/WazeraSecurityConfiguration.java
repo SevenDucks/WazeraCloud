@@ -1,6 +1,7 @@
 package eu.wauz.wazera;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,10 +15,15 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import eu.wauz.wazera.model.data.auth.UserData;
 import eu.wauz.wazera.service.AuthDataService;
 
 @Configuration
@@ -25,14 +31,17 @@ import eu.wauz.wazera.service.AuthDataService;
 public class WazeraSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
+	private AuthDataService authService;
+	
+	@Autowired
 	private WazeraAuthenticationProvider authProvider;
 	
 	@Autowired
-	private AuthDataService authService;
+	private WazeraUserDetailsService detailsService;
 
 	@Override
 	protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(authProvider);
+		auth.authenticationProvider(authProvider).userDetailsService(detailsService);
 	}
 	
 	@Override
@@ -49,7 +58,7 @@ public class WazeraSecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.deleteCookies("JSESSIONID")
 			.logoutUrl("/perform_logout")
 	        .and()
-	        .rememberMe().key("uniqueAndSecret");
+	        .rememberMe();
 	}
 	
 	@Bean
@@ -69,12 +78,64 @@ public class WazeraSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 			String username = authentication.getName();
 	        String password = authentication.getCredentials().toString();
-	        if(authService.authenticate(username, password)) {
-	        	return new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>());
+	        if(!authService.authenticate(username, password)) {
+	        	throw new BadCredentialsException("Wrong Username or Password!");
 	        }
-	        throw new BadCredentialsException("Wrong Username or Password!");
+	        return new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>());
 		}
 		
+	}
+	
+	@Component
+	public class WazeraUserDetailsService implements UserDetailsService {
+
+		@Override
+		public UserDetails loadUserByUsername(String username) {
+			UserData user = authService.findUserByName(username);
+			if (user == null) {
+				throw new UsernameNotFoundException("Unknown Username!");
+			}
+			return new UserDetails() {
+				
+				private static final long serialVersionUID = -6127761950362064659L;
+
+				@Override
+				public boolean isEnabled() {
+					return true;
+				}
+				
+				@Override
+				public boolean isCredentialsNonExpired() {
+					return true;
+				}
+				
+				@Override
+				public boolean isAccountNonLocked() {
+					return true;
+				}
+				
+				@Override
+				public boolean isAccountNonExpired() {
+					return true;
+				}
+				
+				@Override
+				public String getUsername() {
+					return user.getUsername();
+				}
+				
+				@Override
+				public String getPassword() {
+					return user.getPassword();
+				}
+				
+				@Override
+				public Collection<? extends GrantedAuthority> getAuthorities() {
+					return new ArrayList<>();
+				}
+				
+			};
+		}
 	}
 	
 }

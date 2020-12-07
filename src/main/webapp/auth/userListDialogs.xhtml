@@ -26,7 +26,7 @@
 				icon="ui-icon-disk"
 				value="Save"
 				actionListener="#{userController.createNewUser()}"
-				update="@(.userTable)"
+				update="@(.user-table)"
 				oncomplete="PF('newUserDialog').hide();"/>
 		</h:form>
 	</p:dialog>
@@ -40,7 +40,7 @@
 				icon="ui-icon-trash"
 				value="Delete User"
 				actionListener="#{userController.deleteUser()}"
-				update="@(.userTable)"
+				update="@(.user-table)"
 				oncomplete="PF('deleteUserDialog').hide();"/>
 			<p:commandButton
 				icon="ui-icon-close"

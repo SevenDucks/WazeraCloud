@@ -208,7 +208,7 @@ public class DocsController implements Serializable {
 		return selectedNode != null && selectedNode instanceof DocumentTreeNode;
 	}
 
-	public void saveDocument() {
+	public void saveDocument(boolean exit) {
 		DocumentTreeNode selectedDocumentData = (DocumentTreeNode) selectedNode;
 
 		selectedDocumentData.getDocumentData().setContent(content);
@@ -217,10 +217,15 @@ public class DocsController implements Serializable {
 		try {
 			documentsService.saveDocument(selectedDocumentData.getDocumentData(), null, getUsername());
 			docsTool.showInfoMessage("Your Document was saved!");
+			allowEditing = !exit;
 		}
 		catch (Exception e) {
 			docsTool.showErrorMessage(e.getMessage());
 		}
+	}
+	
+	public void showInfoMessage(String infoMessage) {
+		docsTool.showInfoMessage(infoMessage);
 	}
 	
 	public String getContent() {

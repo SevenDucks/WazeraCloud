@@ -33,6 +33,8 @@ body {
 }
 
 .ui-tree-droppoint {
+	position: absolute;
+	width: 200px;
 	height: 6px;
 	margin: -3px;
 }
@@ -166,6 +168,7 @@ th,
 
 .gray-bg,
 .gray-bg > .ui-layout-unit-content,
-tr {
+.gray-bg > tbody > tr,
+.ui-datatable-data > tr {
 	background: #16161f !important;
 }
