@@ -435,6 +435,7 @@ public class DocsController implements Serializable {
 
     		if(selectedNode instanceof DocumentTreeNode) {
 				Integer docId = selectedNode != null ? ((DocumentTreeNode) selectedNode).getDocumentData().getId() : 0;
+				System.out.println(docId);
 				return baseUrl + "WazeraCloud/docs.xhtml?docId=" + docId;
     		}
 		}

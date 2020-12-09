@@ -29,6 +29,15 @@
 			        updateTree();
 			    }
 			}
+			
+			function bindSaveKey() {
+				$('.ql-editor').keydown(function (e) {
+				    if (e.keyCode == 83 &amp;&amp; event.ctrlKey) {
+			        	e.preventDefault();
+			        	saveDocument();
+				    }
+				});
+			}
 
 			$(document).ready(function () {
 				setTimeout(resizeTreePanel, 250);
@@ -73,6 +82,7 @@
 				<h:form id="documentMenuForm">
 
 					<p:chips
+						id="searchTags"
 						value="#{docsController.searchTags}"
 						onkeydown="searchKeyDown(event)"
 						disabled="#{docsController.allowEditing}"
@@ -81,6 +91,7 @@
 						<p:ajax event="itemUnselect" oncomplete="updateTree()"/>
 					</p:chips>
 					<p:commandButton
+						id="buttonSearch"
 						value="Search"
 						onclick="updateTree()"
 						disabled="#{docsController.allowEditing}"
@@ -89,6 +100,11 @@
 						name="updateTree"
 						actionListener="#{docsController.selectTree}"
 						update="documentTree :mainForm"
+						oncomplete="resizeTreePanel(); resizeEditor();"/>
+					<p:remoteCommand
+						name="updateAll"
+						actionListener="#{docsController.selectTree}"
+						update="searchTags buttonSearch documentTree :mainForm"
 						oncomplete="resizeTreePanel(); resizeEditor();"/>
 					
 					<p:scrollPanel
@@ -170,70 +186,87 @@
 					<p:contextMenu for="documentTree" nodeType="rootNode">
 			            <p:menuitem
 			            	value="Collapse All"
+			            	icon="ui-icon-folder-collapsed"
 			            	actionListener="#{docsController.collapseAll()}"
-			            	update="documentTree :mainForm"
-			            	icon="ui-icon-folder-collapsed"/>
+			            	update="documentTree :mainForm"/>
 			            <p:menuitem
 			            	value="New Folder"
+			            	icon="ui-icon-folder-open"
 			            	actionListener="#{docsController.setName('New Folder')}"
 			            	onclick="PF('dialogAddDirectory').show();"
-			            	update=":addDirectoryDialogForm"
-			            	icon="ui-icon-folder-open"/>
+			            	update=":addDirectoryDialogForm"/>
 			            <p:menuitem
 			            	value="New Document"
+			            	icon="ui-icon-document"
 			            	actionListener="#{docsController.setName('New Document')}"
 			            	onclick="PF('dialogAddDocument').show();"
-			            	update=":addDocumentDialogForm"
-			            	icon="ui-icon-document"/>
+			            	update=":addDocumentDialogForm"/>
 				    </p:contextMenu>
 
 					<p:contextMenu for="documentTree" nodeType="directoryNode">
 						<p:menuitem
 							value="Collapse All"
+							icon="ui-icon-folder-collapsed"
 							actionListener="#{docsController.collapseRecursive(docsController.selectedNode)}"
-							update="documentTree :mainForm"
-							icon="ui-icon-folder-collapsed"/>
+							update="documentTree :mainForm"/>
 			            <p:menuitem
 			            	value="New Folder"
+			            	icon="ui-icon-folder-open"
 			            	actionListener="#{docsController.setName('New Folder')}"
 			            	onclick="PF('dialogAddDirectory').show();"
-			            	update=":addDirectoryDialogForm"
-			            	icon="ui-icon-folder-open"/>
+			            	update=":addDirectoryDialogForm"/>
 			            <p:menuitem
 			            	value="New Document"
+			            	icon="ui-icon-document"
 			            	actionListener="#{docsController.setName('New Document')}"
 			            	onclick="PF('dialogAddDocument').show();"
-			            	update=":addDocumentDialogForm"
-			            	icon="ui-icon-document"/>
+			            	update=":addDocumentDialogForm"/>
 	       				<p:menuitem
 	       					value="Rename"
+	       					icon="ui-icon-refresh"
 	       					onclick="PF('dialogRenameDirectory').show();"
-	       					update=":renameDirectoryDialogForm"
-	       					icon="ui-icon-refresh"/>
+	       					update=":renameDirectoryDialogForm"/>
 	       				<p:menuitem
 	       					value="Delete"
+	       					icon="ui-icon-trash"
 	       					actionListener="#{docsController.deleteFolder}"
-	       					update="documentTree :mainForm"
-	       					icon="ui-icon-trash">
+	       					update="documentTree :mainForm">
 	       					<p:confirm header="Confirm" message="Delete Folder?" icon="ui-icon-alert" />
 	       				</p:menuitem>
 				    </p:contextMenu>
 
 					<p:contextMenu for="documentTree" nodeType="documentNode">
+						<p:menuitem
+	       					value="Open in New Tab"
+       						icon="ui-icon-extlink"
+	       					update="documentLinkPanel"
+	       					oncomplete="openDocumentLink();"/>
 	       				<p:menuitem
 	       					value="Rename"
+       						icon="ui-icon-refresh"
 	       					onclick="PF('dialogRenameDocument').show();"
-	       					update=":renameDocumentDialogForm" icon="ui-icon-refresh"/>
+	       					update=":renameDocumentDialogForm"/>
 	       				<p:menuitem
 	       					value="Delete"
+	       					icon="ui-icon-trash"
 	       					actionListener="#{docsController.deleteDocument}"
-	       					update="documentTree :mainForm"
-	       					icon="ui-icon-trash">
+	       					update="documentTree :mainForm">
 	       					<p:confirm header="Confirm" message="Delete Document?" icon="ui-icon-alert"/>
 	       				</p:menuitem>
 				    </p:contextMenu>
 
 				</h:form>
+				
+				<p:panel id="documentLinkPanel">
+					<script type="text/javascript">
+	
+						function openDocumentLink() {
+							window.open('#{docsController.getDocumentLink()}', '_blank');
+							window.open().close();
+						}
+		
+					</script>
+				</p:panel>
 
 			</p:layoutUnit>
 
@@ -258,6 +291,12 @@
 								rendered="#{docsController.allowEditing}"
 								height="500"
 								styleClass="text-editor">
+								<script type="text/javascript">
+									setTimeout(bindSaveKey, 250);
+								</script>
+								<p:remoteCommand
+			            			name="saveDocument"
+			            			actionListener="#{docsController.saveDocument(false)}"/>
 							</p:textEditor>
 							
 							<p:textEditor
@@ -283,7 +322,7 @@
 						</p:outputPanel>
 						
 						<p:outputPanel style="box-sizing: border-box; border: 1px solid #444444; border-top: 0; padding-top: #{sessionController.isChrome() ? '3px;' : '3px;'}">
-							<h:panelGrid columns="5" styleClass="no-spacing" style="margin-left: 4px !important;">
+							<h:panelGrid columns="6" styleClass="no-spacing" style="margin-left: 4px !important;">
 							
 								<p:commandButton
 									id="buttonCopyLink"
@@ -300,7 +339,7 @@
 									onLabel="Edit"
 									offLabel="Read"
 									style="margin-right: 3px; height: 23px; top: #{sessionController.isChrome() ? '-1px;' : '0px;'}">
-									<p:ajax oncomplete="updateTree();" />
+									<p:ajax oncomplete="updateAll();" />
 								</p:inputSwitch>
 							
 								<p:chips
@@ -308,8 +347,16 @@
 									value="#{docsController.tags}"
 									disabled="#{!docsController.allowEditing}"
 									onkeyup="resizeEditor();"
-									style="margin-right: 5px; width: 360px; height: 23px; top: #{sessionController.isChrome() ? '-1px;' : '0px;'} color: #ffffff;"
+									style="margin-right: 5px; width: 320px; height: 23px; top: #{sessionController.isChrome() ? '-1px;' : '0px;'} color: #ffffff;"
 									styleClass="search-container"/>
+									
+								<p:commandButton
+									id="buttonQuickSave"
+									value="Quick Save"
+									icon="ui-icon-disk"
+									disabled="#{!docsController.allowEditing}"
+									actionListener="#{docsController.saveDocument(false)}"
+									style="margin-right: 3px; height: 25px; top: -2px;"/>
 									
 								<p:commandButton
 									id="buttonSave"
@@ -318,7 +365,7 @@
 									disabled="#{!docsController.allowEditing}"
 									actionListener="#{docsController.saveDocument(true)}"
 									style="margin-right: 3px; height: 25px; top: -2px;"
-									oncomplete="updateTree();"/>
+									oncomplete="updateAll();"/>
 									
 								<p:commandButton
 									id="buttonCancel"
@@ -327,7 +374,7 @@
 									disabled="#{!docsController.allowEditing}"
 									actionListener="#{docsController.setAllowEditing(false)}"
 									style="margin-right: 3px; height: 25px; top: -2px;"
-									oncomplete="updateTree();">
+									oncomplete="updateAll();">
 									<p:confirm
 										header="Confirm"
 										message="Cancel Editing? Unsaved Changes will be lost!"
@@ -338,7 +385,9 @@
 						</p:outputPanel>
 
 			            <pe:clipboard id="clipCopy" trigger="buttonCopyLink" action="copy" text="#{docsController.getDocumentLink()}"/>
-			            <p:remoteCommand name="sendCopyLinkMessage" actionListener="#{docsController.showInfoMessage('Link copied to Clipboard!')}"/>
+			            <p:remoteCommand
+			            	name="sendCopyLinkMessage"
+			            	actionListener="#{docsController.showInfoMessage('Link copied to Clipboard!')}"/>
 
 					</p:outputPanel>
 
@@ -353,7 +402,8 @@
         	<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-remove"/>
     	</p:confirmDialog>
 		
-		<p:dialog header="New Folder"
+		<p:dialog
+			header="New Folder"
 			widgetVar="dialogAddDirectory"
 			showEffect="fade" hideEffect="fade"
 			resizable="false"
@@ -383,7 +433,8 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Rename Folder"
+		<p:dialog
+			header="Rename Folder"
 			widgetVar="dialogRenameDirectory"
 			showEffect="fade" hideEffect="fade"
 			resizable="false"
@@ -413,7 +464,8 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="New Document"
+		<p:dialog
+			header="New Document"
 			widgetVar="dialogAddDocument"
 			showEffect="fade" hideEffect="fade"
 			resizable="false"
@@ -443,7 +495,8 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Rename Document"
+		<p:dialog
+			header="Rename Document"
 			widgetVar="dialogRenameDocument"
 			showEffect="fade" hideEffect="fade"
 			resizable="false"

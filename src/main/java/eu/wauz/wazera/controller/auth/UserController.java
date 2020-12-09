@@ -46,7 +46,7 @@ public class UserController implements Serializable {
 		if(StringUtils.isNotBlank(username)) {
 			user = authService.findUserByName(username);
 		}
-		else {
+		if(user == null) {
 			this.user = new UserData();
 			user.setId(0);
 			user.setUsername("???");

@@ -15,6 +15,16 @@
 	
 	<h:body>
 	
+		<script type="text/javascript">
+		
+			$(document).ready(function () {
+				setInterval(function() {
+		        	$.get('ping');
+		        }, 60000);
+			});
+			
+		</script>
+	
 		<p:growl id="growl" showDetail="true" life="2000">
 			<p:autoUpdate />
 		</p:growl>

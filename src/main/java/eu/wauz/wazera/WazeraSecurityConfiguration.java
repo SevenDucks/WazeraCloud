@@ -77,7 +77,7 @@ public class WazeraSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		@Override
 		public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 			String username = authentication.getName();
-	        String password = authentication.getCredentials().toString();
+	        String password = passwordEncoder().encode(authentication.getCredentials().toString());
 	        if(!authService.authenticate(username, password)) {
 	        	throw new BadCredentialsException("Wrong Username or Password!");
 	        }

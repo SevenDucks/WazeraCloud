@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import eu.wauz.wazera.model.data.auth.GroupData;
@@ -47,6 +48,9 @@ public class AuthDataService {
 
     @Autowired
     private RolePermissionLinkRepository rplRepository;
+    
+    @Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public List<UserData> findAllUsers() {
 		List<UserData> result = new ArrayList<>();
@@ -58,6 +62,9 @@ public class AuthDataService {
 
 	public UserData findUserByName(String username) {
 		User user = userRepository.findByUsername(username);
+		if(user == null) {
+			return null;
+		}
 		return readUserData(user);
 	}
 
@@ -128,17 +135,17 @@ public class AuthDataService {
 		return twUserData;
 	}
 
-	private User findOrCreateUser(UserData twUserData) {
+	private User findOrCreateUser(UserData userData) {
 		User user = null;
-		if(twUserData.getId() != null) {
-			user = userRepository.findById(twUserData.getId()).get();
+		if(userData.getId() != null) {
+			user = userRepository.findById(userData.getId()).get();
 		}
 		if(user == null) {
 			user = new User();
 		}
-		user.setId(twUserData.getId());
-		user.setUsername(twUserData.getUsername());
-		user.setPassword(twUserData.getPassword());
+		user.setId(userData.getId());
+		user.setUsername(userData.getUsername());
+		user.setPassword(passwordEncoder.encode(userData.getPassword()));
 		return user;
 	}
 
