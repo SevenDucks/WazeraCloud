@@ -89,9 +89,11 @@ public class FoldersDataService {
 		for(Folder sortFolder : sortFolders) {
 			if(sortFolder.getId().equals(folderId)) {
 				sortFolder.setSortOrder(index);
-			} else if(index < oldIndex && sortFolder.getSortOrder() >= index) {
+			}
+			else if(index < oldIndex && sortFolder.getSortOrder() >= index) {
 				sortFolder.setSortOrder(sortFolder.getSortOrder() + 1);
-			} else if(index > oldIndex && sortFolder.getSortOrder() <= index) {
+			}
+			else if(index > oldIndex && sortFolder.getSortOrder() <= index) {
 				sortFolder.setSortOrder(sortFolder.getSortOrder() - 1);
 			}
 		}
@@ -107,14 +109,15 @@ public class FoldersDataService {
 	}
 	
 	private List<Folder> sortFolders(List<Folder> sortFolders) throws Exception {
-		for(Folder folder : sortFolders)
-			if(folder.getSortOrder() == null)
+		for(Folder folder : sortFolders) {
+			if(folder.getSortOrder() == null) {
 				folder.setSortOrder(0);
-
+			}
+		}
 		sortFolders.sort(Comparator.comparingInt(Folder::getSortOrder));
-		for(int i = 0; i < sortFolders.size(); i++)
+		for(int i = 0; i < sortFolders.size(); i++) {
 			sortFolders.get(i).setSortOrder(i);
-
+		}
 		return sortFolders;
 	}
 
@@ -134,6 +137,7 @@ public class FoldersDataService {
 			folderData.setName(folder.getName());
 			FolderUserData folderUserData = folderUserDataJpaRepository.findByFolderAndUser(folder.getId(), docsTool.getUsername());
 			folderData.setExpanded(folderUserData != null ? folderUserData.getExpanded() : false);
+			folderData.setSortOrder(folder.getSortOrder());
 		}
 		return folderData;
 	}

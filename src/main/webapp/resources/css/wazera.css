@@ -27,9 +27,10 @@ body {
 	min-height: 200px;
 }
 
-.search-container > .ui-chips-container {
+.search-container > .ui-chips-container,
+.search-container > .ui-chips-container > .ui-chips-input-token,
+.search-container > .ui-chips-container > .ui-chips-input-token > input {
 	width: 100%;
-	height: 100%;
 }
 
 .ui-tree-droppoint {

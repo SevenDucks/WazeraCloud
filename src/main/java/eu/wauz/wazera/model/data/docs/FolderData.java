@@ -13,6 +13,8 @@ public class FolderData {
 	private FolderData parent;
 
 	private Boolean expanded;
+	
+	private Integer sortOrder;
 
 	private List<FolderData> folders = new ArrayList<>();
 
@@ -48,6 +50,14 @@ public class FolderData {
 
 	public void setExpanded(Boolean expanded) {
 		this.expanded = expanded;
+	}
+	
+	public Integer getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(Integer sortOrder) {
+		this.sortOrder = sortOrder;
 	}
 
 	public List<FolderData> getFolders() {

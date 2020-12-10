@@ -35,7 +35,7 @@
 				<p:menubar styleClass="no-border no-spacing purple-bg-light" style="overflow: hidden;">
 					
 					<p:menuitem
-						url="/dashboard.xhtml"
+						url="#{request.contextPath}/dashboard.xhtml"
 						styleClass="no-spacing"
 						style="height: 22px; background-color: #0e0e0e">
 						<p:graphicImage value="/resources/images/favicon.svg" width="48" height="48"/>
@@ -60,11 +60,11 @@
 			<p:layoutUnit position="west" gutter="0" styleClass="no-border purple-bg-dark">
 				<p:menu styleClass="menubar no-border purple-bg-dark" style="width: 80px;">
 					<p:submenu label="Views">
-						<p:menuitem icon="fa fa-pie-chart" value="Board" url="/dashboard.xhtml"/>
-		        		<p:menuitem icon="fa fa-file-text" value="Docs" url="/docs.xhtml"/>
+						<p:menuitem icon="fa fa-pie-chart" value="Board" url="#{request.contextPath}/dashboard.xhtml"/>
+		        		<p:menuitem icon="fa fa-file-text" value="Docs" url="#{request.contextPath}/docs.xhtml"/>
 		        		<p:menuitem icon="fa fa-columns" value="Tasks" url="#"/>
-		        		<p:menuitem icon="fa fa-comments" value="Chat" url="/chat.xhtml"/>
-		        		<p:menuitem icon="fa fa-terminal" value="Admin" url="/auth/authAdministration.xhtml"/>
+		        		<p:menuitem icon="fa fa-comments" value="Chat" url="#{request.contextPath}/chat.xhtml"/>
+		        		<p:menuitem icon="fa fa-terminal" value="Admin" url="#{request.contextPath}/auth/authAdministration.xhtml"/>
 					</p:submenu>
 					<p:submenu label="Web">
 						<p:menuitem icon="fa fa-globe" value="SDS" url="https://www.seven-ducks.com/" target="_blank"/>

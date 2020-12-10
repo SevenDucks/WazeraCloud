@@ -16,6 +16,8 @@ public class DocumentData {
 	private FolderData parent;
 
 	private List<String> tags;
+	
+	private Integer sortOrder;
 
 	private Date creationDate;
 
@@ -65,6 +67,14 @@ public class DocumentData {
 
 	public void setTags(List<String> tags) {
 		this.tags = tags;
+	}
+	
+	public Integer getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(Integer sortOrder) {
+		this.sortOrder = sortOrder;
 	}
 
 	public Date getCreationDate() {

@@ -73,33 +73,28 @@ public class DocumentsDataService {
         }
         rootNode = readFolderData(rootFolder);
 
-        Map<Integer, FolderData> folderDataMap = new HashMap<>();
-        Map<Integer, Folder> folderMap = new HashMap<>();
-
         Set<String> addedFiles = new HashSet<>();
         if(!searchTokens.isEmpty()) {
         	Set<Folder> matchingFolders = new HashSet<>(folderJpaRepository.findByTags(searchTokens));
 	        Set<Document> matchingDocuments = new HashSet<>(documentJpaRepository.findByTags(searchTokens));
-
-	        Queue<Folder> queue = new ArrayDeque<>();
-	        queue.addAll(matchingFolders);
+	        Map<Integer, FolderData> folderDataMap = new HashMap<>();
+	        Map<Integer, Folder> folderMap = new HashMap<>();
+	        folderMap.put(rootFolder.getId(), rootFolder);
+	        folderDataMap.put(rootNode.getId(), rootNode);
+	        Queue<Folder> queue = new ArrayDeque<>(matchingFolders);
 	        
 	        while(!queue.isEmpty()) {
         		Folder folder = queue.poll();
         		addFolderData(folderDataMap, folderMap, folder.getId());
-	        	documentRepository.findByFolderIdOrderBySortOrder(folder.getId()).stream()
-	        		.forEach(doc -> matchingDocuments.add(doc));
-
+        		matchingDocuments.addAll(documentRepository.findByFolderIdOrderBySortOrder(folder.getId()));
 	        	queue.addAll(folderRepository.findByFolderIdOrderBySortOrder(folder.getId()));
         	}
-	        
 	        for(Document document : matchingDocuments) {
 	        	FolderData documentFolderData = addFolderData(folderDataMap, folderMap, document.getFolderId());
 	        	if(documentFolderData != null && documentFolderData.getDocuments() != null) {
 	        		documentFolderData.getDocuments().add(readDocumentData(document));
 	        	}
 			}
-
 	        queue.addAll(folderMap.values());
 	        
 	        while(!queue.isEmpty()) {
@@ -115,22 +110,25 @@ public class DocumentsDataService {
         		FolderData parentFolderData = addFolderData(folderDataMap, folderMap, parent.getId());
         		FolderData folderData = addFolderData(folderDataMap, folderMap, folder.getId());
         		folderData.setExpanded(true);
-        		
-        		if(!parent.getId().equals(rootFolder.getId()) && !parentFolderData.getFolders().contains(folderData)) {
+        		if(!parentFolderData.getFolders().contains(folderData)) {
         			parentFolderData.getFolders().add(folderData);
         			queue.offer(parent);
         		}
-        		else if(!rootNode.getFolders().contains(folderData)) {
-        			rootNode.getFolders().add(folderData);
-    			}
 	        }
+	        
+	        Queue<FolderData> sortQueue = new ArrayDeque<>(Collections.singleton(rootNode));
+	        while(!sortQueue.isEmpty()) {
+	        	FolderData folderData = sortQueue.poll();
+	        	folderData.getDocuments().sort((d1, d2) -> Integer.compare(d1.getSortOrder(), d2.getSortOrder()));
+	        	folderData.getFolders().sort((f1, f2) -> Integer.compare(f1.getSortOrder(), f2.getSortOrder()));
+	        	sortQueue.addAll(folderData.getFolders());
+			}
         }
         else {
-        	addFolders(rootFolder, rootNode, searchTokens, addedFiles);
-        	addDocuments(rootFolder, rootNode, searchTokens, addedFiles);
+        	addFolders(rootFolder, rootNode, addedFiles);
+        	addDocuments(rootFolder, rootNode, addedFiles);
         }
-
-        return rootNode ;
+        return rootNode;
     }
 
     private void expandParentFolders(int docId) {
@@ -183,11 +181,12 @@ public class DocumentsDataService {
 			folderData.setName(folder.getName());
 			FolderUserData folderUserData = folderUserDataJpaRepository.findByFolderAndUser(folder.getId(), docsTool.getUsername());
 			folderData.setExpanded(folderUserData != null ? folderUserData.getExpanded() : false);
+			folderData.setSortOrder(folder.getSortOrder());
 		}
 		return folderData;
 	}
 
-    private void addFolders(Folder folder, FolderData node, List<String> tags, Set<String> addedFiles) throws Exception {
+    private void addFolders(Folder folder, FolderData node, Set<String> addedFiles) throws Exception {
     	List<Folder> childFolders = folderRepository.findByFolderIdOrderBySortOrder(folder.getId());
     	for (Folder childFolder : childFolders) {
     		FolderUserData childFolderUserData = folderUserDataJpaRepository.findByFolderAndUser(childFolder.getId(), docsTool.getUsername());
@@ -211,13 +210,13 @@ public class DocumentsDataService {
             	}
             }
             else {
-            	addFolders(childFolder, childNode, tags, addedFiles);
-            	addDocuments(childFolder, childNode, tags, addedFiles);
+            	addFolders(childFolder, childNode, addedFiles);
+            	addDocuments(childFolder, childNode, addedFiles);
             }
 		}
 	}
 
-	private void addDocuments(Folder folder, FolderData node, List<String> tags, Set<String> addedFiles) throws Exception {
+	private void addDocuments(Folder folder, FolderData node, Set<String> addedFiles) throws Exception {
 		FolderUserData folderUserData = folderUserDataJpaRepository.findByFolderAndUser(folder.getId(), docsTool.getUsername());
 		if(folderUserData == null || !folderUserData.getExpanded()) {
 			return;
@@ -334,6 +333,7 @@ public class DocumentsDataService {
 		documentData.setName(document.getName());
 		documentData.setUser(document.getUser());
 		documentData.setContent(document.getContent());
+		documentData.setSortOrder(document.getSortOrder());
 		documentData.setCreationDate(document.getCreationDate());
 
 		List<DocumentTag> documentTags = documentTagRepository.findByDocumentId(document.getId());

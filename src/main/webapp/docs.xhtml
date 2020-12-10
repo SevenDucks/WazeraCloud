@@ -24,7 +24,7 @@
 				$('#documentMenuForm\\:treePanel').scrollTop(sessionStorage.scrollTop);
 			}
 
-			function searchKeyDown(e) {
+			function searchKeyPress(e) {
 			    if (e.keyCode == 13) {
 			        updateTree();
 			    }
@@ -50,12 +50,13 @@
 			});
 
 			function resizeTreePanel() {
-				$("#documentMenuForm\\:treePanel").height($(document).height() - 73);
+				var searchHeight = $("#documentMenuForm\\:searchTags > .ui-chips-container").height();
+				$("#documentMenuForm\\:treePanel").height($(document).height() - 50 - searchHeight);
 			}
 			
 			function resizeEditor() {
-				var chipsHeight = $("#mainForm\\:chipsInput").height();
-				var newHeight = $(document).height() - chipsHeight - 54;
+				var buttonBarHeight = $("#mainForm\\:buttonBar").height();
+				var newHeight = $(document).height() - buttonBarHeight - 43;
 				var isChromium = window.chrome;
 
 				var openToolbar = $("#mainForm\\:editorOpen_toolbar");
@@ -84,8 +85,9 @@
 					<p:chips
 						id="searchTags"
 						value="#{docsController.searchTags}"
-						onkeydown="searchKeyDown(event)"
+						placeholder="Search for Document Names or Tags..."
 						disabled="#{docsController.allowEditing}"
+						onkeyup="searchKeyPress(event)"
 						styleClass="search-container"
 						style="width: 280px; height: 23px; color: #ffffff;">
 						<p:ajax event="itemUnselect" oncomplete="updateTree()"/>
@@ -93,9 +95,9 @@
 					<p:commandButton
 						id="buttonSearch"
 						value="Search"
-						onclick="updateTree()"
 						disabled="#{docsController.allowEditing}"
-						style="width: 72px; height: 25px; top: -8px;"/>
+						onclick="updateTree()"
+						style="width: 70px; height: 25px; top: -8px; right: -2px;"/>
 					<p:remoteCommand
 						name="updateTree"
 						actionListener="#{docsController.selectTree}"
@@ -321,7 +323,7 @@
 							</p:textEditor>
 						</p:outputPanel>
 						
-						<p:outputPanel style="box-sizing: border-box; border: 1px solid #444444; border-top: 0; padding-top: #{sessionController.isChrome() ? '3px;' : '3px;'}">
+						<p:outputPanel id="buttonBar" style="box-sizing: border-box; border: 1px solid #444444; border-top: 0; padding-top: #{sessionController.isChrome() ? '3px;' : '3px;'}">
 							<h:panelGrid columns="6" styleClass="no-spacing" style="margin-left: 4px !important;">
 							
 								<p:commandButton
@@ -345,10 +347,13 @@
 								<p:chips
 									id="chipsInput"
 									value="#{docsController.tags}"
+									placeholder="Search Tags"
 									disabled="#{!docsController.allowEditing}"
 									onkeyup="resizeEditor();"
 									style="margin-right: 5px; width: 320px; height: 23px; top: #{sessionController.isChrome() ? '-1px;' : '0px;'} color: #ffffff;"
-									styleClass="search-container"/>
+									styleClass="search-container">
+									<p:ajax event="itemUnselect" oncomplete="resizeEditor();"/>
+								</p:chips>
 									
 								<p:commandButton
 									id="buttonQuickSave"
