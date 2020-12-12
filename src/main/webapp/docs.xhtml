@@ -415,26 +415,18 @@
 			draggable="false"
 			modal="true"
 			appendTo="@(body)">
-
 			<h:form id="addDirectoryDialogForm">
-				<h:panelGrid id="addDirectoryDialogGrid" columns="2"
-					style="margin-bottom:10px">
-
-					<h:outputLabel value="Name"
-						for="name" />
-					<p:inputText id="name" value="#{docsController.name}"
-						style="width:200px"/>
-
-					<f:facet name="footer">
-						<p:commandButton type="push"
-							value="Save"
-							actionListener="#{docsController.addDirectoryNode}"
-							onstart="saveScrollPos()"
-							oncomplete="PF('dialogAddDirectory').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"
-							update=":documentMenuForm :mainForm"/>
-					</f:facet>
-					
+				<h:panelGrid id="addDirectoryDialogGrid" columns="2">
+					<p:outputLabel value="Name: "/>
+					<p:inputText value="#{docsController.name}"/>
 				</h:panelGrid>
+				<p:commandButton
+					icon="ui-icon-disk"
+					value="Save"
+					actionListener="#{docsController.addDirectoryNode}"
+					update=":documentMenuForm :mainForm"
+					onstart="saveScrollPos()"
+					oncomplete="PF('dialogAddDirectory').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"/>
 			</h:form>
 		</p:dialog>
 
@@ -446,26 +438,18 @@
 			draggable="false"
 			modal="true"
 			appendTo="@(body)">
-
 			<h:form id="renameDirectoryDialogForm">
-				<h:panelGrid id="renameDirectoryDialogGrid" columns="2"
-					style="margin-bottom:10px">
-
-					<h:outputLabel value="Name"
-						for="name" />
-					<p:inputText id="name" value="#{docsController.name}"
-						style="width:200px" />
-
-					<f:facet name="footer">
-						<p:commandButton type="push"
-							value="Save"
-							actionListener="#{docsController.renameDirectoryNode}"
-							onstart="saveScrollPos()"
-							oncomplete="PF('dialogRenameDirectory').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"
-							update=":documentMenuForm :mainForm"/>
-					</f:facet>
-					
+				<h:panelGrid id="renameDirectoryDialogGrid" columns="2">
+					<p:outputLabel value="Name: "/>
+					<p:inputText value="#{docsController.name}"/>
 				</h:panelGrid>
+				<p:commandButton
+					icon="ui-icon-disk"
+					value="Save"
+					actionListener="#{docsController.renameDirectoryNode}"
+					update=":documentMenuForm :mainForm"
+					onstart="saveScrollPos()"
+					oncomplete="PF('dialogRenameDirectory').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"/>
 			</h:form>
 		</p:dialog>
 
@@ -477,26 +461,18 @@
 			draggable="false"
 			modal="true"
 			appendTo="@(body)">
-
 			<h:form id="addDocumentDialogForm">
-				<h:panelGrid id="addDocumentDialogGrid" columns="2"
-					style="margin-bottom:10px">
-
-					<h:outputLabel value="Name"
-						for="name" />
-					<p:inputText id="name" value="#{docsController.name}"
-						style="width:200px"/>
-
-					<f:facet name="footer">
-						<p:commandButton type="push"
-							value="Save"
-							actionListener="#{docsController.addDocumentNode}"
-							onstart="saveScrollPos()"
-							oncomplete="PF('dialogAddDocument').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"
-							update=":documentMenuForm :mainForm"/>
-					</f:facet>
-					
+				<h:panelGrid id="addDocumentDialogGrid" columns="2">
+					<p:outputLabel value="Name: "/>
+					<p:inputText value="#{docsController.name}"/>
 				</h:panelGrid>
+				<p:commandButton
+					icon="ui-icon-disk"
+					value="Save"
+					actionListener="#{docsController.addDocumentNode}"
+					update=":documentMenuForm :mainForm"
+					onstart="saveScrollPos()"
+					oncomplete="PF('dialogAddDocument').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"/>
 			</h:form>
 		</p:dialog>
 
@@ -508,26 +484,18 @@
 			draggable="false"
 			modal="true"
 			appendTo="@(body)">
-
 			<h:form id="renameDocumentDialogForm">
-				<h:panelGrid id="renameDocumentDialogGrid" columns="2"
-					style="margin-bottom:10px">
-
-					<h:outputLabel value="Name"
-						for="name"/>
-					<p:inputText id="name" value="#{docsController.name}"
-						style="width:200px"/>
-
-					<f:facet name="footer">
-						<p:commandButton type="push"
-							value="Save"
-							actionListener="#{docsController.renameDocumentNode}"
-							onstart="saveScrollPos()"
-							oncomplete="PF('dialogRenameDocument').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"
-							update=":documentMenuForm :mainForm" />
-					</f:facet>
-					
+				<h:panelGrid id="renameDocumentDialogGrid" columns="2">
+					<p:outputLabel value="Name: "/>
+					<p:inputText value="#{docsController.name}"/>
 				</h:panelGrid>
+				<p:commandButton
+					icon="ui-icon-disk"
+					value="Save"
+					actionListener="#{docsController.renameDocumentNode}"
+					update=":documentMenuForm :mainForm"
+					onstart="saveScrollPos()"
+					oncomplete="PF('dialogRenameDocument').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"/>
 			</h:form>
 		</p:dialog>
 		

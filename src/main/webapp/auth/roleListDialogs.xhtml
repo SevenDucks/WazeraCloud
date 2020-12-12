@@ -12,11 +12,16 @@
 	xmlns:tw="http://java.sun.com/jsf/composite/components/tasks">
 
 	<p:dialog
+		header="Neue Role"
 		widgetVar="newRoleDialog"
 		styleClass="newRoleDialog"
-		header="Neue Role">
+		showEffect="fade" hideEffect="fade"
+		resizable="false"
+		draggable="false"
+		modal="true"
+		appendTo="@(body)">
 		<h:form>
-			<p:panelGrid columns="2" styleClass="no-border">
+			<h:panelGrid columns="2" styleClass="no-border">
 				<p:outputLabel value="Name: "/>
 				<p:inputText value="#{roleController.role.name}" />
 				<p:outputLabel value="Scope: "/>
@@ -27,7 +32,7 @@
 						itemLabel="#{permissionScope.name()}"
 						itemValue="#{permissionScope.id}"/>
 				</p:selectOneMenu>
-			</p:panelGrid>
+			</h:panelGrid>
 			<p:commandButton
 				icon="ui-icon-disk"
 				value="Save"
@@ -38,9 +43,14 @@
 	</p:dialog>
 
 	<p:dialog
+		header="#{roleController.getDeleteRoleHeader()}"
 		widgetVar="deleteRoleDialog"
 		styleClass="deleteRoleDialog"
-		header="#{roleController.getDeleteRoleHeader()}">
+		showEffect="fade" hideEffect="fade"
+		resizable="false"
+		draggable="false"
+		modal="true"
+		appendTo="@(body)">
 		<h:form>
 			<p:commandButton
 				icon="ui-icon-trash"

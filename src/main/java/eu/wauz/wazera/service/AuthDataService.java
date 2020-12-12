@@ -54,7 +54,7 @@ public class AuthDataService {
 
 	public List<UserData> findAllUsers() {
 		List<UserData> result = new ArrayList<>();
-		for(User user : userRepository.findAll()) {
+		for(User user : userRepository.findAllByOrderByIdAsc()) {
 			result.add(readUserData(user));
 		}
 		return result;
@@ -201,7 +201,7 @@ public class AuthDataService {
 
 	public List<RoleData> findAllRoles() {
 		List<RoleData> result = new ArrayList<>();
-		for(Role role : roleRepository.findAll()) {
+		for(Role role : roleRepository.findAllByOrderByIdAsc()) {
 			result.add(readRoleData(role));
 		}
 		return result;
@@ -274,7 +274,7 @@ public class AuthDataService {
 
 	public List<GroupData> findAllGroups() {
 		List<GroupData> result = new ArrayList<>();
-		for(Group group : groupRepository.findAll()) {
+		for(Group group : groupRepository.findAllByOrderByIdAsc()) {
 			result.add(readGroupData(group));
 		}
 		return result;

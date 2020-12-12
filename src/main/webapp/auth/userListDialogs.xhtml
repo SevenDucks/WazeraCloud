@@ -12,16 +12,21 @@
 	xmlns:tw="http://java.sun.com/jsf/composite/components/tasks">
 
 	<p:dialog
+		header="New User"
 		widgetVar="newUserDialog"
 		styleClass="newUserDialog"
-		header="New User">
+		showEffect="fade" hideEffect="fade"
+		resizable="false"
+		draggable="false"
+		modal="true"
+		appendTo="@(body)">
 		<h:form>
-			<p:panelGrid columns="2" styleClass="no-border">
+			<h:panelGrid columns="2" styleClass="no-border">
 				<p:outputLabel value="Username: "/>
 				<p:inputText value="#{userController.user.username}" />
 				<p:outputLabel value="Password: "/>
 				<p:password value="#{userController.user.password}"/>
-			</p:panelGrid>
+			</h:panelGrid>
 			<p:commandButton
 				icon="ui-icon-disk"
 				value="Save"
@@ -32,9 +37,14 @@
 	</p:dialog>
 
 	<p:dialog
+		header="#{userController.getDeleteUserHeader()}"
 		widgetVar="deleteUserDialog"
 		styleClass="deleteUserDialog"
-		header="#{userController.getDeleteUserHeader()}">
+		showEffect="fade" hideEffect="fade"
+		resizable="false"
+		draggable="false"
+		modal="true"
+		appendTo="@(body)">
 		<h:form>
 			<p:commandButton
 				icon="ui-icon-trash"
