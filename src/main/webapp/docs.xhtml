@@ -162,7 +162,7 @@
 					        	<h:panelGrid
 					        		columns="2">
 					            	<p:outputLabel styleClass="ui-icon ui-icon-folder-open" />
-					            	<h:outputText id="directoryNodeText" value="#{node}" />
+					            	<h:outputText value="#{node}" />
 					        	</h:panelGrid>
 					        </p:treeNode>
 	
@@ -172,7 +172,17 @@
 					        	<h:panelGrid
 					        		columns="2">
 					            	<p:outputLabel styleClass="ui-icon ui-icon-document" />
-					            	<h:outputText id="documentNodeText" value="#{node}" />
+					            	<h:outputText value="#{node}" />
+					        	</h:panelGrid>
+					        </p:treeNode>
+					        
+					        <p:treeNode
+					        	id="workflowNode"
+					        	type="workflowNode" >
+					        	<h:panelGrid
+					        		columns="2">
+					            	<p:outputLabel styleClass="ui-icon ui-icon-suitcase" />
+					            	<h:outputText value="#{node}" />
 					        	</h:panelGrid>
 					        </p:treeNode>
 	
@@ -220,7 +230,13 @@
 			            <p:menuitem
 			            	value="New Document"
 			            	icon="ui-icon-document"
-			            	actionListener="#{docsController.setName('New Document')}"
+			            	actionListener="#{docsController.setName('New Document', 'documentNode')}"
+			            	onclick="PF('dialogAddDocument').show();"
+			            	update=":addDocumentDialogForm"/>
+			            <p:menuitem
+			            	value="New Workflow"
+			            	icon="ui-icon-suitcase"
+			            	actionListener="#{docsController.setName('New Workflow', 'workflowNode')}"
 			            	onclick="PF('dialogAddDocument').show();"
 			            	update=":addDocumentDialogForm"/>
 	       				<p:menuitem
@@ -243,6 +259,12 @@
        						icon="ui-icon-extlink"
 	       					update="documentLinkPanel"
 	       					oncomplete="openDocumentLink();"/>
+	       				<p:menuitem
+			            	value="Copy"
+			            	icon="ui-icon-copy"
+			            	actionListener="#{docsController.setName(docsController.name.concat(' - Copy'))}"
+			            	onclick="PF('dialogCopyDocument').show();"
+			            	update=":copyDocumentDialogForm"/>
 	       				<p:menuitem
 	       					value="Rename"
        						icon="ui-icon-refresh"
@@ -444,8 +466,8 @@
 					<p:inputText value="#{docsController.name}"/>
 				</h:panelGrid>
 				<p:commandButton
-					icon="ui-icon-disk"
-					value="Save"
+					icon="ui-icon-refresh"
+					value="Rename"
 					actionListener="#{docsController.renameDirectoryNode}"
 					update=":documentMenuForm :mainForm"
 					onstart="saveScrollPos()"
@@ -454,7 +476,7 @@
 		</p:dialog>
 
 		<p:dialog
-			header="New Document"
+			header="New Element"
 			widgetVar="dialogAddDocument"
 			showEffect="fade" hideEffect="fade"
 			resizable="false"
@@ -475,6 +497,29 @@
 					oncomplete="PF('dialogAddDocument').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"/>
 			</h:form>
 		</p:dialog>
+		
+		<p:dialog
+			header="Copy Document"
+			widgetVar="dialogCopyDocument"
+			showEffect="fade" hideEffect="fade"
+			resizable="false"
+			draggable="false"
+			modal="true"
+			appendTo="@(body)">
+			<h:form id="copyDocumentDialogForm">
+				<h:panelGrid id="copyDocumentDialogGrid" columns="2">
+					<p:outputLabel value="Name: "/>
+					<p:inputText value="#{docsController.name}"/>
+				</h:panelGrid>
+				<p:commandButton
+					icon="ui-icon-copy"
+					value="Copy"
+					actionListener="#{docsController.copyDocumentNode}"
+					update=":documentMenuForm :mainForm"
+					onstart="saveScrollPos()"
+					oncomplete="PF('dialogCopyDocument').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"/>
+			</h:form>
+		</p:dialog>
 
 		<p:dialog
 			header="Rename Document"
@@ -490,8 +535,8 @@
 					<p:inputText value="#{docsController.name}"/>
 				</h:panelGrid>
 				<p:commandButton
-					icon="ui-icon-disk"
-					value="Save"
+					icon="ui-icon-refresh"
+					value="Rename"
 					actionListener="#{docsController.renameDocumentNode}"
 					update=":documentMenuForm :mainForm"
 					onstart="saveScrollPos()"

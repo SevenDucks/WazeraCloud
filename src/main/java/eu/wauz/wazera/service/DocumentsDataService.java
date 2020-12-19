@@ -238,9 +238,10 @@ public class DocumentsDataService {
 		}
 		else {
 			document = new Document();
-			index = 0;
+			index = index != null ? index : 0;
 		}
 		document.setName(documentData.getName());
+		document.setType(documentData.getType());
 		document.setUser(username);
 		document.setContent(documentData.getContent());
 		document.setCreationDate(new Date());
@@ -331,6 +332,7 @@ public class DocumentsDataService {
 
 		documentData.setId(document.getId());
 		documentData.setName(document.getName());
+		documentData.setType(document.getType());
 		documentData.setUser(document.getUser());
 		documentData.setContent(document.getContent());
 		documentData.setSortOrder(document.getSortOrder());

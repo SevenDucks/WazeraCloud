@@ -46,6 +46,8 @@ public class DocsController implements Serializable {
 	
 	private String inputName;
 	
+	private String type;
+	
 	private String content;
 	
 	private boolean allowEditing;
@@ -147,6 +149,7 @@ public class DocsController implements Serializable {
 
 		TreeNode newNode = new FolderTreeNode(folderData, selectedNode);
 		newNode.setExpanded(true);
+		selectedNode = newNode;
 
 		documentTree = null;
 		inputName = "";
@@ -157,6 +160,7 @@ public class DocsController implements Serializable {
 
 		DocumentData documentData = new DocumentData();
 		documentData.setName(inputName);
+		documentData.setType(type);
 		documentData.setParent(parent.getFolderData());
 		documentData.setContent("");
 
@@ -169,6 +173,32 @@ public class DocsController implements Serializable {
 
 		TreeNode newNode = new DocumentTreeNode(documentData, selectedNode);
 		newNode.setExpanded(true);
+		selectedNode = newNode;
+
+		documentTree = null;
+		inputName = "";
+	}
+	
+	public void copyDocumentNode() {
+		DocumentTreeNode node = (DocumentTreeNode) selectedNode;
+
+		DocumentData dataToCopy = node.getDocumentData();
+		DocumentData documentData = new DocumentData();
+		documentData.setName(inputName);
+		documentData.setType(dataToCopy.getType());
+		documentData.setParent(((FolderTreeNode) node.getParent()).getFolderData());
+		documentData.setContent(dataToCopy.getContent());
+
+		try {
+			documentData = documentsService.saveDocument(documentData, null, getUsername());
+		}
+		catch (Exception e) {
+			docsTool.showErrorMessage(e.getMessage());
+		}
+
+		TreeNode newNode = new DocumentTreeNode(documentData, selectedNode);
+		newNode.setExpanded(true);
+		selectedNode = newNode;
 
 		documentTree = null;
 		inputName = "";
@@ -361,7 +391,7 @@ public class DocsController implements Serializable {
 
 		selectTree();
 	}
-
+	
 	public void deleteDocument() {
 		DocumentTreeNode node = (DocumentTreeNode) selectedNode;
 		
@@ -407,6 +437,11 @@ public class DocsController implements Serializable {
 
 	public void setName(String name) {
 		this.inputName = name;
+	}
+
+	public void setName(String name, String type) {
+		this.inputName = name;
+		this.type = type;
 	}
 
 	private boolean hasSearchTags() {

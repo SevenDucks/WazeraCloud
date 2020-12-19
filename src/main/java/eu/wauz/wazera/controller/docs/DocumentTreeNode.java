@@ -15,7 +15,7 @@ public class DocumentTreeNode extends DefaultTreeNode {
 	private DocumentData documentData;
 
 	public DocumentTreeNode(DocumentData documentData, TreeNode parent) {
-		super("documentNode", documentData.getName(), parent);
+		super(documentData.getType() != null ? documentData.getType() : "documentNode", documentData.getName(), parent);
 		this.documentData = documentData;
 	}
 

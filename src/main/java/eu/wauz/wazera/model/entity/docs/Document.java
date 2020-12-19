@@ -24,15 +24,15 @@ public class Document implements Serializable {
 
 	@Column
 	private String name;
+	
+	@Column
+	private String type;
 
 	@Column
 	private String user;
 
 	@Column
 	private String absoluteFilename;
-
-	@Column
-	private Integer treeId;
 
 	@Column
 	private Integer folderId;
@@ -46,14 +46,6 @@ public class Document implements Serializable {
 
 	@Column
 	private Date creationDate;
-
-	public String getUser() {
-		return user;
-	}
-
-	public void setUser(String user) {
-		this.user = user;
-	}
 
 	public Integer getId() {
 		return id;
@@ -70,6 +62,22 @@ public class Document implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
 
 	public String getAbsoluteFilename() {
 		return absoluteFilename;
@@ -77,14 +85,6 @@ public class Document implements Serializable {
 
 	public void setAbsoluteFilename(String absoluteFilename) {
 		this.absoluteFilename = absoluteFilename;
-	}
-
-	public Integer getTreeId() {
-		return treeId;
-	}
-
-	public void setTreeId(Integer treeId) {
-		this.treeId = treeId;
 	}
 
 	public Integer getFolderId() {
