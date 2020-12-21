@@ -51,7 +51,7 @@
 
 			function resizeTreePanel() {
 				var searchHeight = $("#documentMenuForm\\:searchTags > .ui-chips-container").height();
-				$("#documentMenuForm\\:treePanel").height($(document).height() - 50 - searchHeight);
+				$("#documentMenuForm\\:treePanel").height($(document).height() - 68 - searchHeight);
 			}
 			
 			function resizeEditor() {
@@ -69,6 +69,26 @@
 			}
 			
 		</script>
+		
+		<style>
+		
+			.fa-th-large {
+				color: plum;
+			}
+		
+			.fa-folder-open {
+				color: moccasin;
+			}
+			
+			.fa-file {
+				color: skyblue;
+			}
+			
+			.fa-share-alt {
+				color: lightsalmon;
+			}
+		
+		</style>
 
 		<p:layout>
 		
@@ -89,15 +109,36 @@
 						disabled="#{docsController.allowEditing}"
 						onkeyup="searchKeyPress(event)"
 						styleClass="search-container"
-						style="width: 280px; height: 23px; color: #ffffff;">
+						style="width: 350px; height: 23px; color: #ffffff;">
 						<p:ajax event="itemUnselect" oncomplete="updateTree()"/>
 					</p:chips>
+					<p:selectBooleanButton
+						id="buttonToggleSort"
+						value="#{docsController.allowSorting}"
+						disabled="#{docsController.allowEditing}"
+						onLabel="Leave Sort Mode"
+						offLabel="Enter Sort Mode"
+						onIcon="ui-icon-close"
+						offIcon="ui-icon-caret-2-n-s"
+						style="width: 128px; height: 21px;">
+						<p:ajax update="documentTree" oncomplete="resizeTreePanel();" />
+					</p:selectBooleanButton>
+		        	<p:commandButton
+		        		id="buttonRefresh"
+			        	value="Refresh"
+			        	icon="ui-icon-arrowrefresh-1-e"
+			        	disabled="#{docsController.allowEditing}"
+			        	actionListener="#{docsController.selectTree}"
+			        	update=":documentMenuForm,:mainForm"
+			        	oncomplete="resizeTreePanel()"
+			        	style="width: 110px; height: 23px;"/>
 					<p:commandButton
 						id="buttonSearch"
 						value="Search"
+			        	icon="ui-icon-search"
 						disabled="#{docsController.allowEditing}"
 						onclick="updateTree()"
-						style="width: 70px; height: 25px; top: -8px; right: -2px;"/>
+						style="width: 110px; height: 23px;"/>
 					<p:remoteCommand
 						name="updateTree"
 						actionListener="#{docsController.selectTree}"
@@ -106,13 +147,13 @@
 					<p:remoteCommand
 						name="updateAll"
 						actionListener="#{docsController.selectTree}"
-						update="searchTags buttonSearch documentTree :mainForm"
+						update="searchTags buttonToggleSort buttonRefresh buttonSearch documentTree :mainForm"
 						oncomplete="resizeTreePanel(); resizeEditor();"/>
 					
 					<p:scrollPanel
 						id="treePanel"
 						mode="native"
-						styleClass="gray-bg"
+						styleClass="gray-bg-dark"
 						style="width: 99%; height: 565px;">
 
 						<p:tree
@@ -120,7 +161,7 @@
 							cache="false"
 							value="#{docsController.documentTree}"
 							var="node"
-							styleClass="no-border inherit-tree-overflow gray-bg"
+							styleClass="no-border inherit-tree-overflow gray-bg-dark"
 							style="width: 100%; height: 100%;"
 							selectionMode="single"
 							selection="#{docsController.selectedNode}"
@@ -131,66 +172,49 @@
 	
 					        <p:treeNode
 					        	id="rootNode"
-					        	type="rootNode" >
+					        	type="rootNode">
 					        	<h:panelGrid
 					        		columns="4">
-					            	<p:outputLabel styleClass="ui-icon ui-icon-home" />
+					            	<p:outputLabel styleClass="fa fa-th-large" />
 					            	<h:outputText value="#{node}" />
-	
-						        	<p:commandButton
-							        	title="Refresh"
-							        	actionListener="#{docsController.selectTree}"
-							        	update=":documentMenuForm,:mainForm"
-							        	icon="ui-icon-arrowrefresh-1-e"
-							        	oncomplete="resizeTreePanel()"
-							        	style="width: 25px; height: 25px;"/>
-							        	
-						        	<p:inputSwitch
-										value="#{docsController.allowSorting}"
-										onLabel="Sort"
-										offLabel="Read"
-										style="height: 23px; top: #{sessionController.isChrome() ? '1px;' : '2px;'}">
-										<p:ajax update="documentTree" oncomplete="resizeTreePanel();" />
-									</p:inputSwitch>
-	
 					        	</h:panelGrid>
 					        </p:treeNode>
 	
 					        <p:treeNode
 					        	id="directoryNode"
-					        	type="directoryNode" >
+					        	type="directoryNode">
 					        	<h:panelGrid
 					        		columns="2">
-					            	<p:outputLabel styleClass="ui-icon ui-icon-folder-open" />
+					            	<p:outputLabel styleClass="fa fa-folder-open" />
 					            	<h:outputText value="#{node}" />
 					        	</h:panelGrid>
 					        </p:treeNode>
 	
 					        <p:treeNode
 					        	id="documentNode"
-					        	type="documentNode" >
+					        	type="documentNode">
 					        	<h:panelGrid
 					        		columns="2">
-					            	<p:outputLabel styleClass="ui-icon ui-icon-document" />
+					            	<p:outputLabel styleClass="fa fa-file" />
 					            	<h:outputText value="#{node}" />
 					        	</h:panelGrid>
 					        </p:treeNode>
 					        
 					        <p:treeNode
 					        	id="workflowNode"
-					        	type="workflowNode" >
+					        	type="workflowNode">
 					        	<h:panelGrid
 					        		columns="2">
-					            	<p:outputLabel styleClass="ui-icon ui-icon-suitcase" />
+					            	<p:outputLabel styleClass="fa fa-share-alt" />
 					            	<h:outputText value="#{node}" />
 					        	</h:panelGrid>
 					        </p:treeNode>
 	
-					        <p:ajax event="select" update=":mainForm" oncomplete="resizeEditor()" />
-					        <p:ajax event="contextMenu" update=":mainForm" oncomplete="resizeEditor()" />
-					        <p:ajax event="dragdrop" listener="#{docsController.onDragDrop}" update=":documentMenuForm" oncomplete="resizeTreePanel();" />
-						    <p:ajax event="expand" listener="#{docsController.onNodeExpand}" />
-							<p:ajax event="collapse" listener="#{docsController.onNodeCollapse}" />
+					        <p:ajax event="select" update=":mainForm" oncomplete="resizeEditor()"/>
+					        <p:ajax event="contextMenu" update=":mainForm" oncomplete="resizeEditor()"/>
+					        <p:ajax event="dragdrop" listener="#{docsController.onDragDrop}" update=":documentMenuForm" oncomplete="resizeTreePanel();"/>
+						    <p:ajax event="expand" listener="#{docsController.onNodeExpand}"/>
+							<p:ajax event="collapse" listener="#{docsController.onNodeCollapse}"/>
 					    </p:tree>
 				    
 				    </p:scrollPanel>
@@ -198,19 +222,25 @@
 					<p:contextMenu for="documentTree" nodeType="rootNode">
 			            <p:menuitem
 			            	value="Collapse All"
-			            	icon="ui-icon-folder-collapsed"
+			            	icon="fa fa-folder"
 			            	actionListener="#{docsController.collapseAll()}"
 			            	update="documentTree :mainForm"/>
 			            <p:menuitem
 			            	value="New Folder"
-			            	icon="ui-icon-folder-open"
+			            	icon="fa fa-folder-open"
 			            	actionListener="#{docsController.setName('New Folder')}"
 			            	onclick="PF('dialogAddDirectory').show();"
 			            	update=":addDirectoryDialogForm"/>
 			            <p:menuitem
 			            	value="New Document"
-			            	icon="ui-icon-document"
+			            	icon="fa fa-file"
 			            	actionListener="#{docsController.setName('New Document')}"
+			            	onclick="PF('dialogAddDocument').show();"
+			            	update=":addDocumentDialogForm"/>
+		            	<p:menuitem
+			            	value="New Workflow"
+			            	icon="fa fa-share-alt"
+			            	actionListener="#{docsController.setName('New Workflow', 'workflowNode')}"
 			            	onclick="PF('dialogAddDocument').show();"
 			            	update=":addDocumentDialogForm"/>
 				    </p:contextMenu>
@@ -218,61 +248,61 @@
 					<p:contextMenu for="documentTree" nodeType="directoryNode">
 						<p:menuitem
 							value="Collapse All"
-							icon="ui-icon-folder-collapsed"
+							icon="fa fa-folder"
 							actionListener="#{docsController.collapseRecursive(docsController.selectedNode)}"
 							update="documentTree :mainForm"/>
 			            <p:menuitem
 			            	value="New Folder"
-			            	icon="ui-icon-folder-open"
+			            	icon="fa fa-folder-open"
 			            	actionListener="#{docsController.setName('New Folder')}"
 			            	onclick="PF('dialogAddDirectory').show();"
 			            	update=":addDirectoryDialogForm"/>
 			            <p:menuitem
 			            	value="New Document"
-			            	icon="ui-icon-document"
+			            	icon="fa fa-file"
 			            	actionListener="#{docsController.setName('New Document', 'documentNode')}"
 			            	onclick="PF('dialogAddDocument').show();"
 			            	update=":addDocumentDialogForm"/>
 			            <p:menuitem
 			            	value="New Workflow"
-			            	icon="ui-icon-suitcase"
+			            	icon="fa fa-share-alt"
 			            	actionListener="#{docsController.setName('New Workflow', 'workflowNode')}"
 			            	onclick="PF('dialogAddDocument').show();"
 			            	update=":addDocumentDialogForm"/>
 	       				<p:menuitem
 	       					value="Rename"
-	       					icon="ui-icon-refresh"
+	       					icon="fa fa-refresh"
 	       					onclick="PF('dialogRenameDirectory').show();"
 	       					update=":renameDirectoryDialogForm"/>
 	       				<p:menuitem
 	       					value="Delete"
-	       					icon="ui-icon-trash"
+	       					icon="fa fa-trash"
 	       					actionListener="#{docsController.deleteFolder}"
 	       					update="documentTree :mainForm">
-	       					<p:confirm header="Confirm" message="Delete Folder?" icon="ui-icon-alert" />
+	       					<p:confirm header="Confirm" message="Delete Folder?" icon="ui-icon-alert"/>
 	       				</p:menuitem>
 				    </p:contextMenu>
 
 					<p:contextMenu for="documentTree" nodeType="documentNode">
 						<p:menuitem
 	       					value="Open in New Tab"
-       						icon="ui-icon-extlink"
+       						icon="fa fa-external-link"
 	       					update="documentLinkPanel"
 	       					oncomplete="openDocumentLink();"/>
 	       				<p:menuitem
 			            	value="Copy"
-			            	icon="ui-icon-copy"
+			            	icon="fa fa-copy"
 			            	actionListener="#{docsController.setName(docsController.name.concat(' - Copy'))}"
 			            	onclick="PF('dialogCopyDocument').show();"
 			            	update=":copyDocumentDialogForm"/>
 	       				<p:menuitem
 	       					value="Rename"
-       						icon="ui-icon-refresh"
+       						icon="fa fa-refresh"
 	       					onclick="PF('dialogRenameDocument').show();"
 	       					update=":renameDocumentDialogForm"/>
 	       				<p:menuitem
 	       					value="Delete"
-	       					icon="ui-icon-trash"
+	       					icon="fa fa-trash"
 	       					actionListener="#{docsController.deleteDocument}"
 	       					update="documentTree :mainForm">
 	       					<p:confirm header="Confirm" message="Delete Document?" icon="ui-icon-alert"/>
@@ -356,15 +386,14 @@
 									style="margin-right: 3px; height: 25px; top: -2px;"
 									update="@this"/>
 									
-								<p:inputSwitch
+								<p:commandButton
 									id="buttonToggleEdit"
-									value="#{docsController.allowEditing}"
+									value="Edit"
+									icon="ui-icon-pencil"
 									disabled="#{docsController.allowEditing}"
-									onLabel="Edit"
-									offLabel="Read"
-									style="margin-right: 3px; height: 23px; top: #{sessionController.isChrome() ? '-1px;' : '0px;'}">
-									<p:ajax oncomplete="updateAll();" />
-								</p:inputSwitch>
+									actionListener="#{docsController.setAllowEditing(true)}"
+									style="margin-right: 3px; height: 25px; top: -2px;"
+									oncomplete="updateAll();"/>
 							
 								<p:chips
 									id="chipsInput"
@@ -423,11 +452,6 @@
 			</p:layoutUnit>
 
 		</p:layout>
-		
-		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-        	<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check"/>
-        	<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-remove"/>
-    	</p:confirmDialog>
 		
 		<p:dialog
 			header="New Folder"

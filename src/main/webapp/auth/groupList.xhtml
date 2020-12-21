@@ -13,7 +13,11 @@
 
 	<h:form>
 
-		<p:panelGrid columns="1" styleClass="no-border gray-bg">
+		<p:panelGrid
+			columns="2"
+			styleClass="no-border gray-bg"
+			style="width: 100%;"
+			columnClasses="align-top seventy-percent, align-top thirty-percent">
 
 			<p:dataTable
 				styleClass="group-table no-border"
@@ -23,25 +27,35 @@
 	            paginatorTemplate="{CurrentPageReport} {PageLinks} {RowsPerPageDropdown}"
 	            paginatorPosition="top"
 				rows="10"
-				rowsPerPageTemplate="10,20,50"
+				rowsPerPageTemplate="10, 20, 50"
+				style="width: 100%;"
 				tableStyle="width: auto;">
 
 				<p:column
 					headerText="ID"
 					sortBy="#{group.id}"
-					filterBy="#{group.id}">
+					filterBy="#{group.id}"
+					styleClass="no-wrap"
+					style="min-width: 100px;">
 					<p:outputLabel value="#{group.id}"/>
 				</p:column>
 
 				<p:column
 					headerText="Group"
 					sortBy="#{group.name}"
-					filterBy="#{group.name}">
+					filterBy="#{group.name}"
+					styleClass="no-wrap"
+					style="min-width: 100px;">
 					<p:outputLabel value="#{group.name}"/>
+				</p:column>
+				
+				<p:column
+					style="width: 99%;">
 				</p:column>
 
 				<p:column
 					headerText="Options"
+					styleClass="no-wrap"
 					style="text-align: center;">
 					<p:commandButton
 	        			icon="ui-icon-pencil"
@@ -52,9 +66,10 @@
 					<p:commandButton
 						icon="ui-icon-trash"
 						title="Delete"
-						actionListener="#{groupController.setGroup(group)}"
-	        			update="@(.deleteGroupDialog)"
-	        			oncomplete="PF('deleteGroupDialog').show();"/>
+						actionListener="#{groupController.deleteGroup(group)}"
+						update="@(.group-table)">
+						<p:confirm header="Confirm" message="Delete Group &lt;#{group.name}&gt; permanently?" icon="ui-icon-alert"/>
+					</p:commandButton>
 				</p:column>
 
 				<f:facet name="footer">
@@ -66,9 +81,61 @@
 	        			oncomplete="PF('newGroupDialog').show();"/>
 	    		</f:facet>
 			</p:dataTable>
+			
+			<p:panel header="Help: Group Management" layout="grid" styleClass="gray-bg-dark" style="width: 100%;">
+				<p>
+					Placeholder Text
+				</p>
+			</p:panel>
 
 		</p:panelGrid>
 
 	</h:form>
+	
+	<p:dialog
+		header="New Group"
+		widgetVar="newGroupDialog"
+		styleClass="newGroupDialog"
+		showEffect="fade" hideEffect="fade"
+		resizable="false"
+		draggable="false"
+		modal="true"
+		appendTo="@(body)">
+		<h:form>
+			<h:panelGrid columns="2" styleClass="no-border">
+				<p:outputLabel value="Name: "/>
+				<p:inputText value="#{groupController.group.name}" />
+			</h:panelGrid>
+			<p:commandButton
+				icon="ui-icon-disk"
+				value="Save"
+				actionListener="#{groupController.createNewGroup()}"
+				update="@(.group-table)"
+				oncomplete="PF('newGroupDialog').hide();"/>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog
+		header="#{groupController.getEditGroupHeader()}"
+		widgetVar="editGroupDialog"
+		styleClass="editGroupDialog"
+		showEffect="fade" hideEffect="fade"
+		resizable="false"
+		draggable="false"
+		modal="true"
+		appendTo="@(body)">
+		<h:form>
+			<h:panelGrid columns="2" styleClass="no-border">
+				<p:outputLabel value="Name: "/>
+				<p:inputText value="#{groupController.group.name}" />
+			</h:panelGrid>
+			<p:commandButton
+				icon="ui-icon-disk"
+				value="Save"
+				actionListener="#{groupController.updateGroup()}"
+				update="@(.group-table)"
+				oncomplete="PF('editGroupDialog').hide();"/>
+		</h:form>
+	</p:dialog>
 
 </ui:composition>

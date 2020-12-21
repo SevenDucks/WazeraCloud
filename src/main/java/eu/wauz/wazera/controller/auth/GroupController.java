@@ -39,10 +39,6 @@ public class GroupController implements Serializable {
 		return "Group Properties <" + group.getName() + ">";
 	}
 
-	public String getDeleteGroupHeader() {
-		return "Delete <" + group.getName() + "> permanently?";
-	}
-
 	public void createNewGroup() {
 		if(StringUtils.isNotBlank(group.getName())) {
 			authService.saveGroup(group);
@@ -64,10 +60,15 @@ public class GroupController implements Serializable {
 			docsTool.showInfoMessage("Group Name cannot be empty!");
 		}
 	}
+	
+	public void deleteGroup(GroupData group) {
+		this.group = group;
+		deleteGroup();
+	}
 
 	public void deleteGroup() {
 		authService.deleteGroup(group.getId());
-		docsTool.showInfoMessage("Gruppe <" + group.getName() + "> was successfully deleted!");
+		docsTool.showInfoMessage("Group <" + group.getName() + "> was successfully deleted!");
 		setNewGroup();
 		groups = null;
 	}

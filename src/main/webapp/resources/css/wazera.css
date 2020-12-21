@@ -1,7 +1,7 @@
 body {
 	font-family: Helvetica;
 	font-size: 14px;
-	background-color: #000000
+	background-color: #16161f;
 }
 
 .no-border,
@@ -19,6 +19,28 @@ body {
 .ui-layout-unit .ui-layout-unit-content {
 	margin: 0 !important;
 	padding: 0 !important;
+	background-color: #16161f;
+}
+
+.no-wrap {
+	white-space: nowrap;
+}
+
+.align-top {
+	vertical-align: top;
+	height: 1px;
+}
+
+.thirty-percent {
+	width: 30%;
+}
+
+.fifty-percent {
+	width: 50%;
+}
+
+.seventy-percent {
+	width: 70%;
 }
 
 .layout-container {
@@ -162,9 +184,19 @@ th,
 	background: #705296 !important;
 }
 
+.purple-bg-gradient,
+.purple-bg-gradient > .ui-layout-unit-content {
+	background: linear-gradient(to right, #705296, #2c6aa5) !important;
+}
+
 .purple-bg-dark,
 .purple-bg-dark > .ui-layout-unit-content {
 	background: #291e38 !important;
+}
+
+.transparent-bg,
+.transparent-bg > .ui-layout-unit-content {
+	background: transparent !important;
 }
 
 .gray-bg,
@@ -172,4 +204,13 @@ th,
 .gray-bg > tbody > tr,
 .ui-datatable-data > tr {
 	background: #16161f !important;
+}
+
+.gray-bg-dark,
+.gray-bg-dark > .ui-layout-unit-content {
+	background: #101019 !important;
+}
+
+.ui-datatable-data > tr:nth-child(even) {
+	background: #101019 !important;
 }

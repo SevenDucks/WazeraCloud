@@ -187,6 +187,13 @@ public class DocumentsDataService {
 	}
 
     private void addFolders(Folder folder, FolderData node, Set<String> addedFiles) throws Exception {
+    	if(folder.getFolderId() != null) {
+			FolderUserData folderUserData = folderUserDataJpaRepository.findByFolderAndUser(folder.getId(), docsTool.getUsername());
+			if(folderUserData == null || !folderUserData.getExpanded()) {
+				return;
+			}
+		}
+    	
     	List<Folder> childFolders = folderRepository.findByFolderIdOrderBySortOrder(folder.getId());
     	for (Folder childFolder : childFolders) {
     		FolderUserData childFolderUserData = folderUserDataJpaRepository.findByFolderAndUser(childFolder.getId(), docsTool.getUsername());
@@ -217,9 +224,11 @@ public class DocumentsDataService {
 	}
 
 	private void addDocuments(Folder folder, FolderData node, Set<String> addedFiles) throws Exception {
-		FolderUserData folderUserData = folderUserDataJpaRepository.findByFolderAndUser(folder.getId(), docsTool.getUsername());
-		if(folderUserData == null || !folderUserData.getExpanded()) {
-			return;
+		if(folder.getFolderId() != null) {
+			FolderUserData folderUserData = folderUserDataJpaRepository.findByFolderAndUser(folder.getId(), docsTool.getUsername());
+			if(folderUserData == null || !folderUserData.getExpanded()) {
+				return;
+			}
 		}
 
 		List<Document> documents = documentRepository.findByFolderIdOrderBySortOrder(folder.getId());

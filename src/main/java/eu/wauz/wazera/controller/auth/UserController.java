@@ -57,10 +57,6 @@ public class UserController implements Serializable {
 		return "User Properties <" + user.getUsername() + ">";
 	}
 
-	public String getDeleteUserHeader() {
-		return "Delete <" + user.getUsername() + "> permanently?";
-	}
-
 	public void changePassword() {
 		if(StringUtils.isBlank(passwordInput1)) {
 			docsTool.showInfoMessage("Password cannot be empty!");
@@ -85,6 +81,11 @@ public class UserController implements Serializable {
 		else {
 			docsTool.showInfoMessage(validationMessage);
 		}
+	}
+	
+	public void deleteUser(UserData user) {
+		this.user = user;
+		deleteUser();
 	}
 
 	public void deleteUser() {

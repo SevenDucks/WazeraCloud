@@ -52,10 +52,6 @@ public class RoleController implements Serializable {
 		return "Role Properties <" + role.getName() + ">";
 	}
 
-	public String getDeleteRoleHeader() {
-		return "Delete <" + role.getName() + "> permamently?";
-	}
-
 	public List<PermissionScope> getPermissionScopes() {
 		return Arrays.asList(PermissionScope.values());
 	}
@@ -80,6 +76,11 @@ public class RoleController implements Serializable {
 		authService.saveRole(role);
 		authService.updateRolePermissions(role.getId(), rolePermissionHandles);
 		docsTool.showInfoMessage("Role <" + role.getName() + "> was successfully updated!");
+	}
+	
+	public void deleteRole(RoleData role) {
+		this.role = role;
+		deleteRole();
 	}
 
 	public void deleteRole() {

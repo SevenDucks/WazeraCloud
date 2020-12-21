@@ -13,9 +13,8 @@
     template="/templates/default.xhtml" >
 
     <ui:define name="center">
-    	<p:outputLabel value="Administration" style="margin: 10px; font-size: 32px; font-weight: bold;"/>
-    
-		<p:tabView styleClass="gray-bg">
+
+		<p:tabView styleClass="no-border no-spacing gray-bg" dynamic="true" cache="false">
 			<p:tab title="User">
 				<ui:include src="/auth/userList.xhtml" />
 			</p:tab>
@@ -26,10 +25,7 @@
 				<ui:include src="/auth/roleList.xhtml" />
 			</p:tab>
 		</p:tabView>
-		
-    	<ui:include src="/auth/userListDialogs.xhtml" />
-    	<ui:include src="/auth/groupListDialogs.xhtml" />
-    	<ui:include src="/auth/roleListDialogs.xhtml" />
+
     </ui:define>
 
 </ui:composition>

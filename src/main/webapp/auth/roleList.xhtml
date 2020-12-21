@@ -13,7 +13,11 @@
 
 	<h:form>
 
-		<p:panelGrid columns="1" styleClass="no-border gray-bg">
+		<p:panelGrid
+			columns="2"
+			styleClass="no-border gray-bg"
+			style="width: 100%;"
+			columnClasses="align-top seventy-percent, align-top thirty-percent">
 
 			<p:dataTable
 				styleClass="role-table no-border"
@@ -23,32 +27,44 @@
 	            paginatorTemplate="{CurrentPageReport} {PageLinks} {RowsPerPageDropdown}"
 	            paginatorPosition="top"
 				rows="10"
-				rowsPerPageTemplate="10,20,50"
+				rowsPerPageTemplate="10, 20, 50"
+				style="width: 100%;"
 				tableStyle="width: auto;">
 
 				<p:column
 					headerText="ID"
 					sortBy="#{role.id}"
-					filterBy="#{role.id}">
+					filterBy="#{role.id}"
+					styleClass="no-wrap"
+					style="min-width: 100px;">
 					<p:outputLabel value="#{role.id}"/>
 				</p:column>
 
 				<p:column
 					headerText="Name"
 					sortBy="#{role.name}"
-					filterBy="#{role.name}">
+					filterBy="#{role.name}"
+					styleClass="no-wrap"
+					style="min-width: 100px;">
 					<p:outputLabel value="#{role.name}"/>
 				</p:column>
 
 				<p:column
 					headerText="Scope"
 					sortBy="#{role.scope}"
-					filterBy="#{role.scopeName}">
+					filterBy="#{role.scopeName}"
+					styleClass="no-wrap"
+					style="min-width: 100px;">
 					<p:outputLabel value="#{role.scopeName}"/>
+				</p:column>
+				
+				<p:column
+					style="width: 99%;">
 				</p:column>
 
 				<p:column
 					headerText="Options"
+					styleClass="no-wrap"
 					style="text-align: center;">
 					<p:commandButton
 						icon="ui-icon-pencil"
@@ -60,9 +76,10 @@
 					<p:commandButton
 						icon="ui-icon-trash"
 						title="Delete"
-						actionListener="#{roleController.setRole(role)}"
-	        			update="@(.deleteRoleDialog)"
-	        			oncomplete="PF('deleteRoleDialog').show();"/>
+						actionListener="#{roleController.deleteRole(role)}"
+						update="@(.role-table)">
+						<p:confirm header="Confirm" message="Delete Role &lt;#{role.name}&gt; permanently?" icon="ui-icon-alert"/>
+					</p:commandButton>
 				</p:column>
 
 				<f:facet name="footer">
@@ -74,9 +91,46 @@
 	        			oncomplete="PF('newRoleDialog').show();"/>
 	    		</f:facet>
 			</p:dataTable>
+			
+			<p:panel header="Help: Role Management" layout="grid" styleClass="gray-bg-dark" style="width: 100%;">
+				<p>
+					Placeholder Text
+				</p>
+			</p:panel>
 
 		</p:panelGrid>
 
 	</h:form>
+	
+	<p:dialog
+		header="Neue Role"
+		widgetVar="newRoleDialog"
+		styleClass="newRoleDialog"
+		showEffect="fade" hideEffect="fade"
+		resizable="false"
+		draggable="false"
+		modal="true"
+		appendTo="@(body)">
+		<h:form>
+			<h:panelGrid columns="2" styleClass="no-border">
+				<p:outputLabel value="Name: "/>
+				<p:inputText value="#{roleController.role.name}" />
+				<p:outputLabel value="Scope: "/>
+				<p:selectOneMenu value="#{roleController.role.scope}">
+					<f:selectItems
+						value="#{roleController.getPermissionScopes()}"
+						var="permissionScope"
+						itemLabel="#{permissionScope.name()}"
+						itemValue="#{permissionScope.id}"/>
+				</p:selectOneMenu>
+			</h:panelGrid>
+			<p:commandButton
+				icon="ui-icon-disk"
+				value="Save"
+				actionListener="#{roleController.createNewRole()}"
+				update="@(.role-table)"
+				oncomplete="PF('newRoleDialog').hide();"/>
+		</h:form>
+	</p:dialog>
 
 </ui:composition>
