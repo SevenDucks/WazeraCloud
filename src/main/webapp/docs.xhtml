@@ -308,6 +308,26 @@
 	       					<p:confirm header="Confirm" message="Delete Document?" icon="ui-icon-alert"/>
 	       				</p:menuitem>
 				    </p:contextMenu>
+				    
+				    <p:contextMenu for="documentTree" nodeType="workflowNode">
+						<p:menuitem
+	       					value="Open in New Tab"
+       						icon="fa fa-external-link"
+	       					update="documentLinkPanel"
+	       					oncomplete="openDocumentLink();"/>
+	       				<p:menuitem
+	       					value="Rename"
+       						icon="fa fa-refresh"
+	       					onclick="PF('dialogRenameDocument').show();"
+	       					update=":renameDocumentDialogForm"/>
+	       				<p:menuitem
+	       					value="Delete"
+	       					icon="fa fa-trash"
+	       					actionListener="#{docsController.deleteDocument}"
+	       					update="documentTree :mainForm">
+	       					<p:confirm header="Confirm" message="Delete Document?" icon="ui-icon-alert"/>
+	       				</p:menuitem>
+				    </p:contextMenu>
 
 				</h:form>
 				
@@ -333,6 +353,10 @@
 				style="padding: 3px;">
 
 				<h:form id="mainForm">
+				
+					<p:outputPanel rendered="#{docsController.showHelp()}">
+						Placeholder
+					</p:outputPanel>
 
 					<p:outputPanel rendered="#{docsController.showEditor()}">
 
@@ -445,6 +469,10 @@
 			            	name="sendCopyLinkMessage"
 			            	actionListener="#{docsController.showInfoMessage('Link copied to Clipboard!')}"/>
 
+					</p:outputPanel>
+					
+					<p:outputPanel rendered="#{docsController.showWorkflow()}">
+						Workflow
 					</p:outputPanel>
 
 				</h:form>

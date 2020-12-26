@@ -36,6 +36,12 @@ import eu.wauz.wazera.model.repository.docs.jpa.FolderUserDataJpaRepository;
 @Service
 @Scope("singleton")
 public class DocumentsDataService {
+	
+	@Autowired
+	private FoldersDataService foldersService;
+	
+	@Autowired
+	private TasksDataService tasksService;
 
     @Autowired
     private DocumentRepository documentRepository;
@@ -71,7 +77,7 @@ public class DocumentsDataService {
         if(docId != null) {
         	expandParentFolders(docId);
         }
-        rootNode = readFolderData(rootFolder);
+        rootNode = foldersService.readFolderData(rootFolder);
 
         Set<String> addedFiles = new HashSet<>();
         if(!searchTokens.isEmpty()) {
@@ -141,7 +147,7 @@ public class DocumentsDataService {
     	while(folderId != null) {
     		Folder parentFolder = folderRepository.findById(folderId).orElse(null);
     		if(parentFolder != null) {
-    			FolderData parentFolderData = readFolderData(parentFolder);
+    			FolderData parentFolderData = foldersService.readFolderData(parentFolder);
     			parentFolderData.setExpanded(true);
     			saveFolderUserData(parentFolderData);
     			folderId = parentFolder.getFolderId();
@@ -167,24 +173,12 @@ public class DocumentsDataService {
     		Folder folder = folderRepository.findById(folderId).orElse(null);
     		if(folder != null) {
     			folderMap.put(folderId, folder);
-    			folderData = readFolderData(folder);
+    			folderData = foldersService.readFolderData(folder);
     			folderDataMap.put(folderId, folderData);
     		}
     	}
     	return folderData;
     }
-
-	private FolderData readFolderData(Folder folder) {
-		FolderData folderData = new FolderData();
-		if(folder != null) {
-			folderData.setId(folder.getId());
-			folderData.setName(folder.getName());
-			FolderUserData folderUserData = folderUserDataJpaRepository.findByFolderAndUser(folder.getId(), docsTool.getUsername());
-			folderData.setExpanded(folderUserData != null ? folderUserData.getExpanded() : false);
-			folderData.setSortOrder(folder.getSortOrder());
-		}
-		return folderData;
-	}
 
     private void addFolders(Folder folder, FolderData node, Set<String> addedFiles) throws Exception {
     	if(folder.getFolderId() != null) {
@@ -242,7 +236,7 @@ public class DocumentsDataService {
 		docsTool.checkForValidFileName(documentData.getName());
 
         Document document = null;
-		if (documentData.getId() != null) {
+		if(documentData.getId() != null) {
 			document = documentRepository.findById(documentData.getId()).orElse(null);
 		}
 		else {
@@ -281,6 +275,9 @@ public class DocumentsDataService {
         		.collect(Collectors.toList());
         documentTagRepository.saveAll(documentTagsToAdd);
 
+        if("workflowNode".equals(documentData.getType())) {
+        	tasksService.saveNewWorkflow(documentData);
+        }
         return documentData;
     }
 	
@@ -332,8 +329,12 @@ public class DocumentsDataService {
 	}
 
 	public void deleteDocument(DocumentData documentData) throws Exception {
-		Document documenttoDelete = documentRepository.findById(documentData.getId()).orElse(null);
-		documentRepository.delete(documenttoDelete);
+		Document documentToDelete = documentRepository.findById(documentData.getId()).orElse(null);
+		documentRepository.delete(documentToDelete);
+		
+		if("workflowNode".equals(documentData.getType())) {
+        	tasksService.deleteWorkflow(documentData);
+        }
 	}
 
 	private DocumentData readDocumentData(Document document) throws Exception {

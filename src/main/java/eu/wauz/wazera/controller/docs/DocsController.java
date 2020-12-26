@@ -233,9 +233,17 @@ public class DocsController implements Serializable {
 		documentTree = null;
 		inputName = "";
 	}
+	
+	public boolean showHelp() {
+		return selectedNode == null || selectedNode.getType().equals("directoryNode") || selectedNode.getType().equals("rootNode");
+	}
 
 	public boolean showEditor() {
-		return selectedNode != null && selectedNode instanceof DocumentTreeNode;
+		return selectedNode != null && selectedNode.getType().equals("documentNode");
+	}
+	
+	public boolean showWorkflow() {
+		return selectedNode != null && selectedNode.getType().equals("workflowNode");
 	}
 
 	public void saveDocument(boolean exit) {

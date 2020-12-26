@@ -130,7 +130,7 @@ public class FoldersDataService {
 		folderUserDataRepository.save(folderUserData);
 	}
 
-	private FolderData readFolderData(Folder folder) {
+	public FolderData readFolderData(Folder folder) {
 		FolderData folderData = new FolderData();
 		if(folder != null) {
 			folderData.setId(folder.getId());
