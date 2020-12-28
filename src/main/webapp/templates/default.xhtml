@@ -35,11 +35,16 @@
 				<p:menubar styleClass="no-border no-spacing transparent-bg" style="overflow: hidden;">
 					
 					<p:menuitem
-						url="#{request.contextPath}/dashboard.xhtml"
+						url="#{request.contextPath}/docs.xhtml"
 						styleClass="no-spacing"
 						style="height: 22px;">
-						<p:graphicImage value="/resources/images/favicon.png" width="26" height="26"/>
-						<p:outputLabel value="Wazera Cloud" style="font-size: 16px; margin: 10px; top: 0px; position: fixed;"/>
+						<p:graphicImage
+							value="/resources/images/favicon.png"
+							width="26"
+							height="26"/>
+						<p:outputLabel
+							value="Wazera Cloud #{sessionController.version}"
+							style="font-size: 16px; margin: 10px; top: 0px; position: fixed;"/>
 					</p:menuitem>
 					
 			        <f:facet name="options">
@@ -60,15 +65,48 @@
 			<p:layoutUnit position="west" gutter="0" styleClass="no-border purple-bg-dark">
 				<p:menu styleClass="menubar no-border purple-bg-dark" style="width: 80px;">
 					<p:submenu label="Views">
-						<p:menuitem icon="fa fa-pie-chart" value="Board" url="#{request.contextPath}/dashboard.xhtml"/>
-		        		<p:menuitem icon="fa fa-file-text" value="Docs" url="#{request.contextPath}/docs.xhtml"/>
-		        		<p:menuitem icon="fa fa-columns" value="Tasks" url="#"/>
-		        		<p:menuitem icon="fa fa-comments" value="Chat" url="#{request.contextPath}/chat.xhtml"/>
-		        		<p:menuitem icon="fa fa-terminal" value="Admin" url="#{request.contextPath}/auth/authAdministration.xhtml"/>
+		        		<p:menuitem
+		        			icon="fa fa-file-text"
+		        			value="Docs"
+		        			url="#{request.contextPath}/docs.xhtml"
+		        			styleClass="#{view.viewId.contains('doc') ? 'ui-state-active' : ''}"/>
+		        		<p:menuitem
+		        			icon="fa fa-columns"
+		        			value="Tasks"
+		        			url="#"
+		        			styleClass="#{view.viewId.contains('task') ? 'ui-state-active' : ''}"/>
+		        		<p:menuitem
+		        			icon="fa fa-comments"
+		        			value="Chat"
+		        			url="#{request.contextPath}/chat.xhtml"
+		        			styleClass="#{view.viewId.contains('chat') ? 'ui-state-active' : ''}"/>
+		        		<p:menuitem
+		        			icon="fa fa-user"
+		        			value="Users"
+		        			url="#{request.contextPath}/auth/users.xhtml"
+		        			styleClass="#{view.viewId.contains('user') ? 'ui-state-active' : ''}"/>
+		        		<p:menuitem
+		        			icon="fa fa-group"
+		        			value="Groups"
+		        			url="#{request.contextPath}/auth/groups.xhtml"
+		        			styleClass="#{view.viewId.contains('group') ? 'ui-state-active' : ''}"/>
+		        		<p:menuitem
+		        			icon="fa fa-shield"
+		        			value="Roles"
+		        			url="#{request.contextPath}/auth/roles.xhtml"
+		        			styleClass="#{view.viewId.contains('role') ? 'ui-state-active' : ''}"/>
 					</p:submenu>
 					<p:submenu label="Web">
-						<p:menuitem icon="fa fa-globe" value="SDS" url="https://www.seven-ducks.com/" target="_blank"/>
-						<p:menuitem icon="fa fa-github" value="GitHub" url="https://github.com/SevenDucks" target="_blank"/>
+						<p:menuitem
+							icon="fa fa-globe"
+							value="SDS"
+							url="https://www.seven-ducks.com/"
+							target="_blank"/>
+						<p:menuitem
+							icon="fa fa-github"
+							value="GitHub"
+							url="https://github.com/SevenDucks"
+							target="_blank"/>
 					</p:submenu>
 	        	</p:menu>
 			</p:layoutUnit>

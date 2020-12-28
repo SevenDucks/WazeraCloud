@@ -20,6 +20,10 @@ public class SessionController implements Serializable {
 		docsTool = new DocsTool();
 	}
 	
+	public String getVersion() {
+		return getClass().getPackage().getImplementationVersion();
+	}
+	
 	public boolean isChrome() {
 		return StringUtils.contains(docsTool.getBrowser(), "Chrome");
 	}

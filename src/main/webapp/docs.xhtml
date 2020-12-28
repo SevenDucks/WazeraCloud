@@ -40,8 +40,7 @@
 			}
 
 			$(document).ready(function () {
-				setTimeout(resizeTreePanel, 250);
-				setTimeout(resizeEditor, 250);
+				setTimeout(updateTree, 250);
 			});
 
 			$(window).on('resize', function() {
@@ -55,16 +54,13 @@
 			}
 			
 			function resizeEditor() {
-				$("#mainForm\\:workflowPanel").height($(document).height() - 50);
-				
 				var buttonBarHeight = $("#mainForm\\:buttonBar").height();
-				var newHeight = $(document).height() - buttonBarHeight - 43;
-				var isChromium = window.chrome;
-
+				$("#mainForm\\:workflowPanel").height($(document).height() - buttonBarHeight - 57);
+				
+				var newHeight = $(document).height() - buttonBarHeight - 46;
 				var openToolbar = $("#mainForm\\:editorOpen_toolbar");
 				var openToolbarHeight = openToolbar.outerHeight();
 				$("#mainForm\\:editorOpen_editor").height(newHeight - openToolbarHeight);
-
 				var closedToolbar = $("#mainForm\\:editorClosed_toolbar");
 				var closedToolbarHeight = closedToolbar.outerHeight();
 				$("#mainForm\\:editorClosed_editor").height(newHeight - closedToolbarHeight);
@@ -307,7 +303,7 @@
 	       					icon="fa fa-trash"
 	       					actionListener="#{docsController.deleteDocument}"
 	       					update="documentTree :mainForm">
-	       					<p:confirm header="Confirm" message="Delete Document?" icon="ui-icon-alert"/>
+	       					<p:confirm header="Confirm" message="Delete Element?" icon="ui-icon-alert"/>
 	       				</p:menuitem>
 				    </p:contextMenu>
 				    
@@ -401,85 +397,15 @@
 							</p:textEditor>
 						</p:outputPanel>
 						
-						<p:outputPanel id="buttonBar" style="box-sizing: border-box; border: 1px solid #444444; border-top: 0; padding-top: #{sessionController.isChrome() ? '3px;' : '3px;'}">
-							<h:panelGrid columns="6" styleClass="no-spacing" style="margin-left: 4px !important;">
-							
-								<p:commandButton
-									id="buttonCopyLink"
-									value="Copy Link"
-									icon="ui-icon-copy"
-									oncomplete="sendCopyLinkMessage()"
-									style="margin-right: 3px; height: 25px; top: -2px;"
-									update="@this"/>
-									
-								<p:commandButton
-									id="buttonToggleEdit"
-									value="Edit"
-									icon="ui-icon-pencil"
-									disabled="#{docsController.allowEditing}"
-									actionListener="#{docsController.setAllowEditing(true)}"
-									style="margin-right: 3px; height: 25px; top: -2px;"
-									oncomplete="updateAll();"/>
-							
-								<p:chips
-									id="chipsInput"
-									value="#{docsController.tags}"
-									placeholder="Search Tags"
-									disabled="#{!docsController.allowEditing}"
-									onkeyup="resizeEditor();"
-									style="margin-right: 5px; width: 320px; height: 23px; top: #{sessionController.isChrome() ? '-1px;' : '0px;'} color: #ffffff;"
-									styleClass="search-container">
-									<p:ajax event="itemUnselect" oncomplete="resizeEditor();"/>
-								</p:chips>
-									
-								<p:commandButton
-									id="buttonQuickSave"
-									value="Quick Save"
-									icon="ui-icon-disk"
-									disabled="#{!docsController.allowEditing}"
-									actionListener="#{docsController.saveDocument(false)}"
-									style="margin-right: 3px; height: 25px; top: -2px;"/>
-									
-								<p:commandButton
-									id="buttonSave"
-									value="Save"
-									icon="ui-icon-disk"
-									disabled="#{!docsController.allowEditing}"
-									actionListener="#{docsController.saveDocument(true)}"
-									style="margin-right: 3px; height: 25px; top: -2px;"
-									oncomplete="updateAll();"/>
-									
-								<p:commandButton
-									id="buttonCancel"
-									value="Cancel"
-									icon="ui-icon-close"
-									disabled="#{!docsController.allowEditing}"
-									actionListener="#{docsController.setAllowEditing(false)}"
-									style="margin-right: 3px; height: 25px; top: -2px;"
-									oncomplete="updateAll();">
-									<p:confirm
-										header="Confirm"
-										message="Cancel Editing? Unsaved Changes will be lost!"
-										icon="ui-icon-alert"/>
-								</p:commandButton>
-									
-							</h:panelGrid>
-						</p:outputPanel>
-
-			            <pe:clipboard id="clipCopy" trigger="buttonCopyLink" action="copy" text="#{docsController.getDocumentLink()}"/>
-			            <p:remoteCommand
-			            	name="sendCopyLinkMessage"
-			            	actionListener="#{docsController.showInfoMessage('Link copied to Clipboard!')}"/>
-
 					</p:outputPanel>
 					
 					<p:outputPanel rendered="#{docsController.showWorkflow()}">
+					
 						<p:scrollPanel
 							id="workflowPanel"
 							mode="native"
 							styleClass="gray-bg"
 							style="width: calc(100% - 2px); height: 565px; padding-top: 5px; padding-bottom: 5px; overflow: scroll;">
-					
 							<p:dashboard model="#{tasksController.model}" styleClass="project-board project-board-header">
 								<c:forEach items="#{tasksController.workflow.states}" var="state">
 									<p:panel id="state#{state.id}" styleClass="project-board-title">
@@ -495,8 +421,84 @@
 									</p:panel>
 								</c:forEach>
 							</p:dashboard>
-						
 						</p:scrollPanel>
+						
+					</p:outputPanel>
+					
+					<p:outputPanel
+						id="buttonBar"
+						rendered="#{docsController.showEditor() || docsController.showWorkflow()}"
+						style="box-sizing: border-box; border: 1px solid #444444; border-top: 0; margin: 0; padding: 3px;">
+						
+						<p:commandButton
+							id="buttonCopyLink"
+							value="Copy Link"
+							icon="ui-icon-copy"
+							oncomplete="sendCopyLinkMessage()"
+							style="height: 25px; margin-right: 3px;"
+							update="@this"/>
+							
+						<p:commandButton
+							id="buttonToggleEdit"
+							value="Edit"
+							icon="ui-icon-pencil"
+							rendered="#{docsController.showEditor()}"
+							disabled="#{docsController.allowEditing}"
+							actionListener="#{docsController.setAllowEditing(true)}"
+							style="height: 25px; margin-right: 3px;"
+							oncomplete="updateAll();"/>
+							
+						<p:chips
+							id="chipsInput"
+							value="#{docsController.tags}"
+							placeholder="Search Tags"
+							rendered="#{docsController.showEditor()}"
+							disabled="#{!docsController.allowEditing}"
+							onkeyup="resizeEditor();"
+							style="width: 320px;  margin-right: 5px; margin-top: -9px; top: 9px; color: #ffffff;"
+							styleClass="search-container">
+							<p:ajax event="itemUnselect" oncomplete="resizeEditor();"/>
+						</p:chips>
+					
+						<p:commandButton
+							id="buttonQuickSave"
+							value="Quick Save"
+							icon="ui-icon-disk"
+							rendered="#{docsController.showEditor()}"
+							disabled="#{!docsController.allowEditing}"
+							actionListener="#{docsController.saveDocument(false)}"
+							style="height: 25px; margin-right: 3px;"/>
+							
+						<p:commandButton
+							id="buttonSave"
+							value="Save"
+							icon="ui-icon-disk"
+							rendered="#{docsController.showEditor()}"
+							disabled="#{!docsController.allowEditing}"
+							actionListener="#{docsController.saveDocument(true)}"
+							style="height: 25px; margin-right: 3px;"
+							oncomplete="updateAll();"/>
+							
+						<p:commandButton
+							id="buttonCancel"
+							value="Cancel"
+							icon="ui-icon-close"
+							rendered="#{docsController.showEditor()}"
+							disabled="#{!docsController.allowEditing}"
+							actionListener="#{docsController.setAllowEditing(false)}"
+							style="height: 25px;"
+							oncomplete="updateAll();">
+							<p:confirm
+								header="Confirm"
+								message="Cancel Editing? Unsaved Changes will be lost!"
+								icon="ui-icon-alert"/>
+						</p:commandButton>
+						
+			            <pe:clipboard id="clipCopy" trigger="buttonCopyLink" action="copy" text="#{docsController.getDocumentLink()}"/>
+			            <p:remoteCommand
+			            	name="sendCopyLinkMessage"
+			            	actionListener="#{docsController.showInfoMessage('Link copied to Clipboard!')}"/>
+			            	
 					</p:outputPanel>
 
 				</h:form>
@@ -598,7 +600,7 @@
 		</p:dialog>
 
 		<p:dialog
-			header="Rename Document"
+			header="Rename Element"
 			widgetVar="dialogRenameDocument"
 			showEffect="fade" hideEffect="fade"
 			resizable="false"

@@ -52,7 +52,7 @@ public class WazeraSecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.and()
 			.formLogin()
 			.loginProcessingUrl("/perform_login")
-			.defaultSuccessUrl("/dashboard.xhtml", true)
+			.defaultSuccessUrl("/docs.xhtml", true)
 			.and()
 			.logout()
 			.deleteCookies("JSESSIONID")

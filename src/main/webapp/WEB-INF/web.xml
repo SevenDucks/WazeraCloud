@@ -22,7 +22,7 @@
 	</context-param>
 
 	<welcome-file-list>
-		<welcome-file>dashboard.xhtml</welcome-file>
+		<welcome-file>docs.xhtml</welcome-file>
 	</welcome-file-list>
 
 	<servlet>

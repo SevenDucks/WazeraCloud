@@ -46,7 +46,7 @@ public class WazeraApplication extends SpringBootServletInitializer {
 	@Bean
 	public ErrorPageRegistrar errorPageRegistrar(){
 	    return registry -> {
-	    	registry.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/dashboard.xhtml"));
+	    	registry.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/docs.xhtml"));
 	    };
 	}
 	
