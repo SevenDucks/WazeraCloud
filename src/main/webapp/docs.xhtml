@@ -55,6 +55,8 @@
 			}
 			
 			function resizeEditor() {
+				$("#mainForm\\:workflowPanel").height($(document).height() - 50);
+				
 				var buttonBarHeight = $("#mainForm\\:buttonBar").height();
 				var newHeight = $(document).height() - buttonBarHeight - 43;
 				var isChromium = window.chrome;
@@ -97,8 +99,8 @@
 				position="west"
 				gutter="0"
 				size="360"
-				styleClass="no-border hide-overflow gray-bg"
-				style="overflow: hidden; padding: 3px;">
+				styleClass="no-border no-overflow gray-bg"
+				style="padding: 3px;">
 
 				<h:form id="documentMenuForm">
 
@@ -109,7 +111,7 @@
 						disabled="#{docsController.allowEditing}"
 						onkeyup="searchKeyPress(event)"
 						styleClass="search-container"
-						style="width: 350px; height: 23px; color: #ffffff;">
+						style="width: calc(100% - 2px); height: 23px; color: #ffffff;">
 						<p:ajax event="itemUnselect" oncomplete="updateTree()"/>
 					</p:chips>
 					<p:selectBooleanButton
@@ -120,7 +122,7 @@
 						offLabel="Enter Sort Mode"
 						onIcon="ui-icon-close"
 						offIcon="ui-icon-caret-2-n-s"
-						style="width: 128px; height: 21px;">
+						style="width: 132px; height: 21px; margin: 0;">
 						<p:ajax update="documentTree" oncomplete="resizeTreePanel();" />
 					</p:selectBooleanButton>
 		        	<p:commandButton
@@ -131,14 +133,14 @@
 			        	actionListener="#{docsController.selectTree}"
 			        	update=":documentMenuForm,:mainForm"
 			        	oncomplete="resizeTreePanel()"
-			        	style="width: 110px; height: 23px;"/>
+			        	style="width: 110px; height: 23px; margin: 0;"/>
 					<p:commandButton
 						id="buttonSearch"
 						value="Search"
 			        	icon="ui-icon-search"
 						disabled="#{docsController.allowEditing}"
 						onclick="updateTree()"
-						style="width: 110px; height: 23px;"/>
+						style="width: 110px; height: 23px; margin: 0;"/>
 					<p:remoteCommand
 						name="updateTree"
 						actionListener="#{docsController.selectTree}"
@@ -154,7 +156,7 @@
 						id="treePanel"
 						mode="native"
 						styleClass="gray-bg-dark"
-						style="width: 99%; height: 565px;">
+						style="width: calc(100% - 2px); height: 565px; overflow: scroll;">
 
 						<p:tree
 							id="documentTree"
@@ -349,7 +351,7 @@
 				position="center"
 				gutter="0"
 				size="100%"
-				styleClass="no-border gray-bg"
+				styleClass="no-border no-overflow gray-bg"
 				style="padding: 3px;">
 
 				<h:form id="mainForm">
@@ -472,7 +474,29 @@
 					</p:outputPanel>
 					
 					<p:outputPanel rendered="#{docsController.showWorkflow()}">
-						Workflow
+						<p:scrollPanel
+							id="workflowPanel"
+							mode="native"
+							styleClass="gray-bg"
+							style="width: calc(100% - 2px); height: 565px; padding-top: 5px; padding-bottom: 5px; overflow: scroll;">
+					
+							<p:dashboard model="#{tasksController.model}" styleClass="project-board project-board-header">
+								<c:forEach items="#{tasksController.workflow.states}" var="state">
+									<p:panel id="state#{state.id}" styleClass="project-board-title">
+										#{state.name}
+									</p:panel>
+								</c:forEach>
+							</p:dashboard>
+							<br/>
+							<p:dashboard model="#{tasksController.model}" styleClass="project-board">
+								<c:forEach items="#{tasksController.workflow.states}" var="state">
+									<p:panel id="task#{state.id}" header="Task #{state.id}" >
+										Test Task
+									</p:panel>
+								</c:forEach>
+							</p:dashboard>
+						
+						</p:scrollPanel>
 					</p:outputPanel>
 
 				</h:form>

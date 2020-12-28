@@ -24,6 +24,9 @@ public class WorkflowTask implements Serializable {
 	private Integer workflowId;
 	
 	@Column
+	private Integer workflowStateId;
+	
+	@Column
 	private String name;
 	
 	@Column
@@ -46,6 +49,14 @@ public class WorkflowTask implements Serializable {
 
 	public void setWorkflowId(Integer workflowId) {
 		this.workflowId = workflowId;
+	}
+
+	public Integer getWorkflowStateId() {
+		return workflowStateId;
+	}
+
+	public void setWorkflowStateId(Integer workflowStateId) {
+		this.workflowStateId = workflowStateId;
 	}
 
 	public String getName() {

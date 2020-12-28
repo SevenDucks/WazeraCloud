@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import eu.wauz.wazera.controller.TasksController;
 import eu.wauz.wazera.model.data.docs.DocumentData;
 import eu.wauz.wazera.model.data.docs.FolderData;
 import eu.wauz.wazera.service.DocsTool;
@@ -33,6 +34,9 @@ public class DocsController implements Serializable {
 
 	@Autowired
 	private FoldersDataService foldersService;
+	
+	@Autowired
+	private TasksController tasksController;
 
 	private TreeNode documentTree;
 	
@@ -120,11 +124,14 @@ public class DocsController implements Serializable {
 		if (selectedNode == null) {
 			return;
 		}
-		
 		if (selectedNode instanceof DocumentTreeNode) {
-			inputName = ((DocumentTreeNode) selectedNode).getName();
-			content = ((DocumentTreeNode) selectedNode).getDocumentData().getContent();
-			documentTags = ((DocumentTreeNode) selectedNode).getDocumentData().getTags();
+			DocumentData documentData = ((DocumentTreeNode) selectedNode).getDocumentData();
+			inputName = documentData.getName();
+			content = documentData.getContent();
+			documentTags = documentData.getTags();
+			if("workflowNode".equals(selectedNode.getType())) {
+				tasksController.setWorkflowFromDocument(documentData);
+			}
 		}
 		else {
 			inputName = ((FolderTreeNode) selectedNode).getName();
@@ -149,7 +156,7 @@ public class DocsController implements Serializable {
 
 		TreeNode newNode = new FolderTreeNode(folderData, selectedNode);
 		newNode.setExpanded(true);
-		selectedNode = newNode;
+		setSelectedNode(newNode);
 
 		documentTree = null;
 		inputName = "";
@@ -173,7 +180,7 @@ public class DocsController implements Serializable {
 
 		TreeNode newNode = new DocumentTreeNode(documentData, selectedNode);
 		newNode.setExpanded(true);
-		selectedNode = newNode;
+		setSelectedNode(newNode);
 
 		documentTree = null;
 		inputName = "";
@@ -198,7 +205,7 @@ public class DocsController implements Serializable {
 
 		TreeNode newNode = new DocumentTreeNode(documentData, selectedNode);
 		newNode.setExpanded(true);
-		selectedNode = newNode;
+		setSelectedNode(newNode);
 
 		documentTree = null;
 		inputName = "";

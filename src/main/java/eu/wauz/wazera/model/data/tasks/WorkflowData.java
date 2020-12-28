@@ -6,6 +6,8 @@ public class WorkflowData {
 	
 	private Integer id;
 	
+	private Integer documentId;
+	
 	private List<WorkflowStateData> states;
 
 	public Integer getId() {
@@ -14,6 +16,14 @@ public class WorkflowData {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public Integer getDocumentId() {
+		return documentId;
+	}
+
+	public void setDocumentId(Integer documentId) {
+		this.documentId = documentId;
 	}
 
 	public List<WorkflowStateData> getStates() {

@@ -15,6 +15,7 @@ import eu.wauz.wazera.model.entity.tasks.Workflow;
 import eu.wauz.wazera.model.entity.tasks.WorkflowState;
 import eu.wauz.wazera.model.repository.tasks.WorkflowRepository;
 import eu.wauz.wazera.model.repository.tasks.WorkflowStateRepository;
+import eu.wauz.wazera.model.repository.tasks.WorkflowTaskRepository;
 
 @Service
 @Scope("singleton")
@@ -26,27 +27,55 @@ public class TasksDataService {
 	@Autowired
 	private WorkflowStateRepository workflowStateRepository;
 	
+	@Autowired
+	private WorkflowTaskRepository workflowTaskRepository;
+	
 	public WorkflowData saveNewWorkflow(DocumentData documentData) {
 		WorkflowData workflowData = new WorkflowData();
+		workflowData.setDocumentId(documentData.getId());
 		List<WorkflowStateData> workflowStateDatas = new ArrayList<>();
+		
 		WorkflowStateData backlogState = new WorkflowStateData();
 		backlogState.setName("Backlog");
 		backlogState.setBacklog(true);
 		workflowStateDatas.add(backlogState);
+		
+		WorkflowStateData plannedState = new WorkflowStateData();
+		plannedState.setName("Planned");
+		workflowStateDatas.add(plannedState);
+		
+		WorkflowStateData inProgressState = new WorkflowStateData();
+		inProgressState.setName("In Progress");
+		workflowStateDatas.add(inProgressState);
+		
 		WorkflowStateData completedState = new WorkflowStateData();
 		completedState.setName("Completed");
 		completedState.setCompleted(true);
 		workflowStateDatas.add(completedState);
+		
 		workflowData.setStates(workflowStateDatas);
 		return saveWorkflow(workflowData);
 	}
 	
 	public WorkflowData saveWorkflow(WorkflowData workflowData) {
-		Workflow workflow = workflowRepository.findById(workflowData.getId()).orElse(new Workflow());
+		Workflow workflow;
+		if(workflowData.getId() != null) {
+			workflow = workflowRepository.findById(workflowData.getId()).orElse(new Workflow());
+		}
+		else {
+			workflow = new Workflow();
+		}
+		workflow.setDocumentId(workflowData.getDocumentId());
 		workflow = workflowRepository.save(workflow);
 		int sortOrder = 0;
 		for(WorkflowStateData workflowStateData : workflowData.getStates()) {
-			WorkflowState workflowState = workflowStateRepository.findById(workflowData.getId()).orElse(new WorkflowState());
+			WorkflowState workflowState;
+			if(workflowStateData.getId() != null) {
+				workflowState = workflowStateRepository.findById(workflowStateData.getId()).orElse(new WorkflowState());
+			}
+			else {
+				workflowState = new WorkflowState();
+			}
 			workflowState.setWorkflowId(workflow.getId());
 			workflowState.setName(workflowStateData.getName());
 			workflowState.setSortOrder(sortOrder++);

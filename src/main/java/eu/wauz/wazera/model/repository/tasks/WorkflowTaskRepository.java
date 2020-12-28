@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import eu.wauz.wazera.model.entity.tasks.WorkflowState;
+import eu.wauz.wazera.model.entity.tasks.WorkflowTask;
 
-public interface WorkflowTaskRepository extends CrudRepository<WorkflowState, Integer> {
+public interface WorkflowTaskRepository extends CrudRepository<WorkflowTask, Integer> {
 	
-	List<WorkflowState> findByWorkflowIdOrderBySortOrderAsc(Integer workflowId);
+	List<WorkflowTask> findByWorkflowIdOrderBySortOrderAsc(Integer workflowId);
+	
+	List<WorkflowTask> findByWorkflowStateIdOrderBySortOrderAsc(Integer workflowStateId);
 
 }
