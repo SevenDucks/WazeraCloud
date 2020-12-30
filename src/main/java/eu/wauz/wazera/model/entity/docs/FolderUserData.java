@@ -24,7 +24,7 @@ public class FolderUserData implements Serializable {
 	private Integer folderId;
 
 	@Column
-	private String userName;
+	private Integer userId;
 
 	@Column
 	private Boolean expanded;
@@ -45,12 +45,12 @@ public class FolderUserData implements Serializable {
 		this.folderId = folderId;
 	}
 
-	public String getUserName() {
-		return userName;
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	public Boolean getExpanded() {
@@ -63,6 +63,6 @@ public class FolderUserData implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Folder(" + (getId() != null ? String.valueOf(getId()) : "transient") + ")";
+		return "FolderUserData(" + (getId() != null ? String.valueOf(getId()) : "transient") + ")";
 	}
 }

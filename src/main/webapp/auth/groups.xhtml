@@ -27,7 +27,7 @@
 					value="#{groupController.groups}"
 					var="group"
 		            paginator="true"
-		            paginatorTemplate="{CurrentPageReport} {PageLinks} {RowsPerPageDropdown}"
+		            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 		            paginatorPosition="top"
 					rows="10"
 					rowsPerPageTemplate="10, 20, 50"
@@ -119,7 +119,7 @@
 		</p:dialog>
 	
 		<p:dialog
-			header="#{groupController.getEditGroupHeader()}"
+			header="Edit Group: #{groupController.group.name}"
 			widgetVar="editGroupDialog"
 			styleClass="editGroupDialog"
 			showEffect="fade" hideEffect="fade"

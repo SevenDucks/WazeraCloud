@@ -14,8 +14,4 @@ public interface DocumentRepository extends CrudRepository<Document, Integer> {
 
 	List<Document> findByFolderIdOrderBySortOrder(Integer folderId);
 
-	Document findByAbsoluteFilename(String absoluteFilename);
-
-	Document findByNameAndFolderId(String name, Integer id);
-
 }

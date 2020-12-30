@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.event.NodeCollapseEvent;
@@ -16,10 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import eu.wauz.wazera.WazeraTool;
 import eu.wauz.wazera.controller.TasksController;
 import eu.wauz.wazera.model.data.docs.DocumentData;
 import eu.wauz.wazera.model.data.docs.FolderData;
-import eu.wauz.wazera.service.DocsTool;
 import eu.wauz.wazera.service.DocumentsDataService;
 import eu.wauz.wazera.service.FoldersDataService;
 
@@ -60,10 +61,11 @@ public class DocsController implements Serializable {
 
 	private Integer docId;
 	
-	private DocsTool docsTool;
+	private WazeraTool wazeraTool;
 
-	public DocsController() {
-		docsTool = new DocsTool();
+	@PostConstruct
+	private void init() {
+		wazeraTool = new WazeraTool();
 		
 		Object doctIdObject = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("docId");
 		if(doctIdObject != null)
@@ -78,10 +80,6 @@ public class DocsController implements Serializable {
 			selectTree();
 		}
 		return documentTree;
-	}
-
-	public String getUsername() {
-		return docsTool.getUsername();
 	}
 
 	private void addFolderNodes(FolderData folderNode, TreeNode treeNode, boolean isRootNode) {
@@ -151,7 +149,7 @@ public class DocsController implements Serializable {
 			foldersService.saveFolder(folderData, null);
 		}
 		catch (Exception e) {
-			docsTool.showErrorMessage(e.getMessage());
+			wazeraTool.showErrorMessage(e.getMessage());
 		}
 
 		TreeNode newNode = new FolderTreeNode(folderData, selectedNode);
@@ -168,14 +166,14 @@ public class DocsController implements Serializable {
 		DocumentData documentData = new DocumentData();
 		documentData.setName(inputName);
 		documentData.setType(type);
-		documentData.setParent(parent.getFolderData());
 		documentData.setContent("");
+		documentData.setParent(parent.getFolderData());
 
 		try {
-			documentData = documentsService.saveDocument(documentData, null, getUsername());
+			documentData = documentsService.saveDocument(documentData, null);
 		}
 		catch (Exception e) {
-			docsTool.showErrorMessage(e.getMessage());
+			wazeraTool.showErrorMessage(e.getMessage());
 		}
 
 		TreeNode newNode = new DocumentTreeNode(documentData, selectedNode);
@@ -193,14 +191,15 @@ public class DocsController implements Serializable {
 		DocumentData documentData = new DocumentData();
 		documentData.setName(inputName);
 		documentData.setType(dataToCopy.getType());
-		documentData.setParent(((FolderTreeNode) node.getParent()).getFolderData());
 		documentData.setContent(dataToCopy.getContent());
+		documentData.setParent(((FolderTreeNode) node.getParent()).getFolderData());
+		documentData.setTags(dataToCopy.getTags());
 
 		try {
-			documentData = documentsService.saveDocument(documentData, null, getUsername());
+			documentData = documentsService.saveDocument(documentData, null);
 		}
 		catch (Exception e) {
-			docsTool.showErrorMessage(e.getMessage());
+			wazeraTool.showErrorMessage(e.getMessage());
 		}
 
 		TreeNode newNode = new DocumentTreeNode(documentData, selectedNode);
@@ -219,7 +218,7 @@ public class DocsController implements Serializable {
 			foldersService.saveFolder(selectedFolderData.getFolderData(), null);
 		}
 		catch (Exception e) {
-			docsTool.showErrorMessage(e.getMessage());
+			wazeraTool.showErrorMessage(e.getMessage());
 		}
 
 		documentTree = null;
@@ -231,10 +230,10 @@ public class DocsController implements Serializable {
 		selectedDocumentData.getDocumentData().setName(inputName);
 
 		try {
-			documentsService.saveDocument(selectedDocumentData.getDocumentData(), null, getUsername());
+			documentsService.saveDocument(selectedDocumentData.getDocumentData(), null);
 		}
 		catch (Exception e) {
-			docsTool.showErrorMessage(e.getMessage());
+			wazeraTool.showErrorMessage(e.getMessage());
 		}
 
 		documentTree = null;
@@ -260,17 +259,17 @@ public class DocsController implements Serializable {
 		selectedDocumentData.getDocumentData().setTags(documentTags);
 
 		try {
-			documentsService.saveDocument(selectedDocumentData.getDocumentData(), null, getUsername());
-			docsTool.showInfoMessage("Your Document was saved!");
+			documentsService.saveDocument(selectedDocumentData.getDocumentData(), null);
+			wazeraTool.showInfoMessage("Your Document was saved!");
 			allowEditing = !exit;
 		}
 		catch (Exception e) {
-			docsTool.showErrorMessage(e.getMessage());
+			wazeraTool.showErrorMessage(e.getMessage());
 		}
 	}
 	
 	public void showInfoMessage(String infoMessage) {
-		docsTool.showInfoMessage(infoMessage);
+		wazeraTool.showInfoMessage(infoMessage);
 	}
 	
 	public String getContent() {
@@ -312,7 +311,7 @@ public class DocsController implements Serializable {
 			addFolderNodes(rootNodeData, documentTree, true);
 		}
 		catch (Exception e) {
-			docsTool.showErrorMessage(e.getMessage());
+			wazeraTool.showErrorMessage(e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -330,7 +329,7 @@ public class DocsController implements Serializable {
 			}
 		}
 		catch (Exception e) {
-			docsTool.showErrorMessage(e.getMessage());
+			wazeraTool.showErrorMessage(e.getMessage());
 		}
 
 		if(searchTags == null) {
@@ -342,7 +341,7 @@ public class DocsController implements Serializable {
 			result = documentsService.getDocuments(folderData.getId(), null, searchTags);
 		}
 		catch (Exception e) {
-			docsTool.showErrorMessage(e.getMessage());
+			wazeraTool.showErrorMessage(e.getMessage());
 		}
 
 		FolderData expandedFolderData = result;
@@ -390,7 +389,7 @@ public class DocsController implements Serializable {
 			}
 		}
 		catch (Exception e) {
-			docsTool.showErrorMessage(e.getMessage());
+			wazeraTool.showErrorMessage(e.getMessage());
 		}
 	}
 
@@ -401,7 +400,7 @@ public class DocsController implements Serializable {
 			foldersService.deleteFolder(node.getFolderData());
 		}
 		catch (Exception e) {
-			docsTool.showErrorMessage(e.getMessage());
+			wazeraTool.showErrorMessage(e.getMessage());
 		}
 
 		selectTree();
@@ -411,10 +410,10 @@ public class DocsController implements Serializable {
 		DocumentTreeNode node = (DocumentTreeNode) selectedNode;
 		
 		try {
-			documentsService.deleteDocument(node.getDocumentData());
+			documentsService.deleteDocument(node.getDocumentData().getId());
 		}
 		catch (Exception e) {
-			docsTool.showErrorMessage(e.getMessage());
+			wazeraTool.showErrorMessage(e.getMessage());
 		}
 		
 		selectTree();
@@ -436,12 +435,12 @@ public class DocsController implements Serializable {
 				else if (dragNode instanceof DocumentTreeNode) {
 					DocumentTreeNode dragDocumentNode = (DocumentTreeNode) dragNode;
 					dragDocumentNode.getDocumentData().setParent(dropFolderNode.getFolderData());
-					documentsService.saveDocument(dragDocumentNode.getDocumentData(), dropIndex, getUsername());
+					documentsService.saveDocument(dragDocumentNode.getDocumentData(), dropIndex);
 				}
 			}
 		}
 		catch (Exception e) {
-			docsTool.showErrorMessage(e.getMessage());
+			wazeraTool.showErrorMessage(e.getMessage());
 		}
 		selectTree();
 	}
@@ -489,7 +488,7 @@ public class DocsController implements Serializable {
     		}
 		}
 		catch (Exception e) {
-			docsTool.showErrorMessage(e.getMessage());
+			wazeraTool.showErrorMessage(e.getMessage());
 		}
     	return "";
     }

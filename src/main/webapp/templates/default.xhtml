@@ -69,32 +69,32 @@
 		        			icon="fa fa-file-text"
 		        			value="Docs"
 		        			url="#{request.contextPath}/docs.xhtml"
-		        			styleClass="#{view.viewId.contains('doc') ? 'ui-state-active' : ''}"/>
+		        			styleClass="#{view.viewId.toLowerCase().contains('doc') ? 'ui-state-active' : ''}"/>
 		        		<p:menuitem
 		        			icon="fa fa-columns"
 		        			value="Tasks"
 		        			url="#"
-		        			styleClass="#{view.viewId.contains('task') ? 'ui-state-active' : ''}"/>
+		        			styleClass="#{view.viewId.toLowerCase().contains('task') ? 'ui-state-active' : ''}"/>
 		        		<p:menuitem
 		        			icon="fa fa-comments"
 		        			value="Chat"
 		        			url="#{request.contextPath}/chat.xhtml"
-		        			styleClass="#{view.viewId.contains('chat') ? 'ui-state-active' : ''}"/>
+		        			styleClass="#{view.viewId.toLowerCase().contains('chat') ? 'ui-state-active' : ''}"/>
 		        		<p:menuitem
 		        			icon="fa fa-user"
 		        			value="Users"
 		        			url="#{request.contextPath}/auth/users.xhtml"
-		        			styleClass="#{view.viewId.contains('user') ? 'ui-state-active' : ''}"/>
+		        			styleClass="#{view.viewId.toLowerCase().contains('user') ? 'ui-state-active' : ''}"/>
 		        		<p:menuitem
 		        			icon="fa fa-group"
 		        			value="Groups"
 		        			url="#{request.contextPath}/auth/groups.xhtml"
-		        			styleClass="#{view.viewId.contains('group') ? 'ui-state-active' : ''}"/>
+		        			styleClass="#{view.viewId.toLowerCase().contains('group') ? 'ui-state-active' : ''}"/>
 		        		<p:menuitem
 		        			icon="fa fa-shield"
 		        			value="Roles"
 		        			url="#{request.contextPath}/auth/roles.xhtml"
-		        			styleClass="#{view.viewId.contains('role') ? 'ui-state-active' : ''}"/>
+		        			styleClass="#{view.viewId.toLowerCase().contains('role') ? 'ui-state-active' : ''}"/>
 					</p:submenu>
 					<p:submenu label="Web">
 						<p:menuitem

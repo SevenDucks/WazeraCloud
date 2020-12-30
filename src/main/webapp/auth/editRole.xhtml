@@ -14,13 +14,16 @@
     
     <ui:define name="center">
 
-		<p:outputLabel value="#{roleController.getEditRoleHeader()}" style="margin: 10px; font-size: 32px; font-weight: bold;"/>
-		
-		<p:tabView styleClass="gray-bg">
+		<p:tabView styleClass="no-border gray-bg">
 		
 			<p:tab title="Permissions">
+			
 				<h:form styleClass="editRoleForm">
 					<p:panelGrid columns="2" styleClass="no-border gray-bg">
+						<f:facet name="header">
+							<p:outputLabel value="Role Permissions: #{roleController.role.name}"/>
+						</f:facet>
+						
 						<p:outputLabel value="Name: "/>
 						<p:inputText value="#{roleController.role.name}"/>
 			
@@ -31,19 +34,20 @@
 								var="permissionScope"
 								itemLabel="#{permissionScope.name()}"
 								itemValue="#{permissionScope.id}"/>
-							<p:ajax event="itemSelect" update="@(.permissionTable)"/>
+							<p:ajax event="itemSelect" update="@(.permission-table)"/>
 						</p:selectOneMenu>
 			
 						<p:outputLabel value="Values: "/>
 						<p:dataTable
-							styleClass="permissionTable"
+							styleClass="permission-table no-border"
 							value="#{roleController.rolePermissionHandles}"
 							var="rolePermissionHandle"
 				            paginator="true"
-				            paginatorTemplate="{CurrentPageReport} {PageLinks} {RowsPerPageDropdown}"
+				            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				            paginatorPosition="top"
 							rows="10"
-							rowsPerPageTemplate="10,20,50"
+							rowsPerPageTemplate="10, 20, 50"
+							style="width: 100%;"
 							tableStyle="width: auto;">
 				
 							<p:column headerText="Name">
@@ -53,12 +57,20 @@
 							<p:column headerText="Scope">
 								<p:outputLabel value="#{rolePermissionHandle.permission.getScope().name()}"/>
 							</p:column>
+							
+							<p:column
+								style="width: 99%;">
+							</p:column>
 				
 							<p:column headerText="Active" style="text-align: center;">
 								<p:selectBooleanCheckbox
 									rendered="#{roleController.isRolePermissionHandleVisible(rolePermissionHandle)}"
 									value="#{rolePermissionHandle.hasPermission}"/>
 							</p:column>
+							
+							<f:facet name="footer">
+								<p:spacer height="10"/>
+							</f:facet>
 						</p:dataTable>
 			
 						<p:commandButton
@@ -68,6 +80,7 @@
 							update="@(.editRoleForm)"/>
 					</p:panelGrid>
 				</h:form>
+				
 			</p:tab>
 		
 		</p:tabView>

@@ -6,12 +6,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import eu.wauz.wazera.WazeraTool;
 import eu.wauz.wazera.model.data.auth.GroupData;
 import eu.wauz.wazera.model.data.auth.Permission;
 import eu.wauz.wazera.model.data.auth.PermissionScope;
@@ -51,7 +54,14 @@ public class AuthDataService {
     
     @Autowired
 	private PasswordEncoder passwordEncoder;
-
+    
+    private WazeraTool wazeraTool;
+    
+    @PostConstruct
+    public void init() {
+    	wazeraTool = new WazeraTool();
+    }
+    
 	public List<UserData> findAllUsers() {
 		List<UserData> result = new ArrayList<>();
 		for(User user : userRepository.findAllByOrderByIdAsc()) {
@@ -59,13 +69,23 @@ public class AuthDataService {
 		}
 		return result;
 	}
-
-	public UserData findUserByName(String username) {
-		User user = userRepository.findByUsername(username);
-		if(user == null) {
+	
+	public UserData findUserById(Integer userId) {
+		if(userId == null) {
 			return null;
 		}
-		return readUserData(user);
+		User user = userRepository.findById(userId).orElse(null);
+		return user == null ? null : readUserData(user);
+	}
+	
+	public UserData findUserByName(String username) {
+		User user = userRepository.findByUsername(username);
+		return user == null ? null : readUserData(user);
+	}
+	
+	public Integer getLoggedInUserId() {
+		User user = userRepository.findByUsername(wazeraTool.getUsernameos());
+		return user == null ? null : user.getId();
 	}
 
 	public boolean authenticate(String username, String password) {
@@ -125,6 +145,7 @@ public class AuthDataService {
 
 	public void deleteUser(int userId) {
 		userRepository.deleteById(userId);
+		ugrlRepository.deleteByUserId(userId);
 	}
 
 	private UserData readUserData(User user) {
@@ -219,6 +240,8 @@ public class AuthDataService {
 
 	public void deleteRole(int roleId) {
 		roleRepository.deleteById(roleId);
+		ugrlRepository.deleteByRoleId(roleId);
+		rplRepository.deleteByRoleId(roleId);
 	}
 
 	private RoleData readRoleData(Role role) {
@@ -292,6 +315,7 @@ public class AuthDataService {
 
 	public void deleteGroup(int groupId) {
 		groupRepository.deleteById(groupId);
+		ugrlRepository.deleteByGroupId(groupId);
 	}
 
 	private GroupData readGroupData(Group group) {

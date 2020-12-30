@@ -29,10 +29,7 @@ public class Document implements Serializable {
 	private String type;
 
 	@Column
-	private String user;
-
-	@Column
-	private String absoluteFilename;
+	private Integer userId;
 
 	@Column
 	private Integer folderId;
@@ -71,20 +68,12 @@ public class Document implements Serializable {
 		this.type = type;
 	}
 
-	public String getUser() {
-		return user;
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setUser(String user) {
-		this.user = user;
-	}
-
-	public String getAbsoluteFilename() {
-		return absoluteFilename;
-	}
-
-	public void setAbsoluteFilename(String absoluteFilename) {
-		this.absoluteFilename = absoluteFilename;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	public Integer getFolderId() {

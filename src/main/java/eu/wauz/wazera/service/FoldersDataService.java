@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import eu.wauz.wazera.WazeraTool;
 import eu.wauz.wazera.model.data.docs.FolderData;
 import eu.wauz.wazera.model.entity.docs.Document;
 import eu.wauz.wazera.model.entity.docs.Folder;
@@ -18,11 +19,16 @@ import eu.wauz.wazera.model.entity.docs.FolderUserData;
 import eu.wauz.wazera.model.repository.docs.DocumentRepository;
 import eu.wauz.wazera.model.repository.docs.FolderRepository;
 import eu.wauz.wazera.model.repository.docs.FolderUserDataRepository;
-import eu.wauz.wazera.model.repository.docs.jpa.FolderUserDataJpaRepository;
 
 @Service
 @Scope("singleton")
 public class FoldersDataService {
+	
+	@Autowired
+	private DocumentsDataService documentsService;
+	
+	@Autowired
+	private AuthDataService authService;
 
     @Autowired
     private DocumentRepository documentRepository;
@@ -33,18 +39,15 @@ public class FoldersDataService {
     @Autowired
     private FolderUserDataRepository folderUserDataRepository;
 
-    @Autowired
-    private FolderUserDataJpaRepository folderUserDataJpaRepository;
-
-    private DocsTool docsTool;
+    private WazeraTool wazeraTool;
 
     @PostConstruct
     public void init() {
-    	docsTool = new DocsTool();
+    	wazeraTool = new WazeraTool();
     }
 
 	public FolderData saveFolder(FolderData folderData, Integer index) throws Exception {
-		docsTool.checkForValidFileName(folderData.getName());
+		wazeraTool.checkForValidFileName(folderData.getName());
 
         Folder folder = null;
         if(folderData.getId() != null) {
@@ -65,7 +68,8 @@ public class FoldersDataService {
 			sortFolders(folder, index);
 		}
 		
-        saveFolderUserData(folderData);
+		Integer userId = authService.getLoggedInUserId();
+        saveFolderUserData(folderData, userId);
         return folderData;
     }
 	
@@ -121,21 +125,21 @@ public class FoldersDataService {
 		return sortFolders;
 	}
 
-	private void saveFolderUserData(FolderData folderData) {
-		FolderUserData folderUserDataFromRepo = folderUserDataJpaRepository.findByFolderAndUser(folderData.getId(), docsTool.getUsername());
+	private void saveFolderUserData(FolderData folderData, Integer userId) {
+		FolderUserData folderUserDataFromRepo = folderUserDataRepository.findByFolderIdAndUserId(folderData.getId(), userId);
 		FolderUserData folderUserData = folderUserDataFromRepo != null ? folderUserDataFromRepo : new FolderUserData();
-		folderUserData.setUserName(docsTool.getUsername());
+		folderUserData.setUserId(userId);
 		folderUserData.setFolderId(folderData.getId());
 		folderUserData.setExpanded(folderData.isExpanded() != null ? folderData.isExpanded() : false);
 		folderUserDataRepository.save(folderUserData);
 	}
 
-	public FolderData readFolderData(Folder folder) {
+	public FolderData readFolderData(Folder folder, Integer userId) {
 		FolderData folderData = new FolderData();
 		if(folder != null) {
 			folderData.setId(folder.getId());
 			folderData.setName(folder.getName());
-			FolderUserData folderUserData = folderUserDataJpaRepository.findByFolderAndUser(folder.getId(), docsTool.getUsername());
+			FolderUserData folderUserData = folderUserDataRepository.findByFolderIdAndUserId(folder.getId(), userId);
 			folderData.setExpanded(folderUserData != null ? folderUserData.getExpanded() : false);
 			folderData.setSortOrder(folder.getSortOrder());
 		}
@@ -153,7 +157,7 @@ public class FoldersDataService {
         	rootFolder.setName("Document Tree");
         	rootFolder = folderRepository.save(rootFolder);
         }
-        return readFolderData(rootFolder);
+        return readFolderData(rootFolder, 0);
 	}
 
 	public void deleteTree(int treeId) throws Exception {
@@ -168,7 +172,6 @@ public class FoldersDataService {
 		List<Folder> foldersToSearch = new ArrayList<>();
     	List<Folder> foldersToDelete = new ArrayList<>();
     	List<Document> documentsToDelete = new ArrayList<>();
-    	
 		foldersToSearch.add(folderRepository.findById(rootNodeId).orElse(null));
 		while(!foldersToSearch.isEmpty()) {
 			Folder folder = foldersToSearch.remove(foldersToSearch.size() - 1);
@@ -182,14 +185,11 @@ public class FoldersDataService {
 		}
 		
 		for (Document document : documentsToDelete) {
-			documentRepository.delete(document);
+			documentsService.deleteDocument(document.getId());
 		}
-		
 		for (Folder folder : foldersToDelete) {
 			folderRepository.delete(folder);
-			for(FolderUserData folderUserData : folderUserDataRepository.findByFolderId(folder.getId())) {
-				folderUserDataRepository.delete(folderUserData);
-			}
+			folderUserDataRepository.deleteAll(folderUserDataRepository.findByFolderId(folder.getId()));
 		}
 	}
 

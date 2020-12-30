@@ -9,5 +9,7 @@ import eu.wauz.wazera.model.entity.docs.FolderUserData;
 public interface FolderUserDataRepository extends CrudRepository<FolderUserData, Integer> {
 	
 	List<FolderUserData> findByFolderId(Integer folderId);
+	
+	FolderUserData findByFolderIdAndUserId(Integer folderId, Integer userId);
 
 }

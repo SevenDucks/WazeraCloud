@@ -2,11 +2,13 @@ package eu.wauz.wazera.controller.auth;
 
 import java.io.Serializable;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import eu.wauz.wazera.service.DocsTool;
+import eu.wauz.wazera.WazeraTool;
 
 @Controller
 @Scope("session")
@@ -14,10 +16,11 @@ public class SessionController implements Serializable {
 	
 	private static final long serialVersionUID = 6410079263923624297L;
 	
-	private DocsTool docsTool;
+	private WazeraTool wazeraTool;
 	
-	public SessionController() {
-		docsTool = new DocsTool();
+	@PostConstruct
+	private void init() {
+		wazeraTool = new WazeraTool();
 	}
 	
 	public String getVersion() {
@@ -25,7 +28,7 @@ public class SessionController implements Serializable {
 	}
 	
 	public boolean isChrome() {
-		return StringUtils.contains(docsTool.getBrowser(), "Chrome");
+		return StringUtils.contains(wazeraTool.getBrowser(), "Chrome");
 	}
 
 }

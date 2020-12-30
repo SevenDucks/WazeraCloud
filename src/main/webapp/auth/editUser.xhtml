@@ -14,13 +14,15 @@
     
     <ui:define name="center">
 
-		<p:outputLabel value="#{userController.getEditUserHeader()}" style="margin: 10px; font-size: 32px; font-weight: bold;"/>
-	
-		<p:tabView styleClass="gray-bg">
+		<p:tabView styleClass="no-border gray-bg">
 	
 			<p:tab title="Change Password" disabled="#{!userController.mayChangePassword()}">
+			
 				<h:form>
 					<p:panelGrid columns="2" styleClass="no-border gray-bg">
+						<f:facet name="header">
+							<p:outputLabel value="User Password: #{userController.user.username}" style="font-weight: 800;"/>
+						</f:facet>
 						<p:outputLabel value="New Password: "/>
 						<p:password value="#{userController.passwordInput1}"/>
 						<p:outputLabel value="Repeat Password: "/>
@@ -32,24 +34,35 @@
 							disabled="#{!userController.mayChangePassword()}"/>
 					</p:panelGrid>
 				</h:form>
+				
 			</p:tab>
 	
 			<p:tab title="Assign Roles" disabled="#{!userController.isAuthAdmin()}">
+			
 				<h:form>
 					<p:panelGrid columns="1" styleClass="no-border gray-bg">
+						<f:facet name="header">
+							<p:outputLabel value="User Roles: #{userController.user.username}" style="font-weight: 800;"/>
+						</f:facet>
+						
 						<p:dataTable
-							styleClass="roleTable"
+							styleClass="role-table no-border"
 							value="#{userController.userRoleHandles}"
 							var="userRoleHandle"
 				            paginator="true"
-				            paginatorTemplate="{CurrentPageReport} {PageLinks} {RowsPerPageDropdown}"
+				            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				            paginatorPosition="top"
 							rows="10"
-							rowsPerPageTemplate="10,20,50"
+							rowsPerPageTemplate="10, 20, 50"
+							style="width: 100%;"
 							tableStyle="width: auto;">
 	
 							<p:column headerText="Role">
 								<p:outputLabel value="#{userRoleHandle.role.getName()}"/>
+							</p:column>
+							
+							<p:column
+								style="width: 99%;">
 							</p:column>
 	
 							<p:column headerText="Global" style="text-align: center;">
@@ -63,6 +76,10 @@
 										value="#{userRoleHandle.getHasRoleInGroupMap()[group.id]}"/>
 								</p:column>
 							</c:forEach>
+							
+							<f:facet name="footer">
+								<p:spacer height="10"/>
+							</f:facet>
 						</p:dataTable>
 						
 						<p:commandButton
@@ -72,6 +89,7 @@
 							disabled="#{!userController.isAuthAdmin()}"/>
 					</p:panelGrid>
 				</h:form>
+				
 			</p:tab>
 	
 		</p:tabView>

@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import eu.wauz.wazera.WazeraTool;
+import eu.wauz.wazera.model.data.auth.UserData;
 import eu.wauz.wazera.model.data.docs.DocumentData;
 import eu.wauz.wazera.model.data.docs.FolderData;
 import eu.wauz.wazera.model.entity.docs.Document;
@@ -31,7 +33,6 @@ import eu.wauz.wazera.model.repository.docs.FolderRepository;
 import eu.wauz.wazera.model.repository.docs.FolderUserDataRepository;
 import eu.wauz.wazera.model.repository.docs.jpa.DocumentJpaRepository;
 import eu.wauz.wazera.model.repository.docs.jpa.FolderJpaRepository;
-import eu.wauz.wazera.model.repository.docs.jpa.FolderUserDataJpaRepository;
 
 @Service
 @Scope("singleton")
@@ -42,6 +43,9 @@ public class DocumentsDataService {
 	
 	@Autowired
 	private TasksDataService tasksService;
+	
+	@Autowired
+	private AuthDataService authService;
 
     @Autowired
     private DocumentRepository documentRepository;
@@ -60,24 +64,22 @@ public class DocumentsDataService {
 
     @Autowired
     private FolderUserDataRepository folderUserDataRepository;
-
-    @Autowired
-    private FolderUserDataJpaRepository folderUserDataJpaRepository;
-
-	private DocsTool docsTool;
+    
+	private WazeraTool wazeraTool;
 
     @PostConstruct
     public void init() {
-    	docsTool = new DocsTool();
+    	wazeraTool = new WazeraTool();
     }
 
     public FolderData getDocuments(int treeId, Integer docId, List<String> searchTokens) throws Exception {
+    	Integer userId = authService.getLoggedInUserId();
         FolderData rootNode = null;
         Folder rootFolder = folderRepository.findById(treeId).orElse(null);
         if(docId != null) {
-        	expandParentFolders(docId);
+        	expandParentFolders(docId, userId);
         }
-        rootNode = foldersService.readFolderData(rootFolder);
+        rootNode = foldersService.readFolderData(rootFolder, userId);
 
         Set<String> addedFiles = new HashSet<>();
         if(!searchTokens.isEmpty()) {
@@ -91,12 +93,12 @@ public class DocumentsDataService {
 	        
 	        while(!queue.isEmpty()) {
         		Folder folder = queue.poll();
-        		addFolderData(folderDataMap, folderMap, folder.getId());
+        		addFolderData(folderDataMap, folderMap, folder.getId(), userId);
         		matchingDocuments.addAll(documentRepository.findByFolderIdOrderBySortOrder(folder.getId()));
 	        	queue.addAll(folderRepository.findByFolderIdOrderBySortOrder(folder.getId()));
         	}
 	        for(Document document : matchingDocuments) {
-	        	FolderData documentFolderData = addFolderData(folderDataMap, folderMap, document.getFolderId());
+	        	FolderData documentFolderData = addFolderData(folderDataMap, folderMap, document.getFolderId(), userId);
 	        	if(documentFolderData != null && documentFolderData.getDocuments() != null) {
 	        		documentFolderData.getDocuments().add(readDocumentData(document));
 	        	}
@@ -113,8 +115,8 @@ public class DocumentsDataService {
 	        		continue;
 	        	}
 	        	
-        		FolderData parentFolderData = addFolderData(folderDataMap, folderMap, parent.getId());
-        		FolderData folderData = addFolderData(folderDataMap, folderMap, folder.getId());
+        		FolderData parentFolderData = addFolderData(folderDataMap, folderMap, parent.getId(), userId);
+        		FolderData folderData = addFolderData(folderDataMap, folderMap, folder.getId(), userId);
         		folderData.setExpanded(true);
         		if(!parentFolderData.getFolders().contains(folderData)) {
         			parentFolderData.getFolders().add(folderData);
@@ -131,13 +133,13 @@ public class DocumentsDataService {
 			}
         }
         else {
-        	addFolders(rootFolder, rootNode, addedFiles);
-        	addDocuments(rootFolder, rootNode, addedFiles);
+        	addFolders(rootFolder, rootNode, addedFiles, userId);
+        	addDocuments(rootFolder, rootNode, addedFiles, userId);
         }
         return rootNode;
     }
 
-    private void expandParentFolders(int docId) {
+    private void expandParentFolders(int docId, int userId) {
     	Document document = documentRepository.findById(docId).orElse(null);
     	if(document == null) {
     		return;
@@ -147,7 +149,7 @@ public class DocumentsDataService {
     	while(folderId != null) {
     		Folder parentFolder = folderRepository.findById(folderId).orElse(null);
     		if(parentFolder != null) {
-    			FolderData parentFolderData = foldersService.readFolderData(parentFolder);
+    			FolderData parentFolderData = foldersService.readFolderData(parentFolder, userId);
     			parentFolderData.setExpanded(true);
     			saveFolderUserData(parentFolderData);
     			folderId = parentFolder.getFolderId();
@@ -159,30 +161,31 @@ public class DocumentsDataService {
     }
 
     private void saveFolderUserData(FolderData folderData) {
-		FolderUserData folderUserDataFromRepo = folderUserDataJpaRepository.findByFolderAndUser(folderData.getId(), docsTool.getUsername());
+    	Integer userId = authService.getLoggedInUserId();
+		FolderUserData folderUserDataFromRepo = folderUserDataRepository.findByFolderIdAndUserId(folderData.getId(), userId);
 		FolderUserData folderUserData = folderUserDataFromRepo != null ? folderUserDataFromRepo : new FolderUserData();
-		folderUserData.setUserName(docsTool.getUsername());
+		folderUserData.setUserId(userId);
 		folderUserData.setFolderId(folderData.getId());
 		folderUserData.setExpanded(folderData.isExpanded() != null ? folderData.isExpanded() : false);
 		folderUserDataRepository.save(folderUserData);
 	}
 
-	private FolderData addFolderData(Map<Integer, FolderData> folderDataMap, Map<Integer, Folder> folderMap, Integer folderId) {
+	private FolderData addFolderData(Map<Integer, FolderData> folderDataMap, Map<Integer, Folder> folderMap, Integer folderId, Integer userId) {
     	FolderData folderData = folderDataMap.get(folderId);
     	if(folderData == null) {
     		Folder folder = folderRepository.findById(folderId).orElse(null);
     		if(folder != null) {
     			folderMap.put(folderId, folder);
-    			folderData = foldersService.readFolderData(folder);
+    			folderData = foldersService.readFolderData(folder, userId);
     			folderDataMap.put(folderId, folderData);
     		}
     	}
     	return folderData;
     }
 
-    private void addFolders(Folder folder, FolderData node, Set<String> addedFiles) throws Exception {
+    private void addFolders(Folder folder, FolderData node, Set<String> addedFiles, Integer userId) throws Exception {
     	if(folder.getFolderId() != null) {
-			FolderUserData folderUserData = folderUserDataJpaRepository.findByFolderAndUser(folder.getId(), docsTool.getUsername());
+			FolderUserData folderUserData = folderUserDataRepository.findByFolderIdAndUserId(folder.getId(), userId);
 			if(folderUserData == null || !folderUserData.getExpanded()) {
 				return;
 			}
@@ -190,7 +193,7 @@ public class DocumentsDataService {
     	
     	List<Folder> childFolders = folderRepository.findByFolderIdOrderBySortOrder(folder.getId());
     	for (Folder childFolder : childFolders) {
-    		FolderUserData childFolderUserData = folderUserDataJpaRepository.findByFolderAndUser(childFolder.getId(), docsTool.getUsername());
+    		FolderUserData childFolderUserData = folderUserDataRepository.findByFolderIdAndUserId(childFolder.getId(), userId);
 
             FolderData childNode = new FolderData();
             childNode.setId(childFolder.getId());
@@ -211,15 +214,15 @@ public class DocumentsDataService {
             	}
             }
             else {
-            	addFolders(childFolder, childNode, addedFiles);
-            	addDocuments(childFolder, childNode, addedFiles);
+            	addFolders(childFolder, childNode, addedFiles, userId);
+            	addDocuments(childFolder, childNode, addedFiles, userId);
             }
 		}
 	}
 
-	private void addDocuments(Folder folder, FolderData node, Set<String> addedFiles) throws Exception {
+	private void addDocuments(Folder folder, FolderData node, Set<String> addedFiles, Integer userId) throws Exception {
 		if(folder.getFolderId() != null) {
-			FolderUserData folderUserData = folderUserDataJpaRepository.findByFolderAndUser(folder.getId(), docsTool.getUsername());
+			FolderUserData folderUserData = folderUserDataRepository.findByFolderIdAndUserId(folder.getId(), userId);
 			if(folderUserData == null || !folderUserData.getExpanded()) {
 				return;
 			}
@@ -232,8 +235,8 @@ public class DocumentsDataService {
 		}
 	}
 
-	public DocumentData saveDocument(DocumentData documentData, Integer index, String username) throws Exception {
-		docsTool.checkForValidFileName(documentData.getName());
+	public DocumentData saveDocument(DocumentData documentData, Integer index) throws Exception {
+		wazeraTool.checkForValidFileName(documentData.getName());
 
         Document document = null;
 		if(documentData.getId() != null) {
@@ -245,7 +248,7 @@ public class DocumentsDataService {
 		}
 		document.setName(documentData.getName());
 		document.setType(documentData.getType());
-		document.setUser(username);
+		document.setUserId(authService.getLoggedInUserId());
 		document.setContent(documentData.getContent());
 		document.setCreationDate(new Date());
 		if(documentData.getParent() != null) {
@@ -327,23 +330,32 @@ public class DocumentsDataService {
 
 		return sortDocs;
 	}
-
-	public void deleteDocument(DocumentData documentData) throws Exception {
-		Document documentToDelete = documentRepository.findById(documentData.getId()).orElse(null);
+	
+	public void deleteDocument(Integer documentId) throws Exception {
+		if(documentId == null) {
+			return;
+		}
+		Document documentToDelete = documentRepository.findById(documentId).orElse(null);
+		if(documentToDelete == null) {
+			return;
+		}
 		documentRepository.delete(documentToDelete);
+		List<DocumentTag> documentTagsToDelete = documentTagRepository.findByDocumentId(documentId);
+		documentTagRepository.deleteAll(documentTagsToDelete);
 		
-		if("workflowNode".equals(documentData.getType())) {
-        	tasksService.deleteWorkflow(documentData);
+		if("workflowNode".equals(documentToDelete.getType())) {
+        	tasksService.deleteWorkflow(documentId);
         }
 	}
 
 	private DocumentData readDocumentData(Document document) throws Exception {
 		DocumentData documentData = new DocumentData();
+		UserData userData = authService.findUserById(document.getUserId());
 
 		documentData.setId(document.getId());
 		documentData.setName(document.getName());
 		documentData.setType(document.getType());
-		documentData.setUser(document.getUser());
+		documentData.setUser(userData == null ? null : userData.getUsername());
 		documentData.setContent(document.getContent());
 		documentData.setSortOrder(document.getSortOrder());
 		documentData.setCreationDate(document.getCreationDate());
@@ -361,5 +373,5 @@ public class DocumentsDataService {
 
 		return documentData;
 	}
-
+	
 }

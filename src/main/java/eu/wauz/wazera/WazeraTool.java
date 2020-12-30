@@ -1,4 +1,4 @@
-package eu.wauz.wazera.service;
+package eu.wauz.wazera;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-public class DocsTool {
+public class WazeraTool {
 
 	public void checkForValidFileName(String fileName) throws Exception {
 		if(StringUtils.containsAny(fileName, new char[] {'|', '/', '\\', ':', '*', '?', '"', '\'', '<', '>'})) {
@@ -16,7 +16,7 @@ public class DocsTool {
 		}
 	}
 	
-	public String getUsername() {
+	public String getUsernameos() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		return authentication != null ? authentication.getName() : null;
 	}

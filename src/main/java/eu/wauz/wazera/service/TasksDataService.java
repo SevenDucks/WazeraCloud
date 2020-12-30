@@ -95,8 +95,14 @@ public class TasksDataService {
 		return workflow != null ? readWorkflowData(workflow) : null;
 	}
 	
-	public void deleteWorkflow(DocumentData documentData) {
-		Workflow workflow = workflowRepository.findByDocumentId(documentData.getId());
+	public void deleteWorkflow(Integer documentId) {
+		if(documentId == null) {
+			return;
+		}
+		Workflow workflow = workflowRepository.findByDocumentId(documentId);
+		if(workflow == null) {
+			return;
+		}
 		workflowRepository.delete(workflow);
 		List<WorkflowState> workflowStates = workflowStateRepository.findByWorkflowIdOrderBySortOrderAsc(workflow.getId());
 		workflowStateRepository.deleteAll(workflowStates);

@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import eu.wauz.wazera.WazeraTool;
 import eu.wauz.wazera.model.data.auth.Permission;
 import eu.wauz.wazera.model.data.auth.UserData;
 import eu.wauz.wazera.model.data.auth.UserRoleHandle;
 import eu.wauz.wazera.service.AuthDataService;
-import eu.wauz.wazera.service.DocsTool;
 
 @Controller
 @Scope("view")
@@ -36,11 +36,11 @@ public class UserController implements Serializable {
 
 	private String passwordInput2;
 	
-	private DocsTool docsTool;
+	private WazeraTool wazeraTool;
 
 	@PostConstruct
 	private void init() {
-		docsTool = new DocsTool();
+		wazeraTool = new WazeraTool();
 
 		String username = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("username");
 		if(StringUtils.isNotBlank(username)) {
@@ -53,33 +53,29 @@ public class UserController implements Serializable {
 		}
 	}
 
-	public String getEditUserHeader() {
-		return "User Properties <" + user.getUsername() + ">";
-	}
-
 	public void changePassword() {
 		if(StringUtils.isBlank(passwordInput1)) {
-			docsTool.showInfoMessage("Password cannot be empty!");
+			wazeraTool.showInfoMessage("Password cannot be empty!");
 			return;
 		}
 		if(!StringUtils.equals(passwordInput1, passwordInput2)) {
-			docsTool.showInfoMessage("Passwords do not match!");
+			wazeraTool.showInfoMessage("Passwords do not match!");
 			return;
 		}
 		user.setPassword(passwordInput1);
 		authService.saveUser(user);
-		docsTool.showInfoMessage("Password was successfully changed!");
+		wazeraTool.showInfoMessage("Password was successfully changed!");
 	}
 
 	public void createNewUser() {
 		String validationMessage = authService.validate(user);
 		if(validationMessage.equals("Success")) {
 			authService.saveUser(user);
-			docsTool.showInfoMessage("User <" + user.getUsername() + "> was successfully created!");
+			wazeraTool.showInfoMessage("User <" + user.getUsername() + "> was successfully created!");
 			users = null;
 		}
 		else {
-			docsTool.showInfoMessage(validationMessage);
+			wazeraTool.showInfoMessage(validationMessage);
 		}
 	}
 	
@@ -90,7 +86,7 @@ public class UserController implements Serializable {
 
 	public void deleteUser() {
 		authService.deleteUser(user.getId());
-		docsTool.showInfoMessage("User <" + user.getUsername() + "> was successfully deleted!");
+		wazeraTool.showInfoMessage("User <" + user.getUsername() + "> was successfully deleted!");
 		setNewUser();
 		users = null;
 	}
@@ -147,15 +143,15 @@ public class UserController implements Serializable {
 	
 	public void updateRoles() {
 		authService.updateUserRoles(user.getId(), userRoleHandles);
-		docsTool.showInfoMessage("The Roles of '" + user.getUsername() + "' were successfully updated!");
+		wazeraTool.showInfoMessage("The Roles of '" + user.getUsername() + "' were successfully updated!");
 	}
 
 	public boolean isAuthAdmin() {
-		return authService.hasPermission(docsTool.getUsername(), Permission.ADMINISTRATE_ACCOUNTS.getId());
+		return authService.hasPermission(wazeraTool.getUsernameos(), Permission.ADMINISTRATE_ACCOUNTS.getId());
 	}
 
 	public boolean mayChangePassword() {
-		return docsTool.getUsername().equals(user.getUsername()) || isAuthAdmin();
+		return wazeraTool.getUsernameos().equals(user.getUsername()) || isAuthAdmin();
 	}
 
 }

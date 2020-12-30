@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import eu.wauz.wazera.model.data.MessageData;
-import eu.wauz.wazera.service.DocsTool;
 import eu.wauz.wazera.service.MessagesDataService;
 
 @Controller
@@ -24,12 +23,6 @@ public class ChatController implements Serializable {
 	
 	private String inputMessage;
 	
-	private DocsTool docsTool;
-	
-	public ChatController() {
-		docsTool = new DocsTool();
-	}
-	
 	public List<MessageData> getMessages() {
 		return messagesService.getAllMessages();
 	}
@@ -37,7 +30,7 @@ public class ChatController implements Serializable {
 	public void sendMessage() {
 		if(StringUtils.isNoneBlank(inputMessage)) {
 			MessageData message = new MessageData();
-			message.setSender(docsTool.getUsername());
+			message.setSender("Test Sender");
 			message.setText(inputMessage);
 			message.setTime(new Date());
 			messagesService.saveMessage(message);

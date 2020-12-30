@@ -12,11 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import eu.wauz.wazera.WazeraTool;
 import eu.wauz.wazera.model.data.auth.PermissionScope;
 import eu.wauz.wazera.model.data.auth.RoleData;
 import eu.wauz.wazera.model.data.auth.RolePermissionHandle;
 import eu.wauz.wazera.service.AuthDataService;
-import eu.wauz.wazera.service.DocsTool;
 
 @Controller
 @Scope("view")
@@ -33,11 +33,11 @@ public class RoleController implements Serializable {
 
 	private List<RolePermissionHandle> rolePermissionHandles;
 	
-	private DocsTool docsTool;
+	private WazeraTool wazeraTool;
 
 	@PostConstruct
 	private void init() {
-		docsTool = new DocsTool();
+		wazeraTool = new WazeraTool();
 		
 		String roleIdString = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("roleId");
 		if(StringUtils.isNotBlank(roleIdString)) {
@@ -48,10 +48,6 @@ public class RoleController implements Serializable {
 		}
 	}
 
-	public String getEditRoleHeader() {
-		return "Role Properties <" + role.getName() + ">";
-	}
-
 	public List<PermissionScope> getPermissionScopes() {
 		return Arrays.asList(PermissionScope.values());
 	}
@@ -59,11 +55,11 @@ public class RoleController implements Serializable {
 	public void createNewRole() {
 		if(StringUtils.isNotBlank(role.getName())) {
 			authService.saveRole(role);
-			docsTool.showInfoMessage("Role <" + role.getName() + "> was successfully created!");
+			wazeraTool.showInfoMessage("Role <" + role.getName() + "> was successfully created!");
 			roles = null;
 		}
 		else {
-			docsTool.showInfoMessage("Role Name cannot be empty!");
+			wazeraTool.showInfoMessage("Role Name cannot be empty!");
 		}
 	}
 
@@ -75,7 +71,7 @@ public class RoleController implements Serializable {
 		}
 		authService.saveRole(role);
 		authService.updateRolePermissions(role.getId(), rolePermissionHandles);
-		docsTool.showInfoMessage("Role <" + role.getName() + "> was successfully updated!");
+		wazeraTool.showInfoMessage("Role <" + role.getName() + "> was successfully updated!");
 	}
 	
 	public void deleteRole(RoleData role) {
@@ -85,7 +81,7 @@ public class RoleController implements Serializable {
 
 	public void deleteRole() {
 		authService.deleteRole(role.getId());
-		docsTool.showInfoMessage("Role <" + role.getName() + "> was successfully deleted!");
+		wazeraTool.showInfoMessage("Role <" + role.getName() + "> was successfully deleted!");
 		setNewRole();
 		roles = null;
 	}
