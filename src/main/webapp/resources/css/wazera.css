@@ -183,7 +183,7 @@ body {
 }
 
 .project-board > .ui-dashboard-column {
-	width: 200px;
+	width: 210px;
 	margin-right: 5px;
 	margin-left: 5px;
 	padding-bottom: 50px;
@@ -206,6 +206,7 @@ body {
 
 .project-board-title {
 	font-size: 14px !important;
+	text-align: center;
 	background: #101019 !important;
 }
 

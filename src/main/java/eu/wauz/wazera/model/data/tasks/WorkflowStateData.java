@@ -39,6 +39,10 @@ public class WorkflowStateData {
 	public boolean isBacklog() {
 		return backlog;
 	}
+	
+	public boolean isNotBacklog() {
+		return !backlog;
+	}
 
 	public void setBacklog(boolean backlog) {
 		this.backlog = backlog;
@@ -47,9 +51,17 @@ public class WorkflowStateData {
 	public boolean isCompleted() {
 		return completed;
 	}
+	
+	public boolean isNotCompleted() {
+		return !completed;
+	}
 
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
+	}
+	
+	public boolean isTransient() {
+		return getId() == null;
 	}
 	
 }

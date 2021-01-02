@@ -411,6 +411,33 @@
 								<c:forEach items="#{tasksController.workflow.states}" var="state">
 									<p:panel id="state#{state.id}" styleClass="project-board-title">
 										#{state.name}
+										<br/><br/>
+										<p:commandButton
+											icon="ui-icon-arrowthick-1-w"
+											disabled="#{!tasksController.canWorkflowStateMove(state, true)}"
+											actionListener="#{tasksController.moveWorkflowState(state, true)}"
+							            	update=":mainForm"
+											oncomplete="resizeEditor();"/>
+						            	<p:commandButton
+											icon="ui-icon-arrowthick-1-e"
+											disabled="#{!tasksController.canWorkflowStateMove(state, false)}"
+											actionListener="#{tasksController.moveWorkflowState(state, false)}"
+							            	update=":mainForm"
+											oncomplete="resizeEditor();"/>
+										<p:commandButton
+											icon="ui-icon-pencil"
+											disabled="#{state.isBacklog() || state.isCompleted()}"
+											actionListener="#{tasksController.setWorkflowState(state)}"
+											onclick="PF('dialogAddWorkflowState').show();"
+							            	update=":addWorkflowStateDialogForm"/>
+						            	<p:commandButton
+											icon="ui-icon-trash"
+											disabled="#{state.isBacklog() || state.isCompleted()}"
+											actionListener="#{tasksController.deleteWorkflowState(state)}"
+							            	update=":mainForm"
+											oncomplete="resizeEditor();">
+											<p:confirm header="Confirm" message="Delete Workflow State &lt;#{state.name}&gt; permanently?" icon="ui-icon-alert"/>
+										</p:commandButton>
 									</p:panel>
 								</c:forEach>
 							</p:dashboard>
@@ -436,8 +463,28 @@
 							value="Copy Link"
 							icon="ui-icon-copy"
 							oncomplete="sendCopyLinkMessage()"
-							style="height: 25px; margin-right: 3px;"
-							update="@this"/>
+							update="@this"
+							style="height: 25px; margin-right: 3px;"/>
+							
+						<p:commandButton
+							id="buttonNewTask"
+							value="New Task"
+							icon="ui-icon-plus"
+							rendered="#{docsController.showWorkflow()}"
+							actionListener="#{tasksController.setNewWorkflowState()}"
+							onclick="PF('dialogAddWorkflowState').show();"
+			            	update=":addWorkflowStateDialogForm"
+			            	style="height: 25px; margin-right: 3px;"/>
+							
+						<p:commandButton
+							id="buttonNewState"
+							value="New Workflow State"
+							icon="ui-icon-plus"
+							rendered="#{docsController.showWorkflow()}"
+							actionListener="#{tasksController.setNewWorkflowState()}"
+							onclick="PF('dialogAddWorkflowState').show();"
+			            	update=":addWorkflowStateDialogForm"
+			            	style="height: 25px; margin-right: 3px;"/>
 							
 						<p:commandButton
 							id="buttonToggleEdit"
@@ -446,8 +493,8 @@
 							rendered="#{docsController.showEditor()}"
 							disabled="#{docsController.allowEditing}"
 							actionListener="#{docsController.setAllowEditing(true)}"
-							style="height: 25px; margin-right: 3px;"
-							oncomplete="updateAll();"/>
+							oncomplete="updateAll();"
+							style="height: 25px; margin-right: 3px;"/>
 							
 						<p:chips
 							id="chipsInput"
@@ -477,8 +524,8 @@
 							rendered="#{docsController.showEditor()}"
 							disabled="#{!docsController.allowEditing}"
 							actionListener="#{docsController.saveDocument(true)}"
-							style="height: 25px; margin-right: 3px;"
-							oncomplete="updateAll();"/>
+							oncomplete="updateAll();"
+							style="height: 25px; margin-right: 3px;"/>
 							
 						<p:commandButton
 							id="buttonCancel"
@@ -487,15 +534,19 @@
 							rendered="#{docsController.showEditor()}"
 							disabled="#{!docsController.allowEditing}"
 							actionListener="#{docsController.setAllowEditing(false)}"
-							style="height: 25px;"
-							oncomplete="updateAll();">
+							oncomplete="updateAll();"
+							style="height: 25px;">
 							<p:confirm
 								header="Confirm"
 								message="Cancel Editing? Unsaved Changes will be lost!"
 								icon="ui-icon-alert"/>
 						</p:commandButton>
 						
-			            <pe:clipboard id="clipCopy" trigger="buttonCopyLink" action="copy" text="#{docsController.getDocumentLink()}"/>
+			            <pe:clipboard
+			            	id="clipCopy"
+			            	trigger="buttonCopyLink"
+			            	action="copy"
+			            	text="#{docsController.getDocumentLink()}"/>
 			            <p:remoteCommand
 			            	name="sendCopyLinkMessage"
 			            	actionListener="#{docsController.showInfoMessage('Link copied to Clipboard!')}"/>
@@ -620,6 +671,28 @@
 					update=":documentMenuForm :mainForm"
 					onstart="saveScrollPos()"
 					oncomplete="PF('dialogRenameDocument').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"/>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog
+			header="Workflow State"
+			widgetVar="dialogAddWorkflowState"
+			showEffect="fade" hideEffect="fade"
+			resizable="false"
+			draggable="false"
+			modal="true"
+			appendTo="@(body)">
+			<h:form id="addWorkflowStateDialogForm">
+				<h:panelGrid id="addWorkflowStateDialogGrid" columns="2">
+					<p:outputLabel value="Name: "/>
+					<p:inputText value="#{tasksController.workflowState.name}"/>
+				</h:panelGrid>
+				<p:commandButton
+					icon="#{tasksController.workflowState.isTransient() ? 'ui-icon-disk' : 'ui-icon-refresh'}"
+					value="#{tasksController.workflowState.isTransient() ? 'Save' : 'Rename'}"
+					actionListener="#{tasksController.saveWorkflowState()}"
+					update=":mainForm"
+					oncomplete="PF('dialogAddWorkflowState').hide(); resizeEditor();"/>
 			</h:form>
 		</p:dialog>
 		

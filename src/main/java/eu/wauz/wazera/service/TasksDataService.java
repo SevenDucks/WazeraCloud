@@ -1,6 +1,7 @@
 package eu.wauz.wazera.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,10 +43,12 @@ public class TasksDataService {
 		
 		WorkflowStateData plannedState = new WorkflowStateData();
 		plannedState.setName("Planned");
+		plannedState.setSortOrder(1);
 		workflowStateDatas.add(plannedState);
 		
 		WorkflowStateData inProgressState = new WorkflowStateData();
 		inProgressState.setName("In Progress");
+		inProgressState.setSortOrder(2);
 		workflowStateDatas.add(inProgressState);
 		
 		WorkflowStateData completedState = new WorkflowStateData();
@@ -68,7 +71,14 @@ public class TasksDataService {
 		workflow.setDocumentId(workflowData.getDocumentId());
 		workflow = workflowRepository.save(workflow);
 		int sortOrder = 0;
-		for(WorkflowStateData workflowStateData : workflowData.getStates()) {
+		Comparator<WorkflowStateData> comparator = Comparator
+				.comparing(WorkflowStateData::isNotBacklog)
+				.thenComparing(WorkflowStateData::isCompleted)
+				.thenComparing(WorkflowStateData::getSortOrder);
+		List<WorkflowStateData> workflowStateDatas = workflowData.getStates().stream()
+				.sorted(comparator)
+				.collect(Collectors.toList());
+		for(WorkflowStateData workflowStateData : workflowStateDatas) {
 			WorkflowState workflowState;
 			if(workflowStateData.getId() != null) {
 				workflowState = workflowStateRepository.findById(workflowStateData.getId()).orElse(new WorkflowState());
@@ -86,9 +96,12 @@ public class TasksDataService {
 		return getWorkflow(workflow);
 	}
 	
+	public WorkflowData getWorkflow(Integer workflowId) {
+		return getWorkflow(workflowRepository.findById(workflowId).orElse(null));
+	}
+	
 	public WorkflowData getWorkflow(DocumentData documentData) {
-		Workflow workflow = workflowRepository.findByDocumentId(documentData.getId());
-		return getWorkflow(workflow);
+		return getWorkflow(workflowRepository.findByDocumentId(documentData.getId()));
 	}
 	
 	public WorkflowData getWorkflow(Workflow workflow) {
@@ -108,9 +121,21 @@ public class TasksDataService {
 		workflowStateRepository.deleteAll(workflowStates);
 	}
 	
+	public void deleteWorkflowState(Integer workflowStateId) {
+		if(workflowStateId == null) {
+			return;
+		}
+		WorkflowState workflowState = workflowStateRepository.findById(workflowStateId).orElse(null);
+		if(workflowState == null) {
+			return;
+		}
+		workflowStateRepository.delete(workflowState);
+	}
+	
 	private WorkflowData readWorkflowData(Workflow workflow) {
 		WorkflowData workflowData = new WorkflowData();
 		workflowData.setId(workflow.getId());
+		workflowData.setDocumentId(workflow.getDocumentId());
 		List<WorkflowState> workflowStates = workflowStateRepository.findByWorkflowIdOrderBySortOrderAsc(workflow.getId());
 		workflowData.setStates(workflowStates.stream()
 				.map(ws -> readWorkflowStateData(ws))
