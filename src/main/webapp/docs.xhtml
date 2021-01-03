@@ -471,9 +471,9 @@
 							value="New Task"
 							icon="ui-icon-plus"
 							rendered="#{docsController.showWorkflow()}"
-							actionListener="#{tasksController.setNewWorkflowState()}"
-							onclick="PF('dialogAddWorkflowState').show();"
-			            	update=":addWorkflowStateDialogForm"
+							actionListener="#{tasksController.setNewWorkflowTask()}"
+							onclick="PF('dialogAddWorkflowTask').show();"
+			            	update=":addWorkflowTaskDialogForm"
 			            	style="height: 25px; margin-right: 3px;"/>
 							
 						<p:commandButton
@@ -671,6 +671,86 @@
 					update=":documentMenuForm :mainForm"
 					onstart="saveScrollPos()"
 					oncomplete="PF('dialogRenameDocument').hide(); resizeEditor(); resizeTreePanel(); loadScrollPos();"/>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog
+			header="Workflow Task"
+			widgetVar="dialogAddWorkflowTask"
+			showEffect="fade" hideEffect="fade"
+			resizable="false"
+			draggable="false"
+			modal="true"
+			width="900"
+			height="400"
+			appendTo="@(body)">
+			<h:form id="addWorkflowTaskDialogForm">
+				<h:panelGrid
+					id="addWorkflowTaskDialogGrid"
+					columns="2"
+					style="width: 100%;"
+					columnClasses="align-top sixty-percent, align-top fourty-percent">
+					
+					<h:panelGrid columns="1">
+						<p:outputLabel value="Name: "/>
+						<p:inputText value="#{tasksController.workflowTask.name}" style="width: 400px;"/>
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+						<p:outputLabel value="Creator: "/>
+		            	<h:outputText value="#{tasksController.workflowTask.authorUser.username}"/>
+						<p:outputLabel value="Creation Date: "/>
+						<p:datePicker
+							value="#{tasksController.workflowTask.creationDate}"
+							pattern="yyyy.MM.dd HH:mm"
+							showTime="true"
+							disabled="true"/>
+					</h:panelGrid>
+					
+					<p:separator/>
+					<p:separator/>
+					
+					<h:panelGrid columns="1">
+						<p:outputLabel value="Description: "/>
+						<p:textEditor
+							value="#{tasksController.workflowTask.description}"
+							readonly="false"
+							height="200"
+							styleClass="text-editor"/>
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+						<p:outputLabel value="Priority: "/>
+						<p:selectOneMenu value="#{tasksController.workflowTask.priority}">
+							<f:selectItems
+								value="#{tasksController.priorities}"
+								var="priority"
+								itemLabelEscaped="false"
+								itemLabel="&lt;p:outputLabel class=&quot;#{priority.icon}&quot; style=&quot;color: #{priority.color}&quot;/&gt; #{priority.name}"
+								itemValue="#{priority}"/>
+				            <p:column>
+				            	<h:outputText value="#{priority.name}"/>
+				            </p:column>
+				        </p:selectOneMenu>
+						<p:outputLabel value="Deadline Date: "/>
+						<p:datePicker
+							value="#{tasksController.workflowTask.deadlineDate}"
+							pattern="yyyy.MM.dd HH:mm"
+							showTime="true"
+							disabled="false"/>
+						<p:outputLabel value="Completion Date: "/>
+						<p:datePicker
+							value="#{tasksController.workflowTask.completionDate}"
+							pattern="yyyy.MM.dd HH:mm"
+							showTime="true"
+							disabled="true"/>
+					</h:panelGrid>
+					
+				</h:panelGrid>
+				<p:commandButton
+					icon="ui-icon-disk"
+					value="Save"
+					actionListener="#{tasksController.saveWorkflowTask()}"
+					update=":mainForm"
+					oncomplete="PF('dialogAddWorkflowTask').hide(); resizeEditor();"/>
 			</h:form>
 		</p:dialog>
 		

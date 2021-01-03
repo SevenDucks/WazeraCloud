@@ -1,59 +1,33 @@
-package eu.wauz.wazera.model.entity.tasks;
+package eu.wauz.wazera.model.data.tasks;
 
-import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import eu.wauz.wazera.model.data.auth.UserData;
 
-import eu.wauz.wazera.model.data.tasks.Priority;
-
-@Entity
-@Table(name = "WorkflowTask")
-public class WorkflowTask implements Serializable {
-
-	private static final long serialVersionUID = -7130167590925201821L;
+public class WorkflowTaskData {
 	
-	@Id
-	@Column
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column
 	private Integer workflowId;
 	
-	@Column
 	private Integer workflowStateId;
 	
-	@Column
 	private String name;
 	
-	@Column
 	private String description;
 	
-	@Column
 	private Priority priority;
 	
-	@Column
-	private Integer authorUserId;
+	private UserData authorUser;
 	
-	@Column
-	private Integer assignedUserId;
+	private UserData assignedUser;
 	
-	@Column
 	private Date creationDate;
 	
-	@Column
 	private Date deadlineDate;
 	
-	@Column
 	private Date completionDate;
 	
-	@Column
 	private Integer sortOrder;
 
 	public Integer getId() {
@@ -104,20 +78,28 @@ public class WorkflowTask implements Serializable {
 		this.priority = priority;
 	}
 
+	public UserData getAuthorUser() {
+		return authorUser;
+	}
+	
 	public Integer getAuthorUserId() {
-		return authorUserId;
+		return authorUser == null ? null : authorUser.getId();
 	}
 
-	public void setAuthorUserId(Integer authorUserId) {
-		this.authorUserId = authorUserId;
+	public void setAuthorUser(UserData authorUser) {
+		this.authorUser = authorUser;
 	}
 
+	public UserData getAssignedUser() {
+		return assignedUser;
+	}
+	
 	public Integer getAssignedUserId() {
-		return assignedUserId;
+		return assignedUser == null ? null : assignedUser.getId();
 	}
 
-	public void setAssignedUserId(Integer assignedUserId) {
-		this.assignedUserId = assignedUserId;
+	public void setAssignedUser(UserData assignedUser) {
+		this.assignedUser = assignedUser;
 	}
 
 	public Date getCreationDate() {
@@ -150,11 +132,6 @@ public class WorkflowTask implements Serializable {
 
 	public void setSortOrder(Integer sortOrder) {
 		this.sortOrder = sortOrder;
-	}
-	
-	@Override
-	public String toString() {
-		return "WorkflowTask(" + (getId() != null ? String.valueOf(getId()) : "transient") + ") " + getName();
 	}
 
 }

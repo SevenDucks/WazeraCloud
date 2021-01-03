@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import eu.wauz.wazera.model.data.docs.DocumentData;
 import eu.wauz.wazera.model.data.tasks.WorkflowData;
 import eu.wauz.wazera.model.data.tasks.WorkflowStateData;
+import eu.wauz.wazera.model.data.tasks.WorkflowTaskData;
 import eu.wauz.wazera.model.entity.tasks.Workflow;
 import eu.wauz.wazera.model.entity.tasks.WorkflowState;
+import eu.wauz.wazera.model.entity.tasks.WorkflowTask;
 import eu.wauz.wazera.model.repository.tasks.WorkflowRepository;
 import eu.wauz.wazera.model.repository.tasks.WorkflowStateRepository;
 import eu.wauz.wazera.model.repository.tasks.WorkflowTaskRepository;
@@ -94,6 +96,31 @@ public class TasksDataService {
 			workflowStateRepository.save(workflowState);
 		}
 		return getWorkflow(workflow);
+	}
+	
+	public void saveWorkflowStateTasks(WorkflowStateData workflowStateData) {
+		int sortOrder = 0;
+		for(WorkflowTaskData workflowTaskData : workflowStateData.getTasks()) {
+			WorkflowTask workflowTask;
+			if(workflowTaskData.getId() != null) {
+				workflowTask = workflowTaskRepository.findById(workflowTaskData.getId()).orElse(new WorkflowTask());
+			}
+			else {
+				workflowTask = new WorkflowTask();
+				workflowTask.setWorkflowId(workflowTaskData.getWorkflowId());
+				workflowTask.setWorkflowStateId(workflowStateData.getId());
+				workflowTask.setName(workflowTaskData.getName());
+				workflowTask.setDescription(workflowTaskData.getDescription());
+				workflowTask.setPriority(workflowTaskData.getPriority());
+				workflowTask.setAuthorUserId(workflowTaskData.getAuthorUserId());
+				workflowTask.setAssignedUserId(workflowTaskData.getAssignedUserId());
+				workflowTask.setCreationDate(workflowTaskData.getCreationDate());
+				workflowTask.setDeadlineDate(workflowTaskData.getDeadlineDate());
+				workflowTask.setCompletionDate(workflowTaskData.getCompletionDate());
+				workflowTask.setSortOrder(sortOrder++);
+				workflowTaskRepository.save(workflowTask);
+			}
+		}
 	}
 	
 	public WorkflowData getWorkflow(Integer workflowId) {

@@ -1,5 +1,7 @@
 package eu.wauz.wazera.model.data.tasks;
 
+import java.util.List;
+
 public class WorkflowStateData {
 	
 	private Integer id;
@@ -11,6 +13,8 @@ public class WorkflowStateData {
 	private boolean backlog;
 	
 	private boolean completed;
+	
+	private List<WorkflowTaskData> tasks;
 
 	public Integer getId() {
 		return id;
@@ -60,6 +64,14 @@ public class WorkflowStateData {
 		this.completed = completed;
 	}
 	
+	public List<WorkflowTaskData> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(List<WorkflowTaskData> tasks) {
+		this.tasks = tasks;
+	}
+
 	public boolean isTransient() {
 		return getId() == null;
 	}

@@ -16,7 +16,7 @@ public class WazeraTool {
 		}
 	}
 	
-	public String getUsernameos() {
+	public String getUsername() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		return authentication != null ? authentication.getName() : null;
 	}

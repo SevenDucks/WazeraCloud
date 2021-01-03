@@ -1,6 +1,7 @@
 package eu.wauz.wazera.controller;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.annotation.PostConstruct;
 
@@ -14,8 +15,11 @@ import org.springframework.stereotype.Controller;
 
 import eu.wauz.wazera.WazeraTool;
 import eu.wauz.wazera.model.data.docs.DocumentData;
+import eu.wauz.wazera.model.data.tasks.Priority;
 import eu.wauz.wazera.model.data.tasks.WorkflowData;
 import eu.wauz.wazera.model.data.tasks.WorkflowStateData;
+import eu.wauz.wazera.model.data.tasks.WorkflowTaskData;
+import eu.wauz.wazera.service.AuthDataService;
 import eu.wauz.wazera.service.TasksDataService;
 
 @Controller
@@ -27,9 +31,14 @@ public class TasksController implements Serializable {
 	@Autowired
 	private TasksDataService tasksService;
 	
+	@Autowired
+	private AuthDataService authService;
+	
 	private WorkflowData workflow;
 	
 	private WorkflowStateData workflowState;
+	
+	private WorkflowTaskData workflowTask;
 	
 	private DashboardModel model;
 	
@@ -38,6 +47,8 @@ public class TasksController implements Serializable {
 	@PostConstruct
 	private void init() {
 		wazeraTool = new WazeraTool();
+		workflowState = new WorkflowStateData();
+		workflowTask = new WorkflowTaskData();
 	}
 
 	public WorkflowData getWorkflow() {
@@ -57,6 +68,7 @@ public class TasksController implements Serializable {
 	public void resetWorkflow() {
 		setWorkflow(tasksService.getWorkflow(workflow.getId()));
 		setNewWorkflowState();
+		setNewWorkflowTask();
 	}
 	
 	public WorkflowStateData getWorkflowState() {
@@ -121,6 +133,46 @@ public class TasksController implements Serializable {
 			wazeraTool.showErrorMessage(e.getMessage());
 		}
 	}
+	
+	public WorkflowTaskData getWorkflowTask() {
+		return workflowTask;
+	}
+
+	public void setWorkflowTask(WorkflowTaskData workflowTask) {
+		this.workflowTask = workflowTask;
+	}
+
+	public void setNewWorkflowTask() {
+		this.workflowTask = new WorkflowTaskData();
+		workflowTask.setWorkflowId(workflow.getId());
+		workflowTask.setWorkflowStateId(workflow.getStates().get(0).getId());
+		workflowTask.setName("New Task");
+		workflowTask.setDescription("");
+		workflowTask.setPriority(Priority.NORMAL);
+		workflowTask.setAuthorUser(authService.getLoggedInUser());
+		workflowTask.setAssignedUser(null);
+		workflowTask.setCreationDate(new Date());
+		workflowTask.setDeadlineDate(null);
+		workflowTask.setCompletionDate(null);
+	}
+	
+	public void saveWorkflowTask() {
+		try {
+			
+		}
+		catch (Exception e) {
+			wazeraTool.showErrorMessage(e.getMessage());
+		}
+	}
+	
+	public void deleteWorkflowTask() {
+		try {
+			
+		}
+		catch (Exception e) {
+			wazeraTool.showErrorMessage(e.getMessage());
+		}
+	}
 
 	public DashboardModel getModel() {
 		return model;
@@ -138,6 +190,10 @@ public class TasksController implements Serializable {
 			column.addWidget("task" + stateData.getId());
 			model.addColumn(column);
 		}
+	}
+	
+	public Priority[] getPriorities() {
+		return Priority.values();
 	}
 
 }

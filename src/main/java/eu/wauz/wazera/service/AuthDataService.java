@@ -83,8 +83,13 @@ public class AuthDataService {
 		return user == null ? null : readUserData(user);
 	}
 	
+	public UserData getLoggedInUser() {
+		User user = userRepository.findByUsername(wazeraTool.getUsername());
+		return user == null ? null : readUserData(user);
+	}
+	
 	public Integer getLoggedInUserId() {
-		User user = userRepository.findByUsername(wazeraTool.getUsernameos());
+		User user = userRepository.findByUsername(wazeraTool.getUsername());
 		return user == null ? null : user.getId();
 	}
 

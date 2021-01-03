@@ -147,11 +147,11 @@ public class UserController implements Serializable {
 	}
 
 	public boolean isAuthAdmin() {
-		return authService.hasPermission(wazeraTool.getUsernameos(), Permission.ADMINISTRATE_ACCOUNTS.getId());
+		return authService.hasPermission(wazeraTool.getUsername(), Permission.ADMINISTRATE_ACCOUNTS.getId());
 	}
 
 	public boolean mayChangePassword() {
-		return wazeraTool.getUsernameos().equals(user.getUsername()) || isAuthAdmin();
+		return wazeraTool.getUsername().equals(user.getUsername()) || isAuthAdmin();
 	}
 
 }

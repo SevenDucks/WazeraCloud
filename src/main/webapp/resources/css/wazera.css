@@ -40,8 +40,16 @@ body {
 	width: 30%;
 }
 
+.fourty-percent {
+	width: 40%;
+}
+
 .fifty-percent {
 	width: 50%;
+}
+
+.sixty-percent {
+	width: 60%;
 }
 
 .seventy-percent {
