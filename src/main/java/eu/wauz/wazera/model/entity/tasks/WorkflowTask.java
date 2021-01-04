@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import eu.wauz.wazera.model.data.tasks.Priority;
@@ -32,6 +33,7 @@ public class WorkflowTask implements Serializable {
 	@Column
 	private String name;
 	
+	@Lob
 	@Column
 	private String description;
 	

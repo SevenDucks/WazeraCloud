@@ -65,7 +65,7 @@ public class TasksController implements Serializable {
 		updateDashboardModel();
 	}
 	
-	public void resetWorkflow() {
+	public void resetWorkflowModel() {
 		setWorkflow(tasksService.getWorkflow(workflow.getId()));
 		setNewWorkflowState();
 		setNewWorkflowTask();
@@ -104,7 +104,7 @@ public class TasksController implements Serializable {
 		workflowstate.setSortOrder(newIndex);
 		try {
 			tasksService.saveWorkflow(workflow);
-			resetWorkflow();
+			resetWorkflowModel();
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
@@ -117,7 +117,7 @@ public class TasksController implements Serializable {
 				workflow.getStates().add(workflowState);
 			}
 			tasksService.saveWorkflow(workflow);
-			resetWorkflow();
+			resetWorkflowModel();
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
@@ -127,7 +127,7 @@ public class TasksController implements Serializable {
 	public void deleteWorkflowState(WorkflowStateData workflowStateData) {
 		try {
 			tasksService.deleteWorkflowState(workflowStateData.getId());
-			resetWorkflow();
+			resetWorkflowModel();
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
@@ -154,11 +154,13 @@ public class TasksController implements Serializable {
 		workflowTask.setCreationDate(new Date());
 		workflowTask.setDeadlineDate(null);
 		workflowTask.setCompletionDate(null);
+		workflowTask.setSortOrder(-1);
 	}
 	
 	public void saveWorkflowTask() {
 		try {
-			
+			tasksService.saveWorkflowStateTasks(workflowState);
+			resetWorkflowModel();
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
@@ -167,7 +169,7 @@ public class TasksController implements Serializable {
 	
 	public void deleteWorkflowTask() {
 		try {
-			
+			resetWorkflowModel();
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());

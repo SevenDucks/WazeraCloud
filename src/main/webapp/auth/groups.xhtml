@@ -114,7 +114,8 @@
 					value="Save"
 					actionListener="#{groupController.createNewGroup()}"
 					update="@(.group-table)"
-					oncomplete="PF('newGroupDialog').hide();"/>
+					oncomplete="PF('newGroupDialog').hide();"
+					style="margin-left: 3px;"/>
 			</h:form>
 		</p:dialog>
 	
@@ -137,7 +138,8 @@
 					value="Save"
 					actionListener="#{groupController.updateGroup()}"
 					update="@(.group-table)"
-					oncomplete="PF('editGroupDialog').hide();"/>
+					oncomplete="PF('editGroupDialog').hide();"
+					style="margin-left: 3px;"/>
 			</h:form>
 		</p:dialog>
 

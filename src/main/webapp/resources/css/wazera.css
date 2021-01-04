@@ -36,6 +36,14 @@ body {
 	height: 1px;
 }
 
+.ten-percent {
+	width: 10%;
+}
+
+.twenty-percent {
+	width: 20%;
+}
+
 .thirty-percent {
 	width: 30%;
 }
@@ -247,10 +255,15 @@ th,
 }
 
 .gray-bg-dark,
-.gray-bg-dark > .ui-layout-unit-content {
+.gray-bg-dark > .ui-layout-unit-content,
+.text-editor > .ql-snow > .ql-formats > .ql-picker > .ql-picker-options {
 	background: #101019 !important;
 }
 
 .ui-datatable-data > tr:nth-child(even) {
 	background: #101019 !important;
+}
+
+.ui-selectonemenu-panel .ui-selectonemenu-list-item {
+	padding-right: 25px;
 }
