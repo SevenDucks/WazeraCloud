@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.annotation.PostConstruct;
 
+import org.primefaces.event.DashboardReorderEvent;
 import org.primefaces.model.DashboardColumn;
 import org.primefaces.model.DashboardModel;
 import org.primefaces.model.DefaultDashboardColumn;
@@ -157,18 +158,30 @@ public class TasksController implements Serializable {
 		workflowTask.setSortOrder(-1);
 	}
 	
+	public void handleWorkflowTaskReorder(DashboardReorderEvent event) {
+		System.out.println("Test");
+    }
+	
 	public void saveWorkflowTask() {
 		try {
-			tasksService.saveWorkflowStateTasks(workflowState);
-			resetWorkflowModel();
+			for(WorkflowStateData stateData : workflow.getStates()) {
+				if(stateData.getId().equals(workflowTask.getWorkflowStateId())) {
+					workflowState = stateData;
+					workflowState.getTasks().add(workflowTask);
+					tasksService.saveWorkflowStateTasks(workflowState);
+					resetWorkflowModel();
+					break;
+				}
+			}
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
 		}
 	}
 	
-	public void deleteWorkflowTask() {
+	public void deleteWorkflowTask(WorkflowTaskData workflowTask) {
 		try {
+			tasksService.deleteWorkflowTask(workflowTask.getId());
 			resetWorkflowModel();
 		}
 		catch (Exception e) {
@@ -189,7 +202,9 @@ public class TasksController implements Serializable {
 		for(WorkflowStateData stateData : workflow.getStates()) {
 			DashboardColumn column = new DefaultDashboardColumn();
 			column.addWidget("state" + stateData.getId());
-			column.addWidget("task" + stateData.getId());
+			for(WorkflowTaskData taskData : stateData.getTasks()) {
+				column.addWidget("task" + taskData.getId());
+			}
 			model.addColumn(column);
 		}
 	}

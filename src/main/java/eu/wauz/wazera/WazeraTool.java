@@ -27,12 +27,12 @@ public class WazeraTool {
 	}
 	
     public void showInfoMessage(String infoMessage) {
-		final FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Info:", infoMessage);
+		final FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Info: ", infoMessage);
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
     
 	public void showErrorMessage(String errorMessage) {
-		final FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fehler:", errorMessage);
+		final FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: ", errorMessage);
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 

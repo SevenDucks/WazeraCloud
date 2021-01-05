@@ -1,6 +1,7 @@
 package eu.wauz.wazera.model.data.tasks;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import eu.wauz.wazera.model.data.auth.UserData;
 
@@ -18,7 +19,11 @@ public class WorkflowTaskData {
 	
 	private Priority priority;
 	
+	private Integer authorUserId;
+	
 	private UserData authorUser;
+	
+	private Integer assignedUserId;
 	
 	private UserData assignedUser;
 	
@@ -78,28 +83,47 @@ public class WorkflowTaskData {
 		this.priority = priority;
 	}
 
+	public Integer getAuthorUserId() {
+		return authorUserId;
+	}
+	
+	public void setAuthorUserId(Integer authorUserId) {
+		this.authorUserId = authorUserId;
+	}
+	
 	public UserData getAuthorUser() {
 		return authorUser;
 	}
 	
-	public Integer getAuthorUserId() {
-		return authorUser == null ? null : authorUser.getId();
-	}
 
 	public void setAuthorUser(UserData authorUser) {
 		this.authorUser = authorUser;
+		if(authorUser != null) {
+			this.authorUserId = authorUser.getId();
+		}
+	}
+
+	public Integer getAssignedUserId() {
+		return assignedUserId;
+	}
+
+	public void setAssignedUserId(Integer assignedUserId) {
+		this.assignedUserId = assignedUserId;
 	}
 
 	public UserData getAssignedUser() {
 		return assignedUser;
 	}
 	
-	public Integer getAssignedUserId() {
-		return assignedUser == null ? null : assignedUser.getId();
+	public String getAssignedUserName() {
+		return assignedUser != null ? assignedUser.getUsername() : "Not Assigned";
 	}
 
 	public void setAssignedUser(UserData assignedUser) {
 		this.assignedUser = assignedUser;
+		if(assignedUser != null) {
+			this.assignedUserId = assignedUser.getId();
+		}
 	}
 
 	public Date getCreationDate() {
@@ -132,6 +156,36 @@ public class WorkflowTaskData {
 
 	public void setSortOrder(Integer sortOrder) {
 		this.sortOrder = sortOrder;
+	}
+	
+	public String getStatusText() {
+		if(completionDate != null) {
+			return "Completed";
+		}
+		else if(deadlineDate != null) {
+			if(deadlineDate.before(new Date())) {
+				return "Overdue";
+			}
+			else {
+				long time = deadlineDate.getTime() - new Date().getTime();
+				return (TimeUnit.DAYS.convert(time, TimeUnit.MILLISECONDS) + 1) + " Days Left";
+			}
+		}
+		else {
+			return "No Deadline";
+		}
+	}
+	
+	public String getStatusColor() {
+		if(completionDate != null) {
+			return "lightseagreen";
+		}
+		else if(deadlineDate != null) {
+			return deadlineDate.before(new Date()) ? "lightsalmon" : "moccasin";
+		}
+		else {
+			return "plum";
+		}
 	}
 
 }

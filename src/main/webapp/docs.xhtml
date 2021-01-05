@@ -70,19 +70,23 @@
 		
 		<style>
 		
-			.ui-treenode-label .fa-th-large {
+			.ui-treenode-label .fa-th-large,
+			.ui-contextmenu .fa-th-large {
 				color: plum;
 			}
 		
-			.ui-treenode-label .fa-folder-open {
+			.ui-treenode-label .fa-folder-open,
+			.ui-contextmenu .fa-folder-open {
 				color: moccasin;
 			}
 			
-			.ui-treenode-label .fa-file {
+			.ui-treenode-label .fa-file,
+			.ui-contextmenu .fa-file {
 				color: skyblue;
 			}
 			
-			.ui-treenode-label .fa-share-alt {
+			.ui-treenode-label .fa-share-alt,
+			.ui-contextmenu .fa-share-alt {
 				color: lightsalmon;
 			}
 		
@@ -174,7 +178,7 @@
 					        	<h:panelGrid
 					        		columns="4">
 					            	<p:outputLabel styleClass="fa fa-th-large"/>
-					            	<h:outputText value="#{node}"/>
+					            	<h:outputText value="Dashboard"/>
 					        	</h:panelGrid>
 					        </p:treeNode>
 	
@@ -443,9 +447,44 @@
 							</p:dashboard>
 							<br/>
 							<p:dashboard model="#{tasksController.model}" styleClass="project-board">
-								<c:forEach items="#{tasksController.workflow.states}" var="state">
-									<p:panel id="task#{state.id}" header="Task #{state.id}" >
-										Test Task
+								<p:ajax
+									event="reorder"
+									listener="#{tasksController.handleWorkflowTaskReorder}"
+									update=":mainForm"
+									oncomplete="resizeEditor();"/>
+								<c:forEach items="#{tasksController.workflow.tasks}" var="task">
+									<p:panel
+										id="task#{task.id}" styleClass="no-padding gray-bg-dark">
+										<f:facet name="header">
+											##{task.id} #{task.name}
+										</f:facet>
+										<h:panelGrid
+											columns="2"
+											columnClasses="left-align fifty-percent, right-align fifty-percent"
+											style="width: 100%; padding: 3px;">
+											<p:outputPanel>
+												<p:outputLabel styleClass="#{task.priority.icon}" style="color: #{task.priority.color}; width: 12px; margin-right: 5px;"/>
+												<p:outputLabel value="#{task.priority.name}"/>
+											</p:outputPanel>
+											<p:outputLabel value="#{task.assignedUserName}"/>
+											<p:outputPanel>
+												<p:commandButton
+													icon="ui-icon-arrow-4-diag"
+													actionListener="#{tasksController.setWorkflowTask(task)}"
+													onclick="PF('dialogAddWorkflowTask').show();"
+									            	update=":addWorkflowTaskDialogForm"
+									            	style="height: 18px;"/>
+								            	<p:commandButton
+													icon="ui-icon-trash"
+													actionListener="#{tasksController.deleteWorkflowTask(task)}"
+									            	update=":mainForm"
+													oncomplete="resizeEditor();"
+													style="height: 18px;">
+													<p:confirm header="Confirm" message="Delete Workflow Task &lt;#{task.name}&gt; permanently?" icon="ui-icon-alert"/>
+												</p:commandButton>
+											</p:outputPanel>
+											<p:outputLabel value="#{task.statusText}" style="color: #{task.statusColor}"/>
+										</h:panelGrid>
 									</p:panel>
 								</c:forEach>
 							</p:dashboard>
@@ -688,7 +727,8 @@
 			modal="true"
 			width="900"
 			height="500"
-			appendTo="@(body)">
+			appendTo="@(body)"
+			styleClass="gray-bg">
 			<p:ajax event="open" update=":addWorkflowTaskDialogForm"/>
 			<h:form id="addWorkflowTaskDialogForm">
 				<h:panelGrid
@@ -698,23 +738,26 @@
 					
 					<p:outputLabel value="Name: "/>
 					<p:outputLabel/>
-					<p:inputText value="#{tasksController.workflowTask.name}" style="width: 510px;"/>
+					<p:inputText value="#{tasksController.workflowTask.name}" style="width: 510px; margin-bottom: 10px;"/>
+					<p:outputLabel/>
+					<p:outputLabel value="Description: "/>
 					<p:outputLabel/>
 					<p:textEditor
 						value="#{tasksController.workflowTask.description}"
 						readonly="false"
-						height="344"
+						height="315"
 						styleClass="text-editor"/>
 					
 					<h:panelGrid columns="3">
 						<p:outputLabel styleClass="fa fa-user"/>
 						<p:outputLabel value="Assignee: "/>
-						<p:selectOneMenu value="#{tasksController.workflowTask.assignedUser}" style="width: 100%;">
+						<p:selectOneMenu value="#{tasksController.workflowTask.assignedUserId}"  style="width: 100%;">
+							<f:selectItem itemLabel="Not Assigned" itemValue="#{null}"/>
 							<f:selectItems
 								value="#{userController.users}"
 								var="user"
 								itemLabel="#{user.username}"
-								itemValue="#{user}"/>
+								itemValue="#{user.id}"/>
 				        </p:selectOneMenu>
 				        <p:outputLabel styleClass="fa fa-warning"/>
 						<p:outputLabel value="Priority: "/>

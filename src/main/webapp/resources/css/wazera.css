@@ -22,6 +22,11 @@ body {
 	background-color: #16161f;
 }
 
+.no-padding,
+.no-padding > .ui-panel-content {
+	padding: 0 !important;
+}
+
 .no-overflow,
 .no-overflow > .ui-widget-content {
 	overflow: hidden;
@@ -62,6 +67,14 @@ body {
 
 .seventy-percent {
 	width: 70%;
+}
+
+.left-align {
+	text-align: left;
+}
+
+.right-align {
+	text-align: right;
 }
 
 .layout-container {

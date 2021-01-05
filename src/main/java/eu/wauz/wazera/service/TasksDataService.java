@@ -25,6 +25,9 @@ import eu.wauz.wazera.model.repository.tasks.WorkflowTaskRepository;
 public class TasksDataService {
 	
 	@Autowired
+	private AuthDataService authService;
+	
+	@Autowired
 	private WorkflowRepository workflowRepository;
 	
 	@Autowired
@@ -100,26 +103,29 @@ public class TasksDataService {
 	
 	public void saveWorkflowStateTasks(WorkflowStateData workflowStateData) {
 		int sortOrder = 0;
-		for(WorkflowTaskData workflowTaskData : workflowStateData.getTasks()) {
+		List<WorkflowTaskData> workflowTaskDatas = workflowStateData.getTasks().stream()
+				.sorted((t1, t2) -> t1.getSortOrder().compareTo(t2.getSortOrder()))
+				.collect(Collectors.toList());
+		for(WorkflowTaskData workflowTaskData : workflowTaskDatas) {
 			WorkflowTask workflowTask;
 			if(workflowTaskData.getId() != null) {
 				workflowTask = workflowTaskRepository.findById(workflowTaskData.getId()).orElse(new WorkflowTask());
 			}
 			else {
 				workflowTask = new WorkflowTask();
-				workflowTask.setWorkflowId(workflowTaskData.getWorkflowId());
-				workflowTask.setWorkflowStateId(workflowStateData.getId());
-				workflowTask.setName(workflowTaskData.getName());
-				workflowTask.setDescription(workflowTaskData.getDescription());
-				workflowTask.setPriority(workflowTaskData.getPriority());
-				workflowTask.setAuthorUserId(workflowTaskData.getAuthorUserId());
-				workflowTask.setAssignedUserId(workflowTaskData.getAssignedUserId());
-				workflowTask.setCreationDate(workflowTaskData.getCreationDate());
-				workflowTask.setDeadlineDate(workflowTaskData.getDeadlineDate());
-				workflowTask.setCompletionDate(workflowTaskData.getCompletionDate());
-				workflowTask.setSortOrder(sortOrder++);
-				workflowTaskRepository.save(workflowTask);
 			}
+			workflowTask.setWorkflowId(workflowTaskData.getWorkflowId());
+			workflowTask.setWorkflowStateId(workflowStateData.getId());
+			workflowTask.setName(workflowTaskData.getName());
+			workflowTask.setDescription(workflowTaskData.getDescription());
+			workflowTask.setPriority(workflowTaskData.getPriority());
+			workflowTask.setAuthorUserId(workflowTaskData.getAuthorUserId());
+			workflowTask.setAssignedUserId(workflowTaskData.getAssignedUserId());
+			workflowTask.setCreationDate(workflowTaskData.getCreationDate());
+			workflowTask.setDeadlineDate(workflowTaskData.getDeadlineDate());
+			workflowTask.setCompletionDate(workflowTaskData.getCompletionDate());
+			workflowTask.setSortOrder(sortOrder++);
+			workflowTaskRepository.save(workflowTask);
 		}
 	}
 	
@@ -159,6 +165,17 @@ public class TasksDataService {
 		workflowStateRepository.delete(workflowState);
 	}
 	
+	public void deleteWorkflowTask(Integer workflowTaskId) {
+		if(workflowTaskId == null) {
+			return;
+		}
+		WorkflowTask workflowTask = workflowTaskRepository.findById(workflowTaskId).orElse(null);
+		if(workflowTask == null) {
+			return;
+		}
+		workflowTaskRepository.delete(workflowTask);
+	}
+	
 	private WorkflowData readWorkflowData(Workflow workflow) {
 		WorkflowData workflowData = new WorkflowData();
 		workflowData.setId(workflow.getId());
@@ -177,7 +194,28 @@ public class TasksDataService {
 		workflowStateData.setSortOrder(workflowState.getSortOrder());
 		workflowStateData.setBacklog(workflowState.isBacklog());
 		workflowStateData.setCompleted(workflowState.isCompleted());
+		List<WorkflowTask> workflowTasks = workflowTaskRepository.findByWorkflowStateIdOrderBySortOrderAsc(workflowState.getId());
+		workflowStateData.setTasks(workflowTasks.stream()
+				.map(wt -> readWorkflowTaskData(wt))
+				.collect(Collectors.toList()));
 		return workflowStateData;
+	}
+	
+	private WorkflowTaskData readWorkflowTaskData(WorkflowTask workflowTask) {
+		WorkflowTaskData workflowTaskData = new WorkflowTaskData();
+		workflowTaskData.setId(workflowTask.getId());
+		workflowTaskData.setWorkflowId(workflowTask.getWorkflowId());
+		workflowTaskData.setWorkflowStateId(workflowTask.getWorkflowStateId());
+		workflowTaskData.setName(workflowTask.getName());
+		workflowTaskData.setDescription(workflowTask.getDescription());
+		workflowTaskData.setPriority(workflowTask.getPriority());
+		workflowTaskData.setAuthorUser(authService.findUserById(workflowTask.getAuthorUserId()));
+		workflowTaskData.setAssignedUser(authService.findUserById(workflowTask.getAssignedUserId()));
+		workflowTaskData.setCreationDate(workflowTask.getCreationDate());
+		workflowTaskData.setDeadlineDate(workflowTask.getDeadlineDate());
+		workflowTaskData.setCompletionDate(workflowTask.getCompletionDate());
+		workflowTaskData.setSortOrder(workflowTask.getSortOrder());
+		return workflowTaskData;
 	}
 
 }

@@ -14,7 +14,7 @@ public enum Priority {
 	
 	VERY_LOW("6 - Very Low", "fa fa-angle-double-down", "skyblue"),
 	
-	INSIGNIFICANT("7 - Insignificant", "fa fa-minus", "plum");
+	IRRELEVANT("7 - Irrelevant", "fa fa-minus", "plum");
 	
 	private final String name;
 	

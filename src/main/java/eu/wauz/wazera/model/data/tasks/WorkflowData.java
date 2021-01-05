@@ -1,5 +1,6 @@
 package eu.wauz.wazera.model.data.tasks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WorkflowData {
@@ -24,6 +25,14 @@ public class WorkflowData {
 
 	public void setDocumentId(Integer documentId) {
 		this.documentId = documentId;
+	}
+	
+	public List<WorkflowTaskData> getTasks() {
+		List<WorkflowTaskData> tasks = new ArrayList<>();
+		for(WorkflowStateData state : states) {
+			tasks.addAll(state.getTasks());
+		}
+		return tasks;
 	}
 
 	public List<WorkflowStateData> getStates() {
