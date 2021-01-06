@@ -158,10 +158,6 @@ public class TasksController implements Serializable {
 		workflowTask.setSortOrder(-1);
 	}
 	
-	public void handleWorkflowTaskReorder(DashboardReorderEvent event) {
-		System.out.println("Test");
-    }
-	
 	public void saveWorkflowTask() {
 		try {
 			for(WorkflowStateData stateData : workflow.getStates()) {
@@ -178,6 +174,18 @@ public class TasksController implements Serializable {
 			wazeraTool.showErrorMessage(e.getMessage());
 		}
 	}
+	
+	public void handleWorkflowTaskReorder(DashboardReorderEvent event) {
+		try {
+			Integer taskId = Integer.parseInt(event.getWidgetId().replace("task", ""));
+			Integer stateId = workflow.getStates().get(event.getColumnIndex()).getId();
+			tasksService.reorderWorkflowTasks(taskId, stateId, event.getItemIndex());
+			resetWorkflowModel();
+		}
+		catch (Exception e) {
+			wazeraTool.showErrorMessage(e.getMessage());
+		}
+    }
 	
 	public void deleteWorkflowTask(WorkflowTaskData workflowTask) {
 		try {

@@ -2,6 +2,7 @@ package eu.wauz.wazera.controller.auth;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -89,6 +90,12 @@ public class UserController implements Serializable {
 		wazeraTool.showInfoMessage("User <" + user.getUsername() + "> was successfully deleted!");
 		setNewUser();
 		users = null;
+	}
+	
+	public List<UserData> getUsersAlphabetically() {
+		return getUsers().stream()
+				.sorted((u1, u2) -> u1.getUsername().compareTo(u2.getUsername()))
+				.collect(Collectors.toList());
 	}
 
 	public List<UserData> getUsers() {

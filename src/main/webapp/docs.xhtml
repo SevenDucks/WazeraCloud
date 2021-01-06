@@ -751,17 +751,21 @@
 					<h:panelGrid columns="3">
 						<p:outputLabel styleClass="fa fa-user"/>
 						<p:outputLabel value="Assignee: "/>
-						<p:selectOneMenu value="#{tasksController.workflowTask.assignedUserId}"  style="width: 100%;">
+						<p:selectOneMenu
+							value="#{tasksController.workflowTask.assignedUserId}"
+							style="width: 180px;">
 							<f:selectItem itemLabel="Not Assigned" itemValue="#{null}"/>
 							<f:selectItems
-								value="#{userController.users}"
+								value="#{userController.usersAlphabetically}"
 								var="user"
 								itemLabel="#{user.username}"
 								itemValue="#{user.id}"/>
 				        </p:selectOneMenu>
 				        <p:outputLabel styleClass="fa fa-warning"/>
 						<p:outputLabel value="Priority: "/>
-						<p:selectOneMenu value="#{tasksController.workflowTask.priority}" style="width: 100%;">
+						<p:selectOneMenu
+							value="#{tasksController.workflowTask.priority}"
+							style="width: 180px;">
 							<f:selectItems
 								value="#{tasksController.priorities}"
 								var="priority"
@@ -771,7 +775,9 @@
 				        </p:selectOneMenu>
 				        <p:outputLabel styleClass="fa fa-share-alt"/>
 				        <p:outputLabel value="Workflow State: "/>
-						<p:selectOneMenu value="#{tasksController.workflowTask.workflowStateId}" style="width: 100%;">
+						<p:selectOneMenu
+							value="#{tasksController.workflowTask.workflowStateId}"
+							style="width: 180px;">
 							<f:selectItems
 								value="#{tasksController.workflow.states}"
 								var="state"
@@ -795,7 +801,10 @@
 						<p:outputLabel/>
 						<p:outputLabel styleClass="fa fa-user"/>
 						<p:outputLabel value="Creator: "/>
-		            	<p:inputText value="#{tasksController.workflowTask.authorUser.username}" disabled="true" style="width: 100%;"/>
+		            	<p:inputText
+		            		value="#{tasksController.workflowTask.authorUser.username}"
+		            		disabled="true"
+		            		style="width: 180px;"/>
 		            	<p:outputLabel styleClass="fa fa-plus-circle"/>
 						<p:outputLabel value="Creation Date: "/>
 						<p:datePicker

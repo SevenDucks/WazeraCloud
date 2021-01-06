@@ -2,6 +2,7 @@ package eu.wauz.wazera.service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -123,10 +124,38 @@ public class TasksDataService {
 			workflowTask.setAssignedUserId(workflowTaskData.getAssignedUserId());
 			workflowTask.setCreationDate(workflowTaskData.getCreationDate());
 			workflowTask.setDeadlineDate(workflowTaskData.getDeadlineDate());
-			workflowTask.setCompletionDate(workflowTaskData.getCompletionDate());
+			if(workflowStateData.isCompleted()) {
+				if(workflowTask.getCompletionDate() == null) {
+					workflowTask.setCompletionDate(new Date());
+				}
+			}
+			else {
+				workflowTask.setCompletionDate(null);
+			}
 			workflowTask.setSortOrder(sortOrder++);
 			workflowTaskRepository.save(workflowTask);
 		}
+	}
+	
+	public void reorderWorkflowTasks(Integer taskId, Integer stateId, int itemIndex) {
+		if(taskId == null || stateId == null) {
+			return;
+		}
+		WorkflowTask task = workflowTaskRepository.findById(taskId).orElse(null);
+		WorkflowState state = workflowStateRepository.findById(stateId).orElse(null);
+		if(task == null || state == null) {
+			return;
+		}
+		WorkflowStateData stateData = readWorkflowStateData(state, taskId);
+		if(itemIndex < 0 || itemIndex > stateData.getTasks().size()) {
+			itemIndex = 0;
+		}
+		stateData.getTasks().add(itemIndex, readWorkflowTaskData(task));
+		int sortOrder = 0;
+		for(WorkflowTaskData taskData : stateData.getTasks()) {
+			taskData.setSortOrder(sortOrder++);
+		}
+		saveWorkflowStateTasks(stateData);
 	}
 	
 	public WorkflowData getWorkflow(Integer workflowId) {
@@ -182,12 +211,12 @@ public class TasksDataService {
 		workflowData.setDocumentId(workflow.getDocumentId());
 		List<WorkflowState> workflowStates = workflowStateRepository.findByWorkflowIdOrderBySortOrderAsc(workflow.getId());
 		workflowData.setStates(workflowStates.stream()
-				.map(ws -> readWorkflowStateData(ws))
+				.map(ws -> readWorkflowStateData(ws, null))
 				.collect(Collectors.toList()));
 		return workflowData;
 	}
 	
-	private WorkflowStateData readWorkflowStateData(WorkflowState workflowState) {
+	private WorkflowStateData readWorkflowStateData(WorkflowState workflowState, Integer excludeTaskId) {
 		WorkflowStateData workflowStateData = new WorkflowStateData();
 		workflowStateData.setId(workflowState.getId());
 		workflowStateData.setName(workflowState.getName());
@@ -196,6 +225,7 @@ public class TasksDataService {
 		workflowStateData.setCompleted(workflowState.isCompleted());
 		List<WorkflowTask> workflowTasks = workflowTaskRepository.findByWorkflowStateIdOrderBySortOrderAsc(workflowState.getId());
 		workflowStateData.setTasks(workflowTasks.stream()
+				.filter(wt -> wt.getId() != excludeTaskId)
 				.map(wt -> readWorkflowTaskData(wt))
 				.collect(Collectors.toList()));
 		return workflowStateData;
