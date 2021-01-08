@@ -2,6 +2,7 @@ package eu.wauz.wazera.controller;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -133,6 +134,10 @@ public class TasksController implements Serializable {
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
 		}
+	}
+	
+	public List<WorkflowTaskData> getAssignedTasks() {
+		return tasksService.getAssignedTasks();
 	}
 	
 	public WorkflowTaskData getWorkflowTask() {

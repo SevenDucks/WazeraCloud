@@ -1,6 +1,7 @@
 package eu.wauz.wazera.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -170,6 +171,19 @@ public class TasksDataService {
 		return workflow != null ? readWorkflowData(workflow) : null;
 	}
 	
+	public List<WorkflowTaskData> getAssignedTasks() {
+		List<WorkflowTaskData> assignedTasks = new ArrayList<>();
+		Integer userId = authService.getLoggedInUserId();
+		if(userId == null) {
+			return assignedTasks;
+		}
+		List<WorkflowTask> tasks = workflowTaskRepository.findByAssignedUserId(userId, getTaskHideDate());
+		for(WorkflowTask task : tasks) {
+			assignedTasks.add(readWorkflowTaskData(task));
+		}
+		return assignedTasks;
+	}
+	
 	public void deleteWorkflow(Integer documentId) {
 		if(documentId == null) {
 			return;
@@ -181,6 +195,8 @@ public class TasksDataService {
 		workflowRepository.delete(workflow);
 		List<WorkflowState> workflowStates = workflowStateRepository.findByWorkflowIdOrderBySortOrderAsc(workflow.getId());
 		workflowStateRepository.deleteAll(workflowStates);
+		List<WorkflowTask> workflowTasks = workflowTaskRepository.findByWorkflowId(workflow.getId());
+		workflowTaskRepository.deleteAll(workflowTasks);
 	}
 	
 	public void deleteWorkflowState(Integer workflowStateId) {
@@ -192,6 +208,8 @@ public class TasksDataService {
 			return;
 		}
 		workflowStateRepository.delete(workflowState);
+		List<WorkflowTask> workflowTasks = workflowTaskRepository.findByWorkflowStateId(workflowStateId);
+		workflowTaskRepository.deleteAll(workflowTasks);
 	}
 	
 	public void deleteWorkflowTask(Integer workflowTaskId) {
@@ -223,7 +241,8 @@ public class TasksDataService {
 		workflowStateData.setSortOrder(workflowState.getSortOrder());
 		workflowStateData.setBacklog(workflowState.isBacklog());
 		workflowStateData.setCompleted(workflowState.isCompleted());
-		List<WorkflowTask> workflowTasks = workflowTaskRepository.findByWorkflowStateIdOrderBySortOrderAsc(workflowState.getId());
+		
+		List<WorkflowTask> workflowTasks = workflowTaskRepository.findByWorkflowStateId(workflowState.getId(), getTaskHideDate());
 		workflowStateData.setTasks(workflowTasks.stream()
 				.filter(wt -> wt.getId() != excludeTaskId)
 				.map(wt -> readWorkflowTaskData(wt))
@@ -246,6 +265,13 @@ public class TasksDataService {
 		workflowTaskData.setCompletionDate(workflowTask.getCompletionDate());
 		workflowTaskData.setSortOrder(workflowTask.getSortOrder());
 		return workflowTaskData;
+	}
+	
+	private Date getTaskHideDate() {
+		Calendar calender = Calendar.getInstance();
+		calender.setTime(new Date());
+		calender.add(Calendar.DAY_OF_MONTH, -14);
+		return calender.getTime();
 	}
 
 }

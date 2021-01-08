@@ -357,7 +357,82 @@
 				<h:form id="mainForm">
 				
 					<p:outputPanel rendered="#{docsController.showHelp()}">
-						Placeholder
+						<p:dataTable
+							styleClass="task-table no-border"
+							value="#{tasksController.assignedTasks}"
+							var="task"
+				            paginator="true"
+				            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				            paginatorPosition="top"
+							rows="20"
+							rowsPerPageTemplate="10, 20, 50"
+							style="width: 100%;"
+							tableStyle="width: auto;">
+							
+							<p:column
+								headerText="ID"
+								sortBy="#{task.priority}"
+								filterBy="#{task.priority}"
+								styleClass="no-wrap"
+								style="min-width: 100px;">
+								<p:outputLabel value="#{task.id}"/>
+							</p:column>
+			
+							<p:column
+								headerText="Name"
+								sortBy="#{task.name}"
+								filterBy="#{task.name}"
+								styleClass="no-wrap"
+								style="min-width: 100px;">
+								<p:outputLabel value="#{task.name}"/>
+							</p:column>
+							
+							<p:column
+								headerText="Priority"
+								sortBy="#{task.priority.name}"
+								filterBy="#{task.priority.name}"
+								styleClass="no-wrap"
+								style="min-width: 100px;">
+								<p:outputPanel>
+									<p:outputLabel styleClass="#{task.priority.icon}" style="color: #{task.priority.color}; width: 12px; margin-right: 5px;"/>
+									<p:outputLabel value="#{task.priority.name}"/>
+								</p:outputPanel>
+							</p:column>
+							
+							<p:column
+								headerText="Status"
+								sortBy="#{task.statusText}"
+								filterBy="#{task.statusText}"
+								styleClass="no-wrap"
+								style="min-width: 100px;">
+								<p:outputLabel value="#{task.statusText}" style="color: #{task.statusColor}"/>
+							</p:column>
+							
+							<p:column
+								style="width: 99%;">
+							</p:column>
+							
+							<p:column
+								headerText="Options"
+								styleClass="no-wrap"
+								style="text-align: center;">
+								<p:commandButton
+									icon="ui-icon-arrow-4-diag"
+									actionListener="#{tasksController.setWorkflowTask(task)}"
+									onclick="PF('dialogAddWorkflowTask').show();"
+					            	update=":addWorkflowTaskDialogForm"
+					            	style="height: 18px;"/>
+				            	<p:commandButton
+									icon="ui-icon-trash"
+									actionListener="#{tasksController.deleteWorkflowTask(task)}"
+					            	update=":mainForm"
+									oncomplete="resizeEditor();"
+									style="height: 18px;">
+									<p:confirm header="Confirm" message="Delete Workflow Task &lt;#{task.name}&gt; permanently?" icon="ui-icon-alert"/>
+								</p:commandButton>
+							</p:column>
+							
+						</p:dataTable>
 					</p:outputPanel>
 
 					<p:outputPanel rendered="#{docsController.showEditor()}">
