@@ -16,92 +16,86 @@
 
 		<h:form>
 	
-			<p:panelGrid
-				columns="2"
-				styleClass="no-border gray-bg"
-				style="width: 100%;"
-				columnClasses="align-top seventy-percent, align-top thirty-percent">
-	
-				<p:dataTable
-					styleClass="role-table no-border"
-					value="#{roleController.roles}"
-					var="role"
-		            paginator="true"
-		            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-		            paginatorPosition="top"
-					rows="10"
-					rowsPerPageTemplate="10, 20, 50"
-					style="width: 100%;"
-					tableStyle="width: auto;">
-	
-					<p:column
-						headerText="ID"
-						sortBy="#{role.id}"
-						filterBy="#{role.id}"
-						styleClass="no-wrap"
-						style="min-width: 100px;">
-						<p:outputLabel value="#{role.id}"/>
-					</p:column>
-	
-					<p:column
-						headerText="Name"
-						sortBy="#{role.name}"
-						filterBy="#{role.name}"
-						styleClass="no-wrap"
-						style="min-width: 100px;">
-						<p:outputLabel value="#{role.name}"/>
-					</p:column>
-	
-					<p:column
-						headerText="Scope"
-						sortBy="#{role.scope}"
-						filterBy="#{role.scopeName}"
-						styleClass="no-wrap"
-						style="min-width: 100px;">
-						<p:outputLabel value="#{role.scopeName}"/>
-					</p:column>
-					
-					<p:column
-						style="width: 99%;">
-					</p:column>
-	
-					<p:column
-						headerText="Options"
-						styleClass="no-wrap"
-						style="text-align: center;">
-						<p:commandButton
-							icon="ui-icon-pencil"
-							title="Edit"
-							ajax="false"
-							action="editRole.xhtml">
-							<f:param name="roleId" value="#{role.id}" />
-						</p:commandButton>
-						<p:commandButton
-							icon="ui-icon-trash"
-							title="Delete"
-							actionListener="#{roleController.deleteRole(role)}"
-							update="@(.role-table)">
-							<p:confirm header="Confirm" message="Delete Role &lt;#{role.name}&gt; permanently?" icon="ui-icon-alert"/>
-						</p:commandButton>
-					</p:column>
-	
-					<f:facet name="footer">
-		        		<p:commandButton
-		        			icon="ui-icon-plus"
-		        			value="New Role"
-		        			actionListener="#{roleController.setNewRole()}"
-		        			update="@(.newRoleDialog)"
-		        			oncomplete="PF('newRoleDialog').show();"/>
-		    		</f:facet>
-				</p:dataTable>
+			<p:dataTable
+				styleClass="role-table no-border"
+				value="#{roleController.roles}"
+				var="role"
+	            paginator="true"
+	            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+	            paginatorPosition="top"
+				rows="15"
+				rowsPerPageTemplate="15, 30, 60, 100"
+				style="width: calc(100% - 6px); margin: 3px;"
+				tableStyle="width: auto;">
 				
-				<p:panel header="Help: Role Management" layout="grid" styleClass="gray-bg-dark" style="width: 100%;">
-					<p>
-						Placeholder Text
-					</p>
-				</p:panel>
-	
-			</p:panelGrid>
+				<f:facet name="header">
+			        Role Database
+			    </f:facet>
+
+				<p:column
+					headerText="ID"
+					sortBy="#{role.id}"
+					filterBy="#{role.id}"
+					filterMatchMode="contains"
+					styleClass="no-wrap"
+					style="min-width: 100px;">
+					<p:outputLabel value="#{role.id}"/>
+				</p:column>
+
+				<p:column
+					headerText="Role"
+					sortBy="#{role.name}"
+					filterBy="#{role.name}"
+					filterMatchMode="contains"
+					styleClass="no-wrap"
+					style="min-width: 100px;">
+					<p:outputLabel value="#{role.name}"/>
+				</p:column>
+
+				<p:column
+					headerText="Scope"
+					sortBy="#{role.scope}"
+					filterBy="#{role.scopeName}"
+					styleClass="no-wrap"
+					style="min-width: 100px;">
+					<p:outputLabel value="#{role.scopeName}"/>
+				</p:column>
+				
+				<p:column
+					style="width: 99%;">
+				</p:column>
+
+				<p:column
+					headerText="Options"
+					styleClass="no-wrap"
+					style="text-align: center;">
+					<p:commandButton
+						icon="ui-icon-pencil"
+						title="Edit"
+						ajax="false"
+						action="editRole.xhtml"
+						style="height: 18px;">
+						<f:param name="roleId" value="#{role.id}" />
+					</p:commandButton>
+					<p:commandButton
+						icon="ui-icon-trash"
+						title="Delete"
+						actionListener="#{roleController.deleteRole(role)}"
+						update="@(.role-table)"
+						style="height: 18px;">
+						<p:confirm header="Confirm" message="Delete Role &lt;#{role.name}&gt; permanently?" icon="ui-icon-alert"/>
+					</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+	        		<p:commandButton
+	        			icon="ui-icon-plus"
+	        			value="New Role"
+	        			actionListener="#{roleController.setNewRole()}"
+	        			update="@(.newRoleDialog)"
+	        			oncomplete="PF('newRoleDialog').show();"/>
+	    		</f:facet>
+			</p:dataTable>
 	
 		</h:form>
 		

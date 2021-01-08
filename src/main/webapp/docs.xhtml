@@ -356,7 +356,7 @@
 
 				<h:form id="mainForm">
 				
-					<p:outputPanel rendered="#{docsController.showHelp()}">
+					<p:outputPanel rendered="#{docsController.showDashboard()}">
 						<p:dataTable
 							styleClass="task-table no-border"
 							value="#{tasksController.assignedTasks}"
@@ -364,35 +364,37 @@
 				            paginator="true"
 				            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				            paginatorPosition="top"
-							rows="20"
-							rowsPerPageTemplate="10, 20, 50"
+							rows="15"
+							rowsPerPageTemplate="15, 30, 60, 100"
+							emptyMessage="You have no active tasks at the moment."
 							style="width: 100%;"
 							tableStyle="width: auto;">
 							
+							<f:facet name="header">
+						        Your Active Tasks
+						    </f:facet>
+							
 							<p:column
 								headerText="ID"
-								sortBy="#{task.priority}"
-								filterBy="#{task.priority}"
-								styleClass="no-wrap"
-								style="min-width: 100px;">
+								styleClass="no-wrap">
 								<p:outputLabel value="#{task.id}"/>
 							</p:column>
 			
 							<p:column
 								headerText="Name"
-								sortBy="#{task.name}"
-								filterBy="#{task.name}"
-								styleClass="no-wrap"
-								style="min-width: 100px;">
+								styleClass="no-wrap">
 								<p:outputLabel value="#{task.name}"/>
 							</p:column>
 							
 							<p:column
+								headerText="Workflow"
+								styleClass="no-wrap">
+								<p:outputLabel value="#{task.workflowName}, #{task.workflowStateName}"/>
+							</p:column>
+							
+							<p:column
 								headerText="Priority"
-								sortBy="#{task.priority.name}"
-								filterBy="#{task.priority.name}"
-								styleClass="no-wrap"
-								style="min-width: 100px;">
+								styleClass="no-wrap">
 								<p:outputPanel>
 									<p:outputLabel styleClass="#{task.priority.icon}" style="color: #{task.priority.color}; width: 12px; margin-right: 5px;"/>
 									<p:outputLabel value="#{task.priority.name}"/>
@@ -401,10 +403,7 @@
 							
 							<p:column
 								headerText="Status"
-								sortBy="#{task.statusText}"
-								filterBy="#{task.statusText}"
-								styleClass="no-wrap"
-								style="min-width: 100px;">
+								styleClass="no-wrap">
 								<p:outputLabel value="#{task.statusText}" style="color: #{task.statusColor}"/>
 							</p:column>
 							

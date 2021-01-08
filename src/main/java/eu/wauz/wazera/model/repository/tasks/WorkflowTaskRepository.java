@@ -17,7 +17,7 @@ public interface WorkflowTaskRepository extends CrudRepository<WorkflowTask, Int
 	@Query("select task from WorkflowTask task where task.workflowStateId is :workflowStateId and (task.completionDate = null or task.completionDate > :date) order by task.sortOrder asc")
 	List<WorkflowTask> findByWorkflowStateId(Integer workflowStateId, Date date);
 	
-	@Query("select task from WorkflowTask task where task.assignedUserId is :assignedUserId and (task.completionDate = null or task.completionDate > :date) order by task.priority asc, task.deadlineDate asc")
+	@Query("select task from WorkflowTask task where task.assignedUserId is :assignedUserId and (task.completionDate = null or task.completionDate > :date) order by task.completionDate desc nulls first, task.priority asc, task.deadlineDate asc nulls last")
 	List<WorkflowTask> findByAssignedUserId(Integer assignedUserId, Date date);
 
 }

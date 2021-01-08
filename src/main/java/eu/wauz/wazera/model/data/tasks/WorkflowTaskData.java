@@ -13,6 +13,10 @@ public class WorkflowTaskData {
 	
 	private Integer workflowStateId;
 	
+	private String workflowName;
+	
+	private String workflowStateName;
+	
 	private String name;
 	
 	private String description;
@@ -57,6 +61,22 @@ public class WorkflowTaskData {
 
 	public void setWorkflowStateId(Integer workflowStateId) {
 		this.workflowStateId = workflowStateId;
+	}
+
+	public String getWorkflowName() {
+		return workflowName;
+	}
+
+	public void setWorkflowName(String workflowName) {
+		this.workflowName = workflowName;
+	}
+
+	public String getWorkflowStateName() {
+		return workflowStateName;
+	}
+
+	public void setWorkflowStateName(String workflowStateName) {
+		this.workflowStateName = workflowStateName;
 	}
 
 	public String getName() {

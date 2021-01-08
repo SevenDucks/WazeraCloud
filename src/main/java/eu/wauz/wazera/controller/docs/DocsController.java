@@ -240,7 +240,7 @@ public class DocsController implements Serializable {
 		inputName = "";
 	}
 	
-	public boolean showHelp() {
+	public boolean showDashboard() {
 		return selectedNode == null || selectedNode.getType().equals("directoryNode") || selectedNode.getType().equals("rootNode");
 	}
 

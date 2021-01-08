@@ -16,83 +16,77 @@
 
 		<h:form>
 	
-			<p:panelGrid
-				columns="2"
-				styleClass="no-border gray-bg"
-				style="width: 100%;"
-				columnClasses="align-top seventy-percent, align-top thirty-percent">
-	
-				<p:dataTable
-					styleClass="user-table no-border"
-					value="#{userController.users}"
-					var="user"
-		            paginator="true"
-		            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-		            paginatorPosition="top"
-					rows="10"
-					rowsPerPageTemplate="10, 20, 50"
-					style="width: 100%;"
-					tableStyle="width: auto;">
-	
-					<p:column
-						headerText="ID"
-						sortBy="#{user.id}"
-						filterBy="#{user.id}"
-						styleClass="no-wrap"
-						style="min-width: 100px;">
-						<p:outputLabel value="#{user.id}"/>
-					</p:column>
-	
-					<p:column
-						headerText="Name"
-						sortBy="#{user.username}"
-						filterBy="#{user.username}"
-						styleClass="no-wrap"
-						style="min-width: 100px;">
-						<p:outputLabel value="#{user.username}"/>
-					</p:column>
-					
-					<p:column
-						style="width: 99%;">
-					</p:column>
-	
-					<p:column
-						headerText="Options"
-						styleClass="no-wrap"
-						style="text-align: center;">
-						<p:commandButton
-							icon="ui-icon-pencil"
-							title="Edit"
-							ajax="false"
-							action="editUser.xhtml">
-							<f:param name="username" value="#{user.username}" />
-						</p:commandButton>
-						<p:commandButton
-							icon="ui-icon-trash"
-							title="Delete"
-							actionListener="#{userController.deleteUser(user)}"
-		        			update="@(.user-table)">
-		        			<p:confirm header="Confirm" message="Delete User &lt;#{user.username}&gt; permanently?" icon="ui-icon-alert"/>
-	        			</p:commandButton>
-					</p:column>
-	
-					<f:facet name="footer">
-		        		<p:commandButton
-		        			icon="ui-icon-plus"
-		        			value="New User"
-		        			actionListener="#{userController.setNewUser()}"
-		        			update="@(.newUserDialog)"
-		        			oncomplete="PF('newUserDialog').show();"/>
-		    		</f:facet>
-				</p:dataTable>
+			<p:dataTable
+				styleClass="user-table no-border"
+				value="#{userController.users}"
+				var="user"
+	            paginator="true"
+	            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+	            paginatorPosition="top"
+				rows="15"
+				rowsPerPageTemplate="15, 30, 60, 100"
+				style="width: calc(100% - 6px); margin: 3px;"
+				tableStyle="width: auto;">
 				
-				<p:panel header="Help: User Management" layout="grid" styleClass="gray-bg-dark" style="width: 100%;">
-					<p>
-						Placeholder Text
-					</p>
-				</p:panel>
-	
-			</p:panelGrid>
+				<f:facet name="header">
+			        User Database
+			    </f:facet>
+
+				<p:column
+					headerText="ID"
+					sortBy="#{user.id}"
+					filterBy="#{user.id}"
+					filterMatchMode="contains"
+					styleClass="no-wrap"
+					style="min-width: 100px;">
+					<p:outputLabel value="#{user.id}"/>
+				</p:column>
+
+				<p:column
+					headerText="Username"
+					sortBy="#{user.username}"
+					filterBy="#{user.username}"
+					filterMatchMode="contains"
+					styleClass="no-wrap"
+					style="min-width: 100px;">
+					<p:outputLabel value="#{user.username}"/>
+				</p:column>
+				
+				<p:column
+					style="width: 99%;">
+				</p:column>
+
+				<p:column
+					headerText="Options"
+					styleClass="no-wrap"
+					style="text-align: center;">
+					<p:commandButton
+						icon="ui-icon-pencil"
+						title="Edit"
+						ajax="false"
+						action="editUser.xhtml"
+						style="height: 18px;">
+						<f:param name="username" value="#{user.username}" />
+					</p:commandButton>
+					<p:commandButton
+						icon="ui-icon-trash"
+						title="Delete"
+						actionListener="#{userController.deleteUser(user)}"
+	        			update="@(.user-table)"
+	        			style="height: 18px;">
+	        			<p:confirm header="Confirm" message="Delete User &lt;#{user.username}&gt; permanently?" icon="ui-icon-alert"/>
+        			</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+	        		<p:commandButton
+	        			icon="ui-icon-plus"
+	        			value="New User"
+	        			actionListener="#{userController.setNewUser()}"
+	        			update="@(.newUserDialog)"
+	        			oncomplete="PF('newUserDialog').show();"/>
+	    		</f:facet>
+			</p:dataTable>
 	
 		</h:form>
 		

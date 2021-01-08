@@ -15,9 +15,11 @@ import eu.wauz.wazera.model.data.docs.DocumentData;
 import eu.wauz.wazera.model.data.tasks.WorkflowData;
 import eu.wauz.wazera.model.data.tasks.WorkflowStateData;
 import eu.wauz.wazera.model.data.tasks.WorkflowTaskData;
+import eu.wauz.wazera.model.entity.docs.Document;
 import eu.wauz.wazera.model.entity.tasks.Workflow;
 import eu.wauz.wazera.model.entity.tasks.WorkflowState;
 import eu.wauz.wazera.model.entity.tasks.WorkflowTask;
+import eu.wauz.wazera.model.repository.docs.DocumentRepository;
 import eu.wauz.wazera.model.repository.tasks.WorkflowRepository;
 import eu.wauz.wazera.model.repository.tasks.WorkflowStateRepository;
 import eu.wauz.wazera.model.repository.tasks.WorkflowTaskRepository;
@@ -37,6 +39,9 @@ public class TasksDataService {
 	
 	@Autowired
 	private WorkflowTaskRepository workflowTaskRepository;
+	
+	@Autowired
+    private DocumentRepository documentRepository;
 	
 	public WorkflowData saveNewWorkflow(DocumentData documentData) {
 		WorkflowData workflowData = new WorkflowData();
@@ -255,6 +260,17 @@ public class TasksDataService {
 		workflowTaskData.setId(workflowTask.getId());
 		workflowTaskData.setWorkflowId(workflowTask.getWorkflowId());
 		workflowTaskData.setWorkflowStateId(workflowTask.getWorkflowStateId());
+		Workflow workflow = workflowRepository.findById(workflowTask.getWorkflowId()).orElse(null);
+		if(workflow != null) {
+			Document document = documentRepository.findById(workflow.getDocumentId()).orElse(null);
+			if(document != null) {
+				workflowTaskData.setWorkflowName(document.getName());
+			}
+		}
+		WorkflowState workflowState = workflowStateRepository.findById(workflowTask.getWorkflowStateId()).orElse(null);
+		if(workflowState != null) {
+			workflowTaskData.setWorkflowStateName(workflowState.getName());
+		}
 		workflowTaskData.setName(workflowTask.getName());
 		workflowTaskData.setDescription(workflowTask.getDescription());
 		workflowTaskData.setPriority(workflowTask.getPriority());

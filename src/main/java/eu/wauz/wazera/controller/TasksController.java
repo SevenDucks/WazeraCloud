@@ -146,6 +146,7 @@ public class TasksController implements Serializable {
 
 	public void setWorkflowTask(WorkflowTaskData workflowTask) {
 		this.workflowTask = workflowTask;
+		setWorkflow(tasksService.getWorkflow(workflowTask.getWorkflowId()));
 	}
 
 	public void setNewWorkflowTask() {

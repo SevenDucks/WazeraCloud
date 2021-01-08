@@ -239,7 +239,8 @@ public class DocumentsDataService {
 		wazeraTool.checkForValidFileName(documentData.getName());
 
         Document document = null;
-		if(documentData.getId() != null) {
+        boolean isTransient = documentData.getId() == null;
+		if(!isTransient) {
 			document = documentRepository.findById(documentData.getId()).orElse(null);
 		}
 		else {
@@ -278,7 +279,7 @@ public class DocumentsDataService {
         		.collect(Collectors.toList());
         documentTagRepository.saveAll(documentTagsToAdd);
 
-        if("workflowNode".equals(documentData.getType())) {
+        if(isTransient && "workflowNode".equals(documentData.getType())) {
         	tasksService.saveNewWorkflow(documentData);
         }
         return documentData;
