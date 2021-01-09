@@ -37,6 +37,8 @@ public class WorkflowTaskData {
 	
 	private Date completionDate;
 	
+	private Date editDate;
+	
 	private Integer sortOrder;
 
 	public Integer getId() {
@@ -168,6 +170,14 @@ public class WorkflowTaskData {
 
 	public void setCompletionDate(Date completionDate) {
 		this.completionDate = completionDate;
+	}
+
+	public Date getEditDate() {
+		return editDate;
+	}
+
+	public void setEditDate(Date editDate) {
+		this.editDate = editDate;
 	}
 
 	public Integer getSortOrder() {

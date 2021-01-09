@@ -812,14 +812,18 @@
 					
 					<p:outputLabel value="Name: "/>
 					<p:outputLabel/>
-					<p:inputText value="#{tasksController.workflowTask.name}" style="width: 510px; margin-bottom: 10px;"/>
+					<p:inputText
+						value="#{tasksController.workflowTask.name}"
+						disabled="#{!tasksController.allowEditing}"
+						style="width: 510px; margin-bottom: 10px;"/>
 					<p:outputLabel/>
 					<p:outputLabel value="Description: "/>
 					<p:outputLabel/>
 					<p:textEditor
 						value="#{tasksController.workflowTask.description}"
-						readonly="false"
-						height="315"
+						toolbarVisible="#{tasksController.allowEditing}"
+						readonly="#{!tasksController.allowEditing}"
+						height="#{tasksController.allowEditing ? '314' : '392'}"
 						styleClass="text-editor"/>
 					
 					<h:panelGrid columns="3">
@@ -827,6 +831,7 @@
 						<p:outputLabel value="Assignee: "/>
 						<p:selectOneMenu
 							value="#{tasksController.workflowTask.assignedUserId}"
+							disabled="#{!tasksController.allowEditing}"
 							style="width: 180px;">
 							<f:selectItem itemLabel="Not Assigned" itemValue="#{null}"/>
 							<f:selectItems
@@ -839,6 +844,7 @@
 						<p:outputLabel value="Priority: "/>
 						<p:selectOneMenu
 							value="#{tasksController.workflowTask.priority}"
+							disabled="#{!tasksController.allowEditing}"
 							style="width: 180px;">
 							<f:selectItems
 								value="#{tasksController.priorities}"
@@ -851,6 +857,7 @@
 				        <p:outputLabel value="Workflow State: "/>
 						<p:selectOneMenu
 							value="#{tasksController.workflowTask.workflowStateId}"
+							disabled="#{!tasksController.allowEditing}"
 							style="width: 180px;">
 							<f:selectItems
 								value="#{tasksController.workflow.states}"
@@ -863,7 +870,7 @@
 						<p:datePicker
 							value="#{tasksController.workflowTask.deadlineDate}"
 							pattern="yyyy.MM.dd"
-							disabled="false"/>
+							disabled="#{!tasksController.allowEditing}"/>
 						<p:outputLabel styleClass="fa fa-check-circle"/>
 						<p:outputLabel value="Completion Date: "/>
 						<p:datePicker
@@ -885,16 +892,54 @@
 							value="#{tasksController.workflowTask.creationDate}"
 							pattern="yyyy.MM.dd"
 							disabled="true"/>
+						<p:outputLabel styleClass="fa fa-chevron-circle-right"/>
+						<p:outputLabel value="Last Edit Date: "/>
+						<p:datePicker
+							value="#{tasksController.workflowTask.editDate}"
+							pattern="yyyy.MM.dd"
+							disabled="true"/>
 					</h:panelGrid>
 					
 				</h:panelGrid>
 				<p:commandButton
+					value="Edit"
+					icon="ui-icon-pencil"
+					rendered="#{tasksController.workflowTask.id != null}"
+					disabled="#{tasksController.allowEditing}"
+					actionListener="#{tasksController.setAllowEditing(true)}"
+					update=":addWorkflowTaskDialogForm"
+					style="height: 25px; margin-left: 3px;"/>
+				<p:commandButton
+					value="Quick Save"
 					icon="ui-icon-disk"
+					rendered="#{tasksController.workflowTask.id != null}"
+					disabled="#{!tasksController.allowEditing}"
+					actionListener="#{tasksController.saveWorkflowTask(false)}"
+					update=":mainForm :addWorkflowTaskDialogForm"
+					style="height: 25px; margin-left: 3px;"/>
+				<p:commandButton
 					value="Save"
-					actionListener="#{tasksController.saveWorkflowTask()}"
-					update=":mainForm"
-					oncomplete="PF('dialogAddWorkflowTask').hide(); resizeEditor();"
-					style="margin-left: 3px;"/>
+					icon="ui-icon-disk"
+					disabled="#{!tasksController.allowEditing}"
+					actionListener="#{tasksController.saveWorkflowTask(true)}"
+					update=":mainForm :addWorkflowTaskDialogForm"
+					oncomplete="PF('dialogAddWorkflowTask').hide();"
+					style="height: 25px; margin-left: 3px;"/>
+				<p:commandButton
+					id="buttonCancel"
+					value="Cancel"
+					icon="ui-icon-close"
+					rendered="#{tasksController.workflowTask.id != null}"
+					disabled="#{!tasksController.allowEditing}"
+					actionListener="#{tasksController.setAllowEditing(false)}"
+					update=":addWorkflowTaskDialogForm"
+					process="@this"
+					style="height: 25px; margin-left: 3px;">
+					<p:confirm
+						header="Confirm"
+						message="Cancel Editing? Unsaved Changes will be lost!"
+						icon="ui-icon-alert"/>
+				</p:commandButton>
 			</h:form>
 		</p:dialog>
 		

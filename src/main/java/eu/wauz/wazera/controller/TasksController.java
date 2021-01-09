@@ -44,6 +44,8 @@ public class TasksController implements Serializable {
 	
 	private DashboardModel model;
 	
+	private boolean allowEditing;
+	
 	private WazeraTool wazeraTool;
 
 	@PostConstruct
@@ -67,10 +69,12 @@ public class TasksController implements Serializable {
 		updateDashboardModel();
 	}
 	
-	public void resetWorkflowModel() {
+	public void resetWorkflowModel(boolean resetAll) {
 		setWorkflow(tasksService.getWorkflow(workflow.getId()));
-		setNewWorkflowState();
-		setNewWorkflowTask();
+		if(resetAll) {
+			setNewWorkflowState();
+			setNewWorkflowTask();
+		}
 	}
 	
 	public WorkflowStateData getWorkflowState() {
@@ -106,7 +110,7 @@ public class TasksController implements Serializable {
 		workflowstate.setSortOrder(newIndex);
 		try {
 			tasksService.saveWorkflow(workflow);
-			resetWorkflowModel();
+			resetWorkflowModel(true);
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
@@ -119,7 +123,7 @@ public class TasksController implements Serializable {
 				workflow.getStates().add(workflowState);
 			}
 			tasksService.saveWorkflow(workflow);
-			resetWorkflowModel();
+			resetWorkflowModel(true);
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
@@ -129,7 +133,7 @@ public class TasksController implements Serializable {
 	public void deleteWorkflowState(WorkflowStateData workflowStateData) {
 		try {
 			tasksService.deleteWorkflowState(workflowStateData.getId());
-			resetWorkflowModel();
+			resetWorkflowModel(true);
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
@@ -147,6 +151,7 @@ public class TasksController implements Serializable {
 	public void setWorkflowTask(WorkflowTaskData workflowTask) {
 		this.workflowTask = workflowTask;
 		setWorkflow(tasksService.getWorkflow(workflowTask.getWorkflowId()));
+		allowEditing = false;
 	}
 
 	public void setNewWorkflowTask() {
@@ -162,19 +167,22 @@ public class TasksController implements Serializable {
 		workflowTask.setDeadlineDate(null);
 		workflowTask.setCompletionDate(null);
 		workflowTask.setSortOrder(-1);
+		allowEditing = true;
 	}
 	
-	public void saveWorkflowTask() {
+	public void saveWorkflowTask(boolean exit) {
 		try {
 			for(WorkflowStateData stateData : workflow.getStates()) {
 				if(stateData.getId().equals(workflowTask.getWorkflowStateId())) {
 					workflowState = stateData;
-					workflowState.getTasks().add(workflowTask);
-					tasksService.saveWorkflowStateTasks(workflowState);
-					resetWorkflowModel();
 					break;
 				}
 			}
+			workflowTask.setEditDate(new Date());
+			workflowState.getTasks().add(workflowTask);
+			tasksService.saveWorkflowStateTasks(workflowState);
+			resetWorkflowModel(exit);
+			allowEditing = !exit;
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
@@ -186,7 +194,7 @@ public class TasksController implements Serializable {
 			Integer taskId = Integer.parseInt(event.getWidgetId().replace("task", ""));
 			Integer stateId = workflow.getStates().get(event.getColumnIndex()).getId();
 			tasksService.reorderWorkflowTasks(taskId, stateId, event.getItemIndex());
-			resetWorkflowModel();
+			resetWorkflowModel(true);
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
@@ -196,7 +204,7 @@ public class TasksController implements Serializable {
 	public void deleteWorkflowTask(WorkflowTaskData workflowTask) {
 		try {
 			tasksService.deleteWorkflowTask(workflowTask.getId());
-			resetWorkflowModel();
+			resetWorkflowModel(true);
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
@@ -223,6 +231,15 @@ public class TasksController implements Serializable {
 		}
 	}
 	
+	public boolean isAllowEditing() {
+		return allowEditing;
+	}
+
+	public void setAllowEditing(boolean allowEditing) {
+		this.allowEditing = allowEditing;
+		System.out.println(workflowTask.getName());
+	}
+
 	public Priority[] getPriorities() {
 		return Priority.values();
 	}

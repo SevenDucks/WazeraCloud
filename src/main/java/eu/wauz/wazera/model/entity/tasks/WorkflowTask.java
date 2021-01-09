@@ -56,6 +56,9 @@ public class WorkflowTask implements Serializable {
 	private Date completionDate;
 	
 	@Column
+	private Date editDate;
+	
+	@Column
 	private Integer sortOrder;
 
 	public Integer getId() {
@@ -144,6 +147,14 @@ public class WorkflowTask implements Serializable {
 
 	public void setCompletionDate(Date completionDate) {
 		this.completionDate = completionDate;
+	}
+
+	public Date getEditDate() {
+		return editDate;
+	}
+
+	public void setEditDate(Date editDate) {
+		this.editDate = editDate;
 	}
 
 	public Integer getSortOrder() {

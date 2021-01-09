@@ -138,6 +138,7 @@ public class TasksDataService {
 			else {
 				workflowTask.setCompletionDate(null);
 			}
+			workflowTask.setEditDate(workflowTaskData.getEditDate());
 			workflowTask.setSortOrder(sortOrder++);
 			workflowTaskRepository.save(workflowTask);
 		}
@@ -152,6 +153,7 @@ public class TasksDataService {
 		if(task == null || state == null) {
 			return;
 		}
+		task.setEditDate(new Date());
 		WorkflowStateData stateData = readWorkflowStateData(state, taskId);
 		if(itemIndex < 0 || itemIndex > stateData.getTasks().size()) {
 			itemIndex = 0;
@@ -279,6 +281,7 @@ public class TasksDataService {
 		workflowTaskData.setCreationDate(workflowTask.getCreationDate());
 		workflowTaskData.setDeadlineDate(workflowTask.getDeadlineDate());
 		workflowTaskData.setCompletionDate(workflowTask.getCompletionDate());
+		workflowTaskData.setEditDate(workflowTask.getEditDate());
 		workflowTaskData.setSortOrder(workflowTask.getSortOrder());
 		return workflowTaskData;
 	}
