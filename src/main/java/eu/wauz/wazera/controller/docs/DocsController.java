@@ -7,7 +7,9 @@ import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.TreeDragDropEvent;
@@ -256,6 +258,10 @@ public class DocsController implements Serializable {
 	public boolean showWorkflow() {
 		return selectedNode != null && selectedNode.getType().equals("workflowNode");
 	}
+	
+	public boolean showButtonBar() {
+		return (showEditor() && canViewDocuments()) || (showWorkflow() && canViewWorkflows());
+	}
 
 	public void saveDocument(boolean exit) {
 		DocumentTreeNode selectedDocumentData = (DocumentTreeNode) selectedNode;
@@ -485,11 +491,12 @@ public class DocsController implements Serializable {
 
     public String getDocumentLink() {
     	try {
-    		String baseUrl = "http://localhost:8080/";
-
+    		HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+    		String contextPath = req.getContextPath();
+    		String baseUrl = StringUtils.substringBefore(req.getRequestURL().toString(), contextPath) + contextPath;
     		if(selectedNode instanceof DocumentTreeNode) {
 				Integer docId = selectedNode != null ? ((DocumentTreeNode) selectedNode).getDocumentData().getId() : 0;
-				return baseUrl + "WazeraCloud/docs.xhtml?docId=" + docId;
+				return baseUrl + "/docs.xhtml?docId=" + docId;
     		}
 		}
 		catch (Exception e) {

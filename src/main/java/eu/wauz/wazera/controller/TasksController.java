@@ -113,6 +113,7 @@ public class TasksController implements Serializable {
 		workflowstate.setSortOrder(newIndex);
 		try {
 			tasksService.saveWorkflow(workflow);
+			wazeraTool.showInfoMessage("Your Workflow State was reordered!");
 			resetWorkflowModel(true);
 		}
 		catch (Exception e) {
@@ -126,6 +127,7 @@ public class TasksController implements Serializable {
 				workflow.getStates().add(workflowState);
 			}
 			tasksService.saveWorkflow(workflow);
+			wazeraTool.showInfoMessage("Your Workflow States were updated!");
 			resetWorkflowModel(true);
 		}
 		catch (Exception e) {
@@ -136,6 +138,7 @@ public class TasksController implements Serializable {
 	public void deleteWorkflowState(WorkflowStateData workflowStateData) {
 		try {
 			tasksService.deleteWorkflowState(workflowStateData.getId());
+			wazeraTool.showInfoMessage("Your Workflow State was deleted!");
 			resetWorkflowModel(true);
 		}
 		catch (Exception e) {
@@ -185,6 +188,7 @@ public class TasksController implements Serializable {
 			workflowTask.setEditDate(new Date());
 			workflowState.getTasks().add(workflowTask);
 			tasksService.saveWorkflowStateTasks(workflowState);
+			wazeraTool.showInfoMessage("Your Task was saved!");
 			resetWorkflowModel(exit);
 			allowEditing = !exit;
 		}
@@ -198,6 +202,7 @@ public class TasksController implements Serializable {
 			Integer taskId = Integer.parseInt(event.getWidgetId().replace("task", ""));
 			Integer stateId = workflow.getStates().get(event.getColumnIndex()).getId();
 			tasksService.reorderWorkflowTasks(taskId, stateId, event.getItemIndex());
+			wazeraTool.showInfoMessage("Your Task was reordered!");
 			resetWorkflowModel(true);
 		}
 		catch (Exception e) {
@@ -208,6 +213,7 @@ public class TasksController implements Serializable {
 	public void deleteWorkflowTask(WorkflowTaskData workflowTask) {
 		try {
 			tasksService.deleteWorkflowTask(workflowTask.getId());
+			wazeraTool.showInfoMessage("Your Task was deleted!");
 			resetWorkflowModel(true);
 		}
 		catch (Exception e) {

@@ -5,6 +5,9 @@ body {
 }
 
 .no-border,
+.no-border > .ui-datatable-header,
+.no-border > .ui-widget-header,
+.no-border > .ui-widget-footer,
 .ui-widget-content.no-border tr,
 .ui-widget-content.no-border td,
 .ui-datatable.no-border th,

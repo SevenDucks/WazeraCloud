@@ -109,6 +109,9 @@ public class AuthDataService {
 	}
 
 	public boolean hasPermission(String username, Integer permissionId) {
+		if(username == null || permissionId == null) {
+			return false;
+		}
 		if(username.equals("root")) {
 			return true;
 		}

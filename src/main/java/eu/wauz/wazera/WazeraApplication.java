@@ -63,7 +63,7 @@ public class WazeraApplication extends SpringBootServletInitializer {
     @Bean
     public JpaVendorAdapter jpaVendorAdapter() {
         HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
-        hibernateJpaVendorAdapter.setShowSql(true);
+        hibernateJpaVendorAdapter.setShowSql(false);
         hibernateJpaVendorAdapter.setGenerateDdl(true);
         hibernateJpaVendorAdapter.setDatabase(Database.H2);
         hibernateJpaVendorAdapter.setDatabasePlatform("org.hibernate.dialect.MySQL5Dialect");
