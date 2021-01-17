@@ -19,8 +19,10 @@ import org.springframework.stereotype.Controller;
 
 import eu.wauz.wazera.WazeraTool;
 import eu.wauz.wazera.controller.TasksController;
+import eu.wauz.wazera.model.data.auth.Permission;
 import eu.wauz.wazera.model.data.docs.DocumentData;
 import eu.wauz.wazera.model.data.docs.FolderData;
+import eu.wauz.wazera.service.AuthDataService;
 import eu.wauz.wazera.service.DocumentsDataService;
 import eu.wauz.wazera.service.FoldersDataService;
 
@@ -35,6 +37,9 @@ public class DocsController implements Serializable {
 
 	@Autowired
 	private FoldersDataService foldersService;
+	
+	@Autowired
+	private AuthDataService authService;
 	
 	@Autowired
 	private TasksController tasksController;
@@ -492,5 +497,37 @@ public class DocsController implements Serializable {
 		}
     	return "";
     }
+    
+    public boolean canEditFolders() {
+		return authService.hasPermission(wazeraTool.getUsername(), Permission.EDIT_FOLDERS.getId());
+	}
+    
+    public boolean canDeleteFolders() {
+		return authService.hasPermission(wazeraTool.getUsername(), Permission.DELETE_FOLDERS.getId());
+	}
+    
+    public boolean canViewDocuments() {
+		return authService.hasPermission(wazeraTool.getUsername(), Permission.VIEW_DOCUMENTS.getId());
+	}
+    
+    public boolean canEditDocuments() {
+		return authService.hasPermission(wazeraTool.getUsername(), Permission.EDIT_DOCUMENTS.getId());
+	}
+    
+    public boolean canDeleteDocuments() {
+		return authService.hasPermission(wazeraTool.getUsername(), Permission.DELETE_DOCUMENTS.getId());
+	}
+    
+    public boolean canViewWorkflows() {
+		return authService.hasPermission(wazeraTool.getUsername(), Permission.VIEW_WORKFLOWS.getId());
+	}
+    
+    public boolean canEditWorkflows() {
+		return authService.hasPermission(wazeraTool.getUsername(), Permission.EDIT_WORKFLOWS.getId());
+	}
+    
+    public boolean canDeleteWorkflows() {
+		return authService.hasPermission(wazeraTool.getUsername(), Permission.DELETE_WORKFLOWS.getId());
+	}
 
 }

@@ -49,12 +49,20 @@
 					
 			        <f:facet name="options">
 			        	<p:button
-			        		icon="ui-icon-contact" value="Feedback"
+			        		icon="ui-icon-contact"
+			        		value="Feedback"
 			        		href="mailto:dev@wauz.eu"
 			        		styleClass="no-spacing"
 			        		style="margin-right: 5px !important;"/>
+		        		<p:button
+							icon="ui-icon-person"
+							value="Profile"
+							href="#{request.contextPath}/auth/editUser.xhtml"
+							styleClass="no-spacing"
+							style="margin-right: 5px !important;"/>
 			        	<p:button
-			        		icon="ui-icon-power" value="Logout"
+			        		icon="ui-icon-power"
+			        		value="Logout"
 			        		href="#{request.contextPath}/perform_logout"
 			        		styleClass="no-spacing"
 			        		style="margin-right: 5px !important;"/>

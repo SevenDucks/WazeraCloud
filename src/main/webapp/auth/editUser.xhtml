@@ -15,18 +15,31 @@
     <ui:define name="center">
 
 		<p:tabView styleClass="no-border gray-bg">
+		
+			<p:tab title="Profile Page">
+				<p:panelGrid columns="1" styleClass="no-border gray-bg">
+					<f:facet name="header">
+						<p:outputLabel value="Profile Page of #{userController.user.username}" style="font-weight: 800;"/>
+					</f:facet>
+					
+					<p:outputLabel value="Profile Pages will be added in a future update!"/>
+				</p:panelGrid>
+			</p:tab>
 	
 			<p:tab title="Change Password" disabled="#{!userController.mayChangePassword()}">
 			
 				<h:form>
 					<p:panelGrid columns="2" styleClass="no-border gray-bg">
 						<f:facet name="header">
-							<p:outputLabel value="User Password: #{userController.user.username}" style="font-weight: 800;"/>
+							<p:outputLabel value="Change Password of #{userController.user.username}" style="font-weight: 800;"/>
 						</f:facet>
+						
 						<p:outputLabel value="New Password: "/>
 						<p:password value="#{userController.passwordInput1}"/>
+						
 						<p:outputLabel value="Repeat Password: "/>
 						<p:password value="#{userController.passwordInput2}"/>
+						
 						<p:commandButton
 							icon="ui-icon-disk"
 							value="Save"
@@ -42,18 +55,18 @@
 				<h:form>
 					<p:panelGrid columns="1" styleClass="no-border gray-bg">
 						<f:facet name="header">
-							<p:outputLabel value="User Roles: #{userController.user.username}" style="font-weight: 800;"/>
+							<p:outputLabel value="Assign Roles to #{userController.user.username}" style="font-weight: 800;"/>
 						</f:facet>
 						
 						<p:dataTable
 							styleClass="role-table no-border"
 							value="#{userController.userRoleHandles}"
 							var="userRoleHandle"
-				            paginator="true"
+				           	paginator="true"
 				            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				            paginatorPosition="top"
-							rows="10"
-							rowsPerPageTemplate="10, 20, 50"
+							rows="15"
+							rowsPerPageTemplate="15, 30, 60, 100"
 							style="width: 100%;"
 							tableStyle="width: auto;">
 	

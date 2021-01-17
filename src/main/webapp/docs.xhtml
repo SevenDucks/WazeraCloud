@@ -279,6 +279,7 @@
 	       				<p:menuitem
 	       					value="Delete"
 	       					icon="fa fa-trash"
+	       					disabled="#{!docsController.canDeleteFolders()}"
 	       					actionListener="#{docsController.deleteFolder}"
 	       					update="documentTree :mainForm">
 	       					<p:confirm header="Confirm" message="Delete Folder?" icon="ui-icon-alert"/>
@@ -305,6 +306,7 @@
 	       				<p:menuitem
 	       					value="Delete"
 	       					icon="fa fa-trash"
+	       					disabled="#{!docsController.canDeleteDocuments()}"
 	       					actionListener="#{docsController.deleteDocument}"
 	       					update="documentTree :mainForm">
 	       					<p:confirm header="Confirm" message="Delete Element?" icon="ui-icon-alert"/>
@@ -325,6 +327,7 @@
 	       				<p:menuitem
 	       					value="Delete"
 	       					icon="fa fa-trash"
+	       					disabled="#{!docsController.canDeleteWorkflows()}"
 	       					actionListener="#{docsController.deleteDocument}"
 	       					update="documentTree :mainForm">
 	       					<p:confirm header="Confirm" message="Delete Document?" icon="ui-icon-alert"/>
@@ -417,12 +420,14 @@
 								style="text-align: center;">
 								<p:commandButton
 									icon="ui-icon-arrow-4-diag"
-									actionListener="#{tasksController.setWorkflowTask(task)}"
+									disabled="#{!tasksController.canViewAssignedTasks()}"
+									actionListener="#{tasksController.setWorkflowTask(task, true)}"
 									onclick="PF('dialogAddWorkflowTask').show();"
 					            	update=":addWorkflowTaskDialogForm"
 					            	style="height: 18px;"/>
 				            	<p:commandButton
 									icon="ui-icon-trash"
+									disabled="#{!tasksController.canDeleteAssignedTasks()}"
 									actionListener="#{tasksController.deleteWorkflowTask(task)}"
 					            	update=":mainForm"
 									oncomplete="resizeEditor();"
@@ -544,12 +549,14 @@
 											<p:outputPanel>
 												<p:commandButton
 													icon="ui-icon-arrow-4-diag"
-													actionListener="#{tasksController.setWorkflowTask(task)}"
+													disabled="#{!tasksController.canViewTasks()}"
+													actionListener="#{tasksController.setWorkflowTask(task, false)}"
 													onclick="PF('dialogAddWorkflowTask').show();"
 									            	update=":addWorkflowTaskDialogForm"
 									            	style="height: 18px;"/>
 								            	<p:commandButton
 													icon="ui-icon-trash"
+													disabled="#{!tasksController.canDeleteTasks()}"
 													actionListener="#{tasksController.deleteWorkflowTask(task)}"
 									            	update=":mainForm"
 													oncomplete="resizeEditor();"
@@ -584,6 +591,7 @@
 							value="New Task"
 							icon="ui-icon-plus"
 							rendered="#{docsController.showWorkflow()}"
+							disabled="#{!tasksController.canViewTasks() || !tasksController.canEditTasks()}"
 							actionListener="#{tasksController.setNewWorkflowTask()}"
 							onclick="PF('dialogAddWorkflowTask').show();"
 			            	update=":addWorkflowTaskDialogForm"
@@ -905,7 +913,7 @@
 					value="Edit"
 					icon="ui-icon-pencil"
 					rendered="#{tasksController.workflowTask.id != null}"
-					disabled="#{tasksController.allowEditing}"
+					disabled="#{tasksController.allowEditing || !tasksController.allowToggleEditing}"
 					actionListener="#{tasksController.setAllowEditing(true)}"
 					update=":addWorkflowTaskDialogForm"
 					style="height: 25px; margin-left: 3px;"/>

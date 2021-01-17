@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import eu.wauz.wazera.WazeraTool;
+import eu.wauz.wazera.model.data.auth.Permission;
 import eu.wauz.wazera.model.data.docs.DocumentData;
 import eu.wauz.wazera.model.data.tasks.Priority;
 import eu.wauz.wazera.model.data.tasks.WorkflowData;
@@ -45,6 +46,8 @@ public class TasksController implements Serializable {
 	private DashboardModel model;
 	
 	private boolean allowEditing;
+	
+	private boolean allowToggleEditing;
 	
 	private WazeraTool wazeraTool;
 
@@ -148,10 +151,11 @@ public class TasksController implements Serializable {
 		return workflowTask;
 	}
 
-	public void setWorkflowTask(WorkflowTaskData workflowTask) {
+	public void setWorkflowTask(WorkflowTaskData workflowTask, boolean ownTask) {
 		this.workflowTask = workflowTask;
 		setWorkflow(tasksService.getWorkflow(workflowTask.getWorkflowId()));
 		allowEditing = false;
+		allowToggleEditing = ownTask ? canEditAssignedTasks() : canEditTasks();
 	}
 
 	public void setNewWorkflowTask() {
@@ -237,11 +241,42 @@ public class TasksController implements Serializable {
 
 	public void setAllowEditing(boolean allowEditing) {
 		this.allowEditing = allowEditing;
-		System.out.println(workflowTask.getName());
+	}
+
+	public boolean isAllowToggleEditing() {
+		return allowToggleEditing;
+	}
+
+	public void setAllowToggleEditing(boolean allowToggleEditing) {
+		this.allowToggleEditing = allowToggleEditing;
 	}
 
 	public Priority[] getPriorities() {
 		return Priority.values();
+	}
+	
+	public boolean canViewTasks() {
+		return authService.hasPermission(wazeraTool.getUsername(), Permission.VIEW_TASKS.getId());
+	}
+	
+	public boolean canEditTasks() {
+		return authService.hasPermission(wazeraTool.getUsername(), Permission.EDIT_TASKS.getId());
+	}
+	
+	public boolean canDeleteTasks() {
+		return authService.hasPermission(wazeraTool.getUsername(), Permission.DELETE_TASKS.getId());
+	}
+	
+	public boolean canViewAssignedTasks() {
+		return authService.hasPermission(wazeraTool.getUsername(), Permission.VIEW_ASSIGNED_TASKS.getId());
+	}
+	
+	public boolean canEditAssignedTasks() {
+		return authService.hasPermission(wazeraTool.getUsername(), Permission.EDIT_ASSIGNED_TASKS.getId());
+	}
+	
+	public boolean canDeleteAssignedTasks() {
+		return authService.hasPermission(wazeraTool.getUsername(), Permission.DELETE_ASSIGNED_TASKS.getId());
 	}
 
 }

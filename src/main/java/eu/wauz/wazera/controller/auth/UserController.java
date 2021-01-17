@@ -44,14 +44,7 @@ public class UserController implements Serializable {
 		wazeraTool = new WazeraTool();
 
 		String username = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("username");
-		if(StringUtils.isNotBlank(username)) {
-			user = authService.findUserByName(username);
-		}
-		if(user == null) {
-			this.user = new UserData();
-			user.setId(0);
-			user.setUsername("???");
-		}
+		user = StringUtils.isNotBlank(username) ? authService.findUserByName(username) : authService.getLoggedInUser();
 	}
 
 	public void changePassword() {
