@@ -247,6 +247,10 @@ public class DocsController implements Serializable {
 		inputName = "";
 	}
 	
+	public List<FileSystem> getFileSystems() {
+		return FileSystem.findAll();
+	}
+	
 	public boolean showDashboard() {
 		return selectedNode == null || selectedNode.getType().equals("directoryNode") || selectedNode.getType().equals("rootNode");
 	}

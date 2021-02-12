@@ -288,48 +288,26 @@ public class DocumentsDataService {
 	private void sortDocuments(Document document, Integer index) throws Exception {
 		List<Folder> allFoldersInFolder = folderRepository.findByFolderIdOrderBySortOrder(document.getFolderId());
 		List<Document> sortDocs = documentRepository.findByFolderIdOrderBySortOrder(document.getFolderId());
-		if(sortDocs.isEmpty()) {
+		
+		Document foundDocument = null;
+		for(Document sortDoc : sortDocs) {
+			if(sortDoc.getId().equals(document.getId())) {
+				foundDocument = sortDoc;
+				break;
+			}
+		}
+		if(foundDocument == null) {
 			return;
 		}
-		Integer documentId = document.getId();
-		Integer oldIndex = (document.getSortOrder() == null ? 0 : document.getSortOrder()) + allFoldersInFolder.size();
-
-		sortDocs = sortDocuments(sortDocs);
-
-		for(Document doc : sortDocs) {
-			if(doc.getId().equals(documentId)) {
-				doc.setSortOrder(index);
-			}
-			else {
-				doc.setSortOrder(doc.getSortOrder() + allFoldersInFolder.size());
-			}
+		sortDocs.remove(foundDocument);
+		sortDocs.add(Math.max(0, Math.min(sortDocs.size(), index - allFoldersInFolder.size())), foundDocument);
+		
+		int currentId = 1;
+		for(Document sortDoc : sortDocs) {
+			sortDoc.setSortOrder(currentId);
+			currentId++;
 		}
-
-		for(Document doc : sortDocs) {
-			if(doc.getId().equals(documentId)) {
-				continue;
-			}
-			else if(index < oldIndex && doc.getSortOrder() >= index) {
-				doc.setSortOrder(doc.getSortOrder() + 1);
-			}
-			else if(index > oldIndex && doc.getSortOrder() <= index) {
-				doc.setSortOrder(doc.getSortOrder() - 1);
-			}
-		}
-		sortDocs = sortDocuments(sortDocs);
 		documentRepository.saveAll(sortDocs);
-	}
-	
-	private List<Document> sortDocuments(List<Document> sortDocs) throws Exception {
-		for(Document doc : sortDocs)
-			if(doc.getSortOrder() == null)
-				doc.setSortOrder(0);
-
-		sortDocs.sort(Comparator.comparingInt(Document::getSortOrder));
-		for(int i = 0; i < sortDocs.size(); i++)
-			sortDocs.get(i).setSortOrder(i);
-
-		return sortDocs;
 	}
 	
 	public void deleteDocument(Integer documentId) throws Exception {

@@ -23,6 +23,10 @@
 			function loadScrollPos() {
 				$('#documentMenuForm\\:treePanel').scrollTop(sessionStorage.scrollTop);
 			}
+			
+			function resetScrollPos() {
+				$('#documentMenuForm\\:treePanel').scrollTop(0);
+			}
 
 			function searchKeyPress(e) {
 			    if (e.keyCode == 13) {
@@ -55,6 +59,7 @@
 			
 			function resizeEditor() {
 				var buttonBarHeight = $("#mainForm\\:buttonBar").height();
+				$("#mainForm\\:dashboardPanel").height($(document).height() - 40);
 				$("#mainForm\\:workflowPanel").height($(document).height() - buttonBarHeight - 57);
 				
 				var newHeight = $(document).height() - buttonBarHeight - 46;
@@ -123,7 +128,7 @@
 						onIcon="ui-icon-close"
 						offIcon="ui-icon-caret-2-n-s"
 						style="width: 132px; height: 21px; margin: 0;">
-						<p:ajax update="documentTree" oncomplete="resizeTreePanel();" />
+						<p:ajax update="documentTree" oncomplete="resizeTreePanel(); resetScrollPos();" />
 					</p:selectBooleanButton>
 		        	<p:commandButton
 		        		id="buttonRefresh"
@@ -157,7 +162,7 @@
 						id="treePanel"
 						mode="native"
 						styleClass="gray-bg-dark"
-						style="width: calc(100% - 2px); height: 565px; overflow: scroll;">
+						style="width: calc(100% - 2px); height: 300px; overflow: scroll;">
 
 						<p:tree
 							id="documentTree"
@@ -371,83 +376,130 @@
 				<h:form id="mainForm">
 				
 					<p:outputPanel rendered="#{docsController.showDashboard()}">
-						<p:dataTable
-							styleClass="task-table no-border"
-							value="#{tasksController.assignedTasks}"
-							var="task"
-				            paginator="true"
-				            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-				            paginatorPosition="top"
-							rows="15"
-							rowsPerPageTemplate="15, 30, 60, 100"
-							emptyMessage="You have no active tasks at the moment."
-							style="width: 100%;"
-							tableStyle="width: auto;">
-							
-							<f:facet name="header">
-						        Your Active Tasks
-						    </f:facet>
-							
-							<p:column
-								headerText="ID"
-								styleClass="no-wrap">
-								<p:outputLabel value="#{task.id}"/>
-							</p:column>
-			
-							<p:column
-								headerText="Name"
-								styleClass="no-wrap">
-								<p:outputLabel value="#{task.name}"/>
-							</p:column>
-							
-							<p:column
-								headerText="Workflow"
-								styleClass="no-wrap">
-								<p:outputLabel value="#{task.workflowName}, #{task.workflowStateName}"/>
-							</p:column>
-							
-							<p:column
-								headerText="Priority"
-								styleClass="no-wrap">
-								<p:outputPanel>
-									<p:outputLabel styleClass="#{task.priority.icon}" style="color: #{task.priority.color}; width: 12px; margin-right: 5px;"/>
-									<p:outputLabel value="#{task.priority.name}"/>
-								</p:outputPanel>
-							</p:column>
-							
-							<p:column
-								headerText="Status"
-								styleClass="no-wrap">
-								<p:outputLabel value="#{task.statusText}" style="color: #{task.statusColor}"/>
-							</p:column>
-							
-							<p:column
-								style="width: 99%;">
-							</p:column>
-							
-							<p:column
-								headerText="Options"
-								styleClass="no-wrap"
-								style="text-align: center;">
-								<p:commandButton
-									icon="ui-icon-arrow-4-diag"
-									disabled="#{!tasksController.canViewAssignedTasks()}"
-									actionListener="#{tasksController.setWorkflowTask(task, true)}"
-									onclick="PF('dialogAddWorkflowTask').show();"
-					            	update=":addWorkflowTaskDialogForm"
-					            	style="height: 18px;"/>
-				            	<p:commandButton
-									icon="ui-icon-trash"
-									disabled="#{!tasksController.canDeleteAssignedTasks()}"
-									actionListener="#{tasksController.deleteWorkflowTask(task)}"
-					            	update=":mainForm"
-									oncomplete="resizeEditor();"
-									style="height: 18px;">
-									<p:confirm header="Confirm" message="Delete Workflow Task &lt;#{task.name}&gt; permanently?" icon="ui-icon-alert"/>
-								</p:commandButton>
-							</p:column>
-							
-						</p:dataTable>
+					
+						<p:scrollPanel
+							id="dashboardPanel"
+							mode="native"
+							styleClass="gray-bg"
+							style="width: calc(100% - 2px); height: 300px; overflow: scroll;">
+							<p:dataTable
+								styleClass="fs-table no-border"
+								value="#{docsController.fileSystems}"
+								var="fs"
+								emptyMessage="No file systems were found."
+								style="width: 100%;"
+								tableStyle="width: auto;">
+								
+								<f:facet name="header">
+							        Connected File Systems
+							    </f:facet>
+							    
+							    <p:column
+									headerText="Name"
+									styleClass="no-wrap">
+									<p:outputLabel value="#{fs.name}"/>
+								</p:column>
+								
+								<p:column
+									headerText="Type"
+									styleClass="no-wrap">
+									<p:outputLabel value="#{fs.type}"/>
+								</p:column>
+								
+								<p:column
+									headerText="Usage"
+									style="width: 99%;">
+									<p:progressBar value="#{fs.usage}" labelTemplate="{value}%" displayOnly="true"/>
+								</p:column>
+								
+								<p:column
+									headerText="Free"
+									styleClass="no-wrap">
+									<p:outputLabel value="#{fs.free}"/>
+								</p:column>
+								
+								<p:column
+									headerText="Total"
+									styleClass="no-wrap">
+									<p:outputLabel value="#{fs.total}"/>
+								</p:column>
+							    
+						    </p:dataTable>
+						
+							<p:dataTable
+								styleClass="task-table no-border"
+								value="#{tasksController.assignedTasks}"
+								var="task"
+								emptyMessage="You have no active tasks at the moment."
+								style="width: 100%;"
+								tableStyle="width: auto;">
+								
+								<f:facet name="header">
+							        Your Active Tasks
+							    </f:facet>
+								
+								<p:column
+									headerText="ID"
+									styleClass="no-wrap">
+									<p:outputLabel value="#{task.id}"/>
+								</p:column>
+				
+								<p:column
+									headerText="Name"
+									styleClass="no-wrap">
+									<p:outputLabel value="#{task.name}"/>
+								</p:column>
+								
+								<p:column
+									headerText="Workflow"
+									styleClass="no-wrap">
+									<p:outputLabel value="#{task.workflowName}, #{task.workflowStateName}"/>
+								</p:column>
+								
+								<p:column
+									headerText="Priority"
+									styleClass="no-wrap">
+									<p:outputPanel>
+										<p:outputLabel styleClass="#{task.priority.icon}" style="color: #{task.priority.color}; width: 12px; margin-right: 5px;"/>
+										<p:outputLabel value="#{task.priority.name}"/>
+									</p:outputPanel>
+								</p:column>
+								
+								<p:column
+									headerText="Status"
+									styleClass="no-wrap">
+									<p:outputLabel value="#{task.statusText}" style="color: #{task.statusColor}"/>
+								</p:column>
+								
+								<p:column
+									style="width: 99%;">
+								</p:column>
+								
+								<p:column
+									headerText="Options"
+									styleClass="no-wrap"
+									style="text-align: center;">
+									<p:commandButton
+										icon="ui-icon-arrow-4-diag"
+										disabled="#{!tasksController.canViewAssignedTasks()}"
+										actionListener="#{tasksController.setWorkflowTask(task, true)}"
+										onclick="PF('dialogAddWorkflowTask').show();"
+						            	update=":addWorkflowTaskDialogForm"
+						            	style="height: 18px;"/>
+					            	<p:commandButton
+										icon="ui-icon-trash"
+										disabled="#{!tasksController.canDeleteAssignedTasks()}"
+										actionListener="#{tasksController.deleteWorkflowTask(task)}"
+						            	update=":mainForm"
+										oncomplete="resizeEditor();"
+										style="height: 18px;">
+										<p:confirm header="Confirm" message="Delete Workflow Task &lt;#{task.name}&gt; permanently?" icon="ui-icon-alert"/>
+									</p:commandButton>
+								</p:column>
+								
+							</p:dataTable>
+						</p:scrollPanel>
+						
 					</p:outputPanel>
 
 					<p:outputPanel rendered="#{docsController.showEditor()}">
@@ -461,7 +513,7 @@
 										value="#{docsController.content}"
 										readonly="false"
 										rendered="#{docsController.allowEditing}"
-										height="500"
+										height="300"
 										styleClass="text-editor">
 										<script type="text/javascript">
 											setTimeout(bindSaveKey, 250);
@@ -477,7 +529,7 @@
 										value="#{docsController.content}"
 										readonly="true"
 										rendered="#{!docsController.allowEditing}"
-										height="500"
+										height="300"
 										styleClass="text-editor">
 										<f:facet name="toolbar">
 											<span class="ql-formats">
@@ -512,7 +564,7 @@
 									id="workflowPanel"
 									mode="native"
 									styleClass="gray-bg"
-									style="width: calc(100% - 2px); height: 565px; padding-top: 5px; padding-bottom: 5px; overflow: scroll;">
+									style="width: calc(100% - 2px); height: 300px; padding-top: 5px; padding-bottom: 5px; overflow: scroll;">
 									<p:dashboard model="#{tasksController.model}" styleClass="project-board project-board-header">
 										<c:forEach items="#{tasksController.workflow.states}" var="state">
 											<p:panel id="state#{state.id}" styleClass="project-board-title">
@@ -960,6 +1012,7 @@
 					disabled="#{!tasksController.allowEditing}"
 					actionListener="#{tasksController.saveWorkflowTask(false)}"
 					update=":mainForm :addWorkflowTaskDialogForm"
+					oncomplete="resizeEditor();"
 					style="height: 25px; margin-left: 3px;"/>
 				<p:commandButton
 					value="Save"
@@ -967,7 +1020,7 @@
 					disabled="#{!tasksController.allowEditing}"
 					actionListener="#{tasksController.saveWorkflowTask(true)}"
 					update=":mainForm :addWorkflowTaskDialogForm"
-					oncomplete="PF('dialogAddWorkflowTask').hide();"
+					oncomplete="PF('dialogAddWorkflowTask').hide(); resizeEditor();"
 					style="height: 25px; margin-left: 3px;"/>
 				<p:commandButton
 					id="buttonCancel"

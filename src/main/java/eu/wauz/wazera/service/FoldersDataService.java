@@ -1,9 +1,7 @@
 package eu.wauz.wazera.service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -74,55 +72,27 @@ public class FoldersDataService {
     }
 	
 	private void sortFolders(Folder folder, Integer index) throws Exception {
-		List<Folder> allFoldersInFolder = folderRepository.findByFolderIdOrderBySortOrder(folder.getFolderId());
-		if(allFoldersInFolder.isEmpty()) {
+		List<Folder> sortFolders = folderRepository.findByFolderIdOrderBySortOrder(folder.getFolderId());
+
+		Folder foundFolder = null;
+		for(Folder sortFolder : sortFolders) {
+			if(sortFolder.getId().equals(folder.getId())) {
+				foundFolder = sortFolder;
+				break;
+			}
+		}
+		if(foundFolder == null) {
 			return;
 		}
-		Integer folderId = folder.getId();
-
-		List<Folder> sortFolders = allFoldersInFolder.stream()
-				.filter(sortFolder -> folderId == null && sortFolder.getId() != null || !folderId.equals(sortFolder.getId()))
-				.collect(Collectors.toList());
-		index = index > sortFolders.size() ? sortFolders.size() : index;
-		sortFolders.add(index, folder);
-
-		sortFolders = sortFolders(sortFolders);
-
-		Integer oldIndex = folder.getSortOrder();
-
+		sortFolders.remove(foundFolder);
+		sortFolders.add(Math.max(0, Math.min(sortFolders.size(), index)), foundFolder);
+		
+		int currentId = 1;
 		for(Folder sortFolder : sortFolders) {
-			if(sortFolder.getId().equals(folderId)) {
-				sortFolder.setSortOrder(index);
-			}
-			else if(index < oldIndex && sortFolder.getSortOrder() >= index) {
-				sortFolder.setSortOrder(sortFolder.getSortOrder() + 1);
-			}
-			else if(index > oldIndex && sortFolder.getSortOrder() <= index) {
-				sortFolder.setSortOrder(sortFolder.getSortOrder() - 1);
-			}
-		}
-
-		sortFolders = sortFolders(sortFolders);
-
-		for(Folder sortFolder : sortFolders) {
-			if(sortFolder.getId().equals(folderId)) {
-				folder.setSortOrder(sortFolder.getSortOrder());
-			}
+			sortFolder.setSortOrder(currentId);
+			currentId++;
 		}
 		folderRepository.saveAll(sortFolders);
-	}
-	
-	private List<Folder> sortFolders(List<Folder> sortFolders) throws Exception {
-		for(Folder folder : sortFolders) {
-			if(folder.getSortOrder() == null) {
-				folder.setSortOrder(0);
-			}
-		}
-		sortFolders.sort(Comparator.comparingInt(Folder::getSortOrder));
-		for(int i = 0; i < sortFolders.size(); i++) {
-			sortFolders.get(i).setSortOrder(i);
-		}
-		return sortFolders;
 	}
 
 	private void saveFolderUserData(FolderData folderData, Integer userId) {
