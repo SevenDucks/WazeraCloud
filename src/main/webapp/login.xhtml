@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<f:view xmlns="http://www.w3c.org/1999/xhtml"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:p="http://primefaces.org/ui">
+	<h:head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.png"/>
+		<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/wazera.css"/>
+		<link rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+			integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+			crossorigin="anonymous"/>
+    	<link rel="stylesheet"
+    		href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css"
+    		crossorigin="anonymous"/>
+		<title>Wazera Cloud</title>
+	</h:head>
+	
+	<h:body style="background: #16161f;">
+	
+		<div class="container" style="text-align: center;">
+			<p:graphicImage
+				value="/resources/images/favicon.png"
+				width="50"
+				height="50"
+				style="margin-bottom: 10px;"/>
+			<br/>
+			<p:outputLabel
+				value="Wazera Cloud #{sessionController.version}"
+				style="color: #ffffff; font-size: 16px; margin-bottom: 15px; padding: 2px 8px; border: 2px solid #705296; border-radius: 10px;"/>
+		</div>
+
+		<div class="container">
+			<form
+				class="form-signin"
+				method="post"
+				action="#{request.contextPath}/perform_login"
+				style="background: #101019; border: 1px solid #444444;">
+				<h2 class="form-signin-heading" style="color: #ffffff;">Please sign in</h2>
+				<p:outputPanel rendered="${param.error != null}">
+					<div class="alert alert-danger" role="alert">Bad credentials</div>
+				</p:outputPanel>
+				<p:outputPanel rendered="${param.logout != null}">
+					<div class="alert alert-success" role="alert">You have been signed out</div>
+				</p:outputPanel>
+				<p>
+					<label for="username" class="sr-only">Username</label>
+					<input type="text"
+						id="username"
+						name="username"
+						class="form-control"
+						placeholder="Username"
+						required="required"
+						autofocus="autofocus"/>
+				</p>
+				<p>
+					<label for="password" class="sr-only">Password</label>
+					<input
+						type="password"
+						id="password"
+						name="password"
+						class="form-control"
+						placeholder="Password"
+						required="required"/>
+				</p>
+				<p>
+					<input type='checkbox' name='remember-me'/>
+					<label for="remember-me" style="margin-left: 5px; color: #ffffff;"> Remember me on this computer.</label>
+				</p>
+				<button
+					class="btn btn-lg btn-primary btn-block"
+					type="submit"
+					style="background: linear-gradient(to right, #705296, #2c6aa5); border-width: thick;">Sign in</button>
+			</form>
+		</div>
+
+	</h:body>
+</f:view>

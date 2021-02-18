@@ -27,6 +27,14 @@ public class WorkflowData {
 		this.documentId = documentId;
 	}
 	
+	public int getTaskCount() {
+		int taskCount = 0;
+		for(WorkflowStateData state : states) {
+			taskCount += state.getTasks().size();
+		}
+		return taskCount;
+	}
+	
 	public List<WorkflowTaskData> getTasks() {
 		List<WorkflowTaskData> tasks = new ArrayList<>();
 		for(WorkflowStateData state : states) {

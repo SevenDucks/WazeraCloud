@@ -10,6 +10,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.TreeDragDropEvent;
@@ -143,6 +144,8 @@ public class DocsController implements Serializable {
 			content = "";
 			documentTags = new ArrayList<>();
 		}
+		
+		PrimeFaces.current().executeScript("history.pushState({}, null, '" + getDocumentLink() + "');");
 	}
 
 	public void addDirectoryNode() {
@@ -502,11 +505,12 @@ public class DocsController implements Serializable {
 				Integer docId = selectedNode != null ? ((DocumentTreeNode) selectedNode).getDocumentData().getId() : 0;
 				return baseUrl + "/docs.xhtml?docId=" + docId;
     		}
+    		return baseUrl + "/docs.xhtml";
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
+			return "";
 		}
-    	return "";
     }
     
     public boolean canEditFolders() {

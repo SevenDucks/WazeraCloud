@@ -59,43 +59,21 @@
 			
 			function resizeEditor() {
 				var buttonBarHeight = $("#mainForm\\:buttonBar").height();
-				$("#mainForm\\:dashboardPanel").height($(document).height() - 40);
-				$("#mainForm\\:workflowPanel").height($(document).height() - buttonBarHeight - 57);
+				var newHeight = $(document).height() - buttonBarHeight;
 				
-				var newHeight = $(document).height() - buttonBarHeight - 46;
+				var dashboardHeader = $("#mainForm\\:dashboardHeader");
+				$("#mainForm\\:dashboardPanel").height($(document).height() - dashboardHeader.outerHeight() - 40);
+				
 				var openToolbar = $("#mainForm\\:editorOpen_toolbar");
-				var openToolbarHeight = openToolbar.outerHeight();
-				$("#mainForm\\:editorOpen_editor").height(newHeight - openToolbarHeight);
+				$("#mainForm\\:editorOpen_editor").height(newHeight - openToolbar.outerHeight() - 46);
 				var closedToolbar = $("#mainForm\\:editorClosed_toolbar");
-				var closedToolbarHeight = closedToolbar.outerHeight();
-				$("#mainForm\\:editorClosed_editor").height(newHeight - closedToolbarHeight);
+				$("#mainForm\\:editorClosed_editor").height(newHeight - closedToolbar.outerHeight() - 46);
+				
+				var workflowHeader = $("#mainForm\\:workflowHeader");
+				$("#mainForm\\:workflowPanel").height(newHeight - workflowHeader.outerHeight() - 57);
 			}
 			
 		</script>
-		
-		<style>
-		
-			.ui-treenode-label .fa-th-large,
-			.ui-contextmenu .fa-th-large {
-				color: plum;
-			}
-		
-			.ui-treenode-label .fa-folder-open,
-			.ui-contextmenu .fa-folder-open {
-				color: moccasin;
-			}
-			
-			.ui-treenode-label .fa-file,
-			.ui-contextmenu .fa-file {
-				color: skyblue;
-			}
-			
-			.ui-treenode-label .fa-share-alt,
-			.ui-contextmenu .fa-share-alt {
-				color: lightsalmon;
-			}
-		
-		</style>
 
 		<p:layout>
 		
@@ -377,6 +355,12 @@
 				
 					<p:outputPanel rendered="#{docsController.showDashboard()}">
 					
+						<p:outputPanel id="dashboardHeader" styleClass="editor-header">
+							<h2 class="no-spacing">Dashboard</h2>
+							<p class="no-spacing" style="color: #888888;">
+								Welcome to the Wazera Cloud!
+							</p>
+						</p:outputPanel>
 						<p:scrollPanel
 							id="dashboardPanel"
 							mode="native"
@@ -391,7 +375,7 @@
 								tableStyle="width: auto;">
 								
 								<f:facet name="header">
-							        Connected File Systems
+							        Connected File Systems (above 16 GiB)
 							    </f:facet>
 							    
 							    <p:column
@@ -532,16 +516,12 @@
 										height="300"
 										styleClass="text-editor">
 										<f:facet name="toolbar">
-											<span class="ql-formats">
-												<p:outputPanel>
-													<h2 class="no-spacing">#{docsController.selectedNode}</h2>
-													<p class="no-spacing" style="color: #888888;">
-														<b style="font-weight: 800;">#{docsController.selectedNode.wordCount}</b> Words,
-														Last saved by <b style="font-weight: 800;">#{docsController.selectedNode.user}</b>
-														at <b style="font-weight: 800;">#{docsController.selectedNode.date}</b>
-													</p>
-												</p:outputPanel>
-											</span>
+											<h2 class="no-spacing">#{docsController.selectedNode}</h2>
+											<p class="no-spacing" style="color: #888888;">
+												<b style="font-weight: 800;">#{docsController.selectedNode.wordCount}</b> Words,
+												Last saved by <b style="font-weight: 800;">#{docsController.selectedNode.user}</b>
+												at <b style="font-weight: 800;">#{docsController.selectedNode.date}</b>
+											</p>
 										</f:facet>
 									</p:textEditor>
 								</p:outputPanel>
@@ -560,6 +540,13 @@
 					
 						<c:choose>
 							<c:when test="#{docsController.canViewWorkflows()}">
+								<p:outputPanel id="workflowHeader" styleClass="editor-header">
+									<h2 class="no-spacing">#{docsController.selectedNode}</h2>
+									<p class="no-spacing" style="color: #888888;">
+										<b style="font-weight: 800;">#{tasksController.workflow.taskCount}</b> Active Tasks,
+										Completed Tasks will become Inactive / Hidden after 14 Days
+									</p>
+								</p:outputPanel>
 								<p:scrollPanel
 									id="workflowPanel"
 									mode="native"

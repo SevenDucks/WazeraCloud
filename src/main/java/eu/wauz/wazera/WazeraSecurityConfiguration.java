@@ -48,15 +48,18 @@ public class WazeraSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(final HttpSecurity http) throws Exception {
 		http.csrf().disable()
 			.authorizeRequests()
+			.antMatchers("/login*", "/resources/**", "/javax.faces.resource/**").permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.formLogin()
+			.loginPage("/login.xhtml")
 			.loginProcessingUrl("/perform_login")
 			.defaultSuccessUrl("/docs.xhtml", true)
+			.failureUrl("/login.xhtml?error=true")
 			.and()
 			.logout()
-			.deleteCookies("JSESSIONID")
 			.logoutUrl("/perform_logout")
+			.deleteCookies("JSESSIONID")
 	        .and()
 	        .rememberMe();
 	}

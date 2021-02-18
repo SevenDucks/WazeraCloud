@@ -103,8 +103,34 @@ body {
 	margin: 3px;
 }
 
+.ui-treenode-label .fa-th-large,
+.ui-contextmenu .fa-th-large {
+	color: plum;
+}
+
+.ui-treenode-label .fa-folder-open,
+.ui-contextmenu .fa-folder-open {
+	color: moccasin;
+}
+
+.ui-treenode-label .fa-file,
+.ui-contextmenu .fa-file {
+	color: skyblue;
+}
+
+.ui-treenode-label .fa-share-alt,
+.ui-contextmenu .fa-share-alt {
+	color: lightsalmon;
+}
+
 .ui-chips-input-token > .ui-widget {
 	color: #ffffff;
+}
+
+.editor-header {
+	padding: 8px;
+	border: 1px solid #444444;
+	border-bottom: none;
 }
 
 .ql-editor > p > a {
