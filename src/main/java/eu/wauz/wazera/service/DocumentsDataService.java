@@ -71,12 +71,15 @@ public class DocumentsDataService {
     	wazeraTool = new WazeraTool();
     }
 
-    public FolderData getDocuments(int treeId, Integer docId, List<String> searchTokens) throws Exception {
+    public FolderData getDocuments(int treeId, Integer docId, Integer folderId, List<String> searchTokens) throws Exception {
     	Integer userId = authService.getLoggedInUserId();
         FolderData rootNode = null;
         Folder rootFolder = folderRepository.findById(treeId).orElse(null);
         if(docId != null) {
-        	expandParentFolders(docId, userId);
+        	expandDocumentParentFolders(docId, userId);
+        }
+        else if(folderId != null) {
+        	expandFolderParentFolders(folderId, userId);
         }
         rootNode = foldersService.readFolderData(rootFolder, userId);
 
@@ -138,13 +141,17 @@ public class DocumentsDataService {
         return rootNode;
     }
 
-    private void expandParentFolders(int docId, int userId) {
-    	Document document = documentRepository.findById(docId).orElse(null);
-    	if(document == null) {
+    private void expandDocumentParentFolders(Integer docId, int userId) {
+    	if(docId == null) {
     		return;
     	}
-
-    	Integer folderId = document.getFolderId();
+    	Document document = documentRepository.findById(docId).orElse(null);
+    	if(document != null) {
+    		expandFolderParentFolders(document.getFolderId(), userId);
+    	}
+    }
+    
+    private void expandFolderParentFolders(Integer folderId, int userId) {
     	while(folderId != null) {
     		Folder parentFolder = folderRepository.findById(folderId).orElse(null);
     		if(parentFolder != null) {

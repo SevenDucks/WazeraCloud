@@ -69,17 +69,25 @@ public class DocsController implements Serializable {
 
 	private Integer docId;
 	
+	private Integer folderId;
+	
 	private WazeraTool wazeraTool;
 
 	@PostConstruct
 	private void init() {
 		wazeraTool = new WazeraTool();
-		
-		Object doctIdObject = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("docId");
-		if(doctIdObject != null)
-		{
-			String docIdString = (String) doctIdObject;
-			docId = Integer.valueOf(docIdString);
+		try {
+			Object doctIdObject = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("docId");
+			if(doctIdObject != null) {
+				docId = Integer.valueOf((String) doctIdObject);
+			}
+			Object folderIdObject = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("folderId");
+			if(folderIdObject != null) {
+				folderId = Integer.valueOf((String) folderIdObject);
+			}
+		}
+		catch (Exception e) {
+			wazeraTool.showErrorMessage(e.getMessage());
 		}
 	}
 
@@ -99,6 +107,12 @@ public class DocsController implements Serializable {
 		else {
 			node = new FolderTreeNode(folderNode, treeNode);
 			node.setExpanded(folderNode.isExpanded() != null ? folderNode.isExpanded() : false);
+		}
+		
+		if(Objects.equals(folderNode.getId(), folderId)) {
+			node.setSelected(true);
+			setSelectedNode(node);
+			folderId = null;
 		}
 		
 		for (FolderData childNode : folderNode.getFolders()) {
@@ -320,12 +334,17 @@ public class DocsController implements Serializable {
 		if(searchTags == null) {
 			searchTags = new ArrayList<String>();
 		}
-		if(searchTags.size() == 0 && selectedNode instanceof DocumentTreeNode) {
-			docId = selectedNode != null ? ((DocumentTreeNode) selectedNode).getDocumentData().getId() : 0;
+		if(searchTags.size() == 0) {
+			if(selectedNode instanceof DocumentTreeNode) {
+				docId = ((DocumentTreeNode) selectedNode).getDocumentData().getId();
+			}
+			else if(selectedNode instanceof FolderTreeNode) {
+				folderId = ((FolderTreeNode) selectedNode).getFolderData().getId();
+			}
 		}
 
 		try {
-			rootNodeData = documentsService.getDocuments(foldersService.getRootFolder().getId(), docId, searchTags);
+			rootNodeData = documentsService.getDocuments(foldersService.getRootFolder().getId(), docId, folderId, searchTags);
 			addFolderNodes(rootNodeData, documentTree, true);
 		}
 		catch (Exception e) {
@@ -356,7 +375,7 @@ public class DocsController implements Serializable {
 
 		FolderData result = null;
 		try {
-			result = documentsService.getDocuments(folderData.getId(), null, searchTags);
+			result = documentsService.getDocuments(folderData.getId(), null, null, searchTags);
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
@@ -502,8 +521,12 @@ public class DocsController implements Serializable {
     		String contextPath = req.getContextPath();
     		String baseUrl = StringUtils.substringBefore(req.getRequestURL().toString(), contextPath) + contextPath;
     		if(selectedNode instanceof DocumentTreeNode) {
-				Integer docId = selectedNode != null ? ((DocumentTreeNode) selectedNode).getDocumentData().getId() : 0;
+				Integer docId = ((DocumentTreeNode) selectedNode).getDocumentData().getId();
 				return baseUrl + "/docs.xhtml?docId=" + docId;
+    		}
+    		else if(selectedNode instanceof FolderTreeNode) {
+				Integer folderId = ((FolderTreeNode) selectedNode).getFolderData().getId();
+				return baseUrl + "/docs.xhtml?folderId=" + folderId;
     		}
     		return baseUrl + "/docs.xhtml";
 		}
