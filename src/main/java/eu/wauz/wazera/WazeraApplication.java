@@ -17,15 +17,19 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"eu.wauz"})
 @EntityScan(basePackages = {"eu.wauz"})
 public class WazeraApplication extends SpringBootServletInitializer {
+	
+	public static final String APP_ROOT = "~/wazera/";
+	
+	public static final boolean EMBED_DB = true;
 
 	public static void main(String[] args) {
 		SpringApplication.run(WazeraApplication.class, args);
@@ -53,11 +57,20 @@ public class WazeraApplication extends SpringBootServletInitializer {
     @Bean
     @Autowired
 	public DataSource wazeraDataSource() {
-		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
-		dataSource.setUsername("root");
-		dataSource.setUrl("jdbc:mariadb://localhost:3306/wazera");
-		return dataSource;
+    	if(EMBED_DB) {
+    		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+    		dataSource.setUsername("root");
+    		dataSource.setDriverClassName("org.h2.Driver");
+    		dataSource.setUrl("jdbc:h2:file:" + APP_ROOT + "Wazera");
+    		return dataSource;
+    	}
+    	else {
+    		BasicDataSource dataSource = new BasicDataSource();
+    		dataSource.setUsername("root");
+    		dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
+    		dataSource.setUrl("jdbc:mariadb://localhost:3306/wazera");
+    		return dataSource;
+    	}
 	}
     
     @Bean
@@ -65,8 +78,12 @@ public class WazeraApplication extends SpringBootServletInitializer {
         HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
         hibernateJpaVendorAdapter.setShowSql(false);
         hibernateJpaVendorAdapter.setGenerateDdl(true);
-        hibernateJpaVendorAdapter.setDatabase(Database.H2);
-        hibernateJpaVendorAdapter.setDatabasePlatform("org.hibernate.dialect.MySQL5Dialect");
+        if(EMBED_DB) {
+        	hibernateJpaVendorAdapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
+        }
+        else {
+        	hibernateJpaVendorAdapter.setDatabasePlatform("org.hibernate.dialect.MySQL5Dialect");
+        }
         return hibernateJpaVendorAdapter;
     }
     
