@@ -2,6 +2,8 @@ package eu.wauz.wazera;
 
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -10,8 +12,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.ErrorPageRegistrar;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +34,9 @@ public class WazeraApplication extends SpringBootServletInitializer {
 	public static final String APP_ROOT = "~/wazera/";
 	
 	public static final boolean EMBED_DB = true;
+	
+	@Autowired
+	private BuildProperties buildProperties;
 
 	public static void main(String[] args) {
 		SpringApplication.run(WazeraApplication.class, args);
@@ -38,6 +45,29 @@ public class WazeraApplication extends SpringBootServletInitializer {
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(WazeraApplication.class);
+	}
+	
+	@Bean
+	public ServletContextInitializer servletContextInitializer() {
+		return new ServletContextInitializer() {
+			
+			@Override
+			public void onStartup(ServletContext servletContext) throws ServletException {
+				System.out.println("O~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-O");
+				System.out.println(" _    _                                           ");
+				System.out.println("| |  | | WazeraCloud v" + buildProperties.getVersion());
+				System.out.println("| |  | | __ _ _   _ _____ __ ___   ___  _ __  ___ ");
+				System.out.println("| |/\\| |/ _` | | | |_  / '_ ` _ \\ / _ \\| '_ \\/ __|");
+				System.out.println("\\  /\\  / (_| | |_| |/ /| | | | | | (_) | | | \\__ \\");
+				System.out.println(" \\/  \\/ \\__,_|\\__,_/___|_| |_| |_|\\___/|_| |_|___/");
+				System.out.println("");
+				System.out.println("O-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~O");
+				servletContext.setInitParameter("primefaces.THEME", "wazera-purple");
+				servletContext.setInitParameter("primefaces.FONT_AWESOME", "true");
+				servletContext.setInitParameter("primefaces.MOVE_SCRIPTS_TO_BOTTOM", "true");
+			}
+			
+		};
 	}
 	
 	@Bean

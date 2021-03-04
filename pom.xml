@@ -10,6 +10,9 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 
@@ -45,8 +48,8 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>org.joinfaces</groupId>
-			<artifactId>jsf-spring-boot-starter</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -55,6 +58,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.joinfaces</groupId>
+			<artifactId>jsf-spring-boot-starter</artifactId>
 		</dependency>
 
 		<dependency>
@@ -121,27 +128,24 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-						</manifest>
-					</archive>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
 
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<fork>true</fork>
+					<mainClass>eu.wauz.wazera.WazeraApplication</mainClass>
+					<finalName>WazeraCloud</finalName>
+				</configuration>
 				<executions>
 					<execution>
-						<phase>package</phase>
 						<goals>
-							<goal>shade</goal>
+							<goal>build-info</goal>
+							<goal>repackage</goal>
 						</goals>
-						<configuration>
-							<finalName>WazeraCloud</finalName>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>

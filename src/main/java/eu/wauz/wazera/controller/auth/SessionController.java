@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
@@ -16,6 +18,9 @@ public class SessionController implements Serializable {
 	
 	private static final long serialVersionUID = 6410079263923624297L;
 	
+	@Autowired
+	private BuildProperties buildProperties;
+	
 	private WazeraTool wazeraTool;
 	
 	@PostConstruct
@@ -24,7 +29,7 @@ public class SessionController implements Serializable {
 	}
 	
 	public String getVersion() {
-		return getClass().getPackage().getImplementationVersion();
+		return buildProperties.getVersion();
 	}
 	
 	public boolean isChrome() {
