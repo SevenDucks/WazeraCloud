@@ -146,7 +146,6 @@ public class DocsController implements Serializable {
 	}
 
 	public void setSelectedNode(TreeNode selectedNode) {
-		System.out.println(selectedNode);
 		this.selectedNode = selectedNode;
 		if (selectedNode == null) {
 			return;
@@ -194,8 +193,10 @@ public class DocsController implements Serializable {
 				Integer folderId = ((FolderTreeNode) node).getFolderData().getId();
 				item.setCommand("#{docsController.selectBreadcrumb(" + null + ", " + folderId + ")}");
 			}
+			item.setAjax(true);
+			item.setOnstart("PF('loading').show();");
 			item.setUpdate(":documentMenuForm :mainForm");
-			item.setOncomplete("resizeTreePanel(); resizeEditor();");
+			item.setOncomplete("resizeTreePanel(); resizeEditor(); PF('loading').hide();");
 			if(first) {
 				item.setDisabled(true);
 				first = false;

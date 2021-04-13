@@ -29,6 +29,27 @@
 			<p:autoUpdate />
 		</p:growl>
 		
+		<p:ajaxStatus onstart="PF('loading').show()" oncomplete="PF('loading').hide()"/>
+	    <p:dialog
+	    	widgetVar="loading"
+	    	modal="false"
+	    	draggable="false"
+	    	closable="false"
+	    	resizable="false"
+	    	showHeader="false"
+	    	showEffect="fade"
+	    	hideEffect="fade"
+	    	style="background: none; border: none; box-shadow: none;">
+	        <div class="p-text-center">
+	            <div class="lds-ring">
+	            	<div></div>
+	            	<div></div>
+	            	<div></div>
+	            	<div></div>
+            	</div>
+	        </div>
+	    </p:dialog>
+		
 		<p:layout styleClass="layout-container" fullPage="true">
 			<p:layoutUnit position="north" gutter="0" styleClass="no-border purple-bg-gradient">
 			

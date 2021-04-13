@@ -16,8 +16,8 @@ public class FolderTreeNode extends DefaultTreeNode {
         this.folderData = folderData;
     }
     
-    public FolderTreeNode(String nodeType, FolderData folderData, TreeNode parent) {
-        super(nodeType, folderData.getName(), parent);
+    public FolderTreeNode(String nodeType, String name, FolderData folderData, TreeNode parent) {
+        super(nodeType, name, parent);
         this.folderData = folderData;
     }
 

@@ -9,11 +9,7 @@ public class RootFolderTreeNode extends FolderTreeNode {
     private static final long serialVersionUID = 3852332535514502777L;
 
     public RootFolderTreeNode(FolderData folderData, TreeNode parent) {
-        super("rootNode", folderData, parent);
-    }
-    
-    public String getName() {
-    	return "Dashboard";
+        super("rootNode", "Dashboard", folderData, parent);
     }
 
 }

@@ -2,6 +2,62 @@ body {
 	font-family: Helvetica;
 	font-size: 14px;
 	background-color: #16161f;
+	scrollbar-color: #eeaaff rgba(0, 0, 0, 0.15);
+}
+
+::-webkit-scrollbar {
+	width: auto;
+	height: auto;
+}
+ 
+::-webkit-scrollbar-thumb {
+	background: #eeaaff; 
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+	background: rgba(0, 0, 0, 0.15); 
+}
+
+.lds-ring {
+	display: inline-block;
+	position: relative;
+	width: 160px;
+	height: 160px;
+}
+
+.lds-ring div {
+	box-sizing: border-box;
+	display: block;
+	position: absolute;
+	width: 128px;
+	height: 128px;
+	margin: 0px;
+	border: 12px solid #2c6aa5;
+	border-radius: 50%;
+	animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+	border-color: #2c6aa5 transparent transparent transparent;
+}
+
+.lds-ring div:nth-child(1) {
+	animation-delay: -0.45s;
+}
+
+.lds-ring div:nth-child(2) {
+	animation-delay: -0.3s;
+}
+
+.lds-ring div:nth-child(3) {
+	animation-delay: -0.15s;
+}
+
+@keyframes lds-ring {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 .no-border,
@@ -95,11 +151,14 @@ body {
 .ui-breadcrumb {
 	background: none;
 	border: none;
+	box-sizing: content-box;
+	height: 18px;
 	padding: 5px;
 }
 
 .ui-breadcrumb > ul > li > a {
 	color: #eeaaff;
+	text-decoration: none;
 }
 
 .ui-tree-draghelper {
