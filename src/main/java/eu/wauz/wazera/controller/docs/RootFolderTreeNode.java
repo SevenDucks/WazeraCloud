@@ -11,5 +11,9 @@ public class RootFolderTreeNode extends FolderTreeNode {
     public RootFolderTreeNode(FolderData folderData, TreeNode parent) {
         super("rootNode", folderData, parent);
     }
+    
+    public String getName() {
+    	return "Dashboard";
+    }
 
 }

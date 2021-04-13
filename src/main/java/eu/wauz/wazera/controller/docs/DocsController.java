@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -16,6 +17,10 @@ import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.TreeDragDropEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
+import org.primefaces.model.menu.DefaultMenuItem;
+import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.MenuItem;
+import org.primefaces.model.menu.MenuModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -52,6 +57,8 @@ public class DocsController implements Serializable {
 	private TreeNode selectedNode;
 
 	private FolderData rootNodeData;
+	
+	private MenuModel breadcrumbModel;
 	
 	private List<String> documentTags;
 	
@@ -139,11 +146,13 @@ public class DocsController implements Serializable {
 	}
 
 	public void setSelectedNode(TreeNode selectedNode) {
+		System.out.println(selectedNode);
 		this.selectedNode = selectedNode;
-
 		if (selectedNode == null) {
 			return;
 		}
+		selectedNode.setSelected(true);
+		
 		if (selectedNode instanceof DocumentTreeNode) {
 			DocumentData documentData = ((DocumentTreeNode) selectedNode).getDocumentData();
 			inputName = documentData.getName();
@@ -160,6 +169,50 @@ public class DocsController implements Serializable {
 		}
 		
 		PrimeFaces.current().executeScript("history.pushState({}, null, '" + getDocumentLink() + "');");
+		updateBreadcrumbModel();
+	}
+	
+	public MenuModel getBreadcrumbModel() {
+		if(breadcrumbModel == null) {
+			setSelectedNode(getDocumentTree().getChildren().get(0));
+		}
+		return breadcrumbModel;
+	}
+	
+	public void updateBreadcrumbModel() {
+		breadcrumbModel = new DefaultMenuModel();
+		Stack<MenuItem> stack = new Stack<>();
+		TreeNode node = selectedNode;
+		boolean first = true;
+		while(node != null && node != documentTree) {
+			DefaultMenuItem item = new DefaultMenuItem(node.toString());
+			if(node instanceof DocumentTreeNode) {
+				Integer docId = ((DocumentTreeNode) node).getDocumentData().getId();
+				item.setCommand("#{docsController.selectBreadcrumb(" + docId + ", " + null + ")}");
+			}
+			else if(node instanceof FolderTreeNode) {
+				Integer folderId = ((FolderTreeNode) node).getFolderData().getId();
+				item.setCommand("#{docsController.selectBreadcrumb(" + null + ", " + folderId + ")}");
+			}
+			item.setUpdate(":documentMenuForm :mainForm");
+			item.setOncomplete("resizeTreePanel(); resizeEditor();");
+			if(first) {
+				item.setDisabled(true);
+				first = false;
+			}
+			stack.push(item);
+			node = node.getParent();
+		}
+        while(!stack.isEmpty()) {
+        	breadcrumbModel.addElement(stack.pop());
+        }
+	}
+	
+	public void selectBreadcrumb(Integer docId, Integer folderId) {
+		this.docId = docId;
+		this.folderId = folderId;
+		selectedNode = null;
+		selectTree();
 	}
 
 	public void addDirectoryNode() {
@@ -514,18 +567,22 @@ public class DocsController implements Serializable {
 	public void setSearchTags(List<String> searchTags) {
 		this.searchTags = searchTags;
 	}
+	
+	public String getDocumentLink() {
+		return getDocumentLink(selectedNode);
+	}
 
-    public String getDocumentLink() {
+    public String getDocumentLink(TreeNode node) {
     	try {
     		HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
     		String contextPath = req.getContextPath();
     		String baseUrl = StringUtils.substringBefore(req.getRequestURL().toString(), contextPath) + contextPath;
-    		if(selectedNode instanceof DocumentTreeNode) {
-				Integer docId = ((DocumentTreeNode) selectedNode).getDocumentData().getId();
+    		if(node instanceof DocumentTreeNode) {
+				Integer docId = ((DocumentTreeNode) node).getDocumentData().getId();
 				return baseUrl + "/docs.xhtml?docId=" + docId;
     		}
-    		else if(selectedNode instanceof FolderTreeNode) {
-				Integer folderId = ((FolderTreeNode) selectedNode).getFolderData().getId();
+    		else if(node instanceof FolderTreeNode) {
+				Integer folderId = ((FolderTreeNode) node).getFolderData().getId();
 				return baseUrl + "/docs.xhtml?folderId=" + folderId;
     		}
     		return baseUrl + "/docs.xhtml";

@@ -162,7 +162,7 @@
 					        	<h:panelGrid
 					        		columns="4">
 					            	<p:outputLabel styleClass="fa fa-th-large"/>
-					            	<h:outputText value="Dashboard"/>
+					            	<h:outputText value="#{node}"/>
 					        	</h:panelGrid>
 					        </p:treeNode>
 	
@@ -352,7 +352,7 @@
 				style="padding: 3px;">
 
 				<h:form id="mainForm">
-				
+					
 					<p:outputPanel rendered="#{docsController.showDashboard()}">
 					
 						<p:outputPanel id="dashboardHeader" styleClass="editor-header">
@@ -360,6 +360,7 @@
 							<p class="no-spacing" style="color: #888888;">
 								Welcome to the Wazera Cloud!
 							</p>
+							<p:breadCrumb model="#{docsController.breadcrumbModel}" homeDisplay="text"/>
 						</p:outputPanel>
 						<p:scrollPanel
 							id="dashboardPanel"
@@ -522,6 +523,7 @@
 												Last saved by <b style="font-weight: 800;">#{docsController.selectedNode.user}</b>
 												at <b style="font-weight: 800;">#{docsController.selectedNode.date}</b>
 											</p>
+											<p:breadCrumb model="#{docsController.breadcrumbModel}" homeDisplay="text"/>
 										</f:facet>
 									</p:textEditor>
 								</p:outputPanel>
@@ -546,6 +548,7 @@
 										<b style="font-weight: 800;">#{tasksController.workflow.taskCount}</b> Active Tasks,
 										Completed Tasks will become Inactive / Hidden after 14 Days
 									</p>
+									<p:breadCrumb model="#{docsController.breadcrumbModel}" homeDisplay="text"/>
 								</p:outputPanel>
 								<p:scrollPanel
 									id="workflowPanel"

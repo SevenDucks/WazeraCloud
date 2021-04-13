@@ -92,6 +92,16 @@ body {
 	width: 100%;
 }
 
+.ui-breadcrumb {
+	background: none;
+	border: none;
+	padding: 5px;
+}
+
+.ui-breadcrumb > ul > li > a {
+	color: #eeaaff;
+}
+
 .ui-tree-draghelper {
 	pointer-events: none;
 }
