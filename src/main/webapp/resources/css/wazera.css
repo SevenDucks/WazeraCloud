@@ -148,6 +148,21 @@ body {
 	width: 100%;
 }
 
+.navigation {
+	
+}
+
+.navigation-item {
+	border: 1px solid #444444;
+	text-align: center;
+	padding: 10px;
+}
+
+.navigation-item > .fa {
+	font-size: 3em;
+	padding: 5px;
+}
+
 .ui-breadcrumb {
 	background: none;
 	border: none;
@@ -175,25 +190,29 @@ body {
 
 .ui-treenode-label .fa-th-large,
 .ui-contextmenu .fa-th-large,
-.ui-breadcrumb .fa-th-large {
+.ui-breadcrumb .fa-th-large,
+.navigation-item .fa-th-large {
 	color: plum;
 }
 
 .ui-treenode-label .fa-folder-open,
 .ui-contextmenu .fa-folder-open,
-.ui-breadcrumb .fa-folder-open {
+.ui-breadcrumb .fa-folder-open,
+.navigation-item .fa-folder-open {
 	color: moccasin;
 }
 
 .ui-treenode-label .fa-file,
 .ui-contextmenu .fa-file,
-.ui-breadcrumb .fa-file {
+.ui-breadcrumb .fa-file,
+.navigation-item .fa-file {
 	color: skyblue;
 }
 
 .ui-treenode-label .fa-share-alt,
 .ui-contextmenu .fa-share-alt,
-.ui-breadcrumb .fa-share-alt {
+.ui-breadcrumb .fa-share-alt,
+.navigation-item .fa-share-alt {
 	color: lightsalmon;
 }
 

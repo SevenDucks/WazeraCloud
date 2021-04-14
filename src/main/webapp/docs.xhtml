@@ -163,7 +163,7 @@
 					        	id="rootNode"
 					        	type="rootNode">
 					        	<h:panelGrid
-					        		columns="4">
+					        		columns="2">
 					            	<p:outputLabel styleClass="#{node.type.icon}"/>
 					            	<h:outputText value="#{node.name}"/>
 					        	</h:panelGrid>
@@ -504,7 +504,18 @@
 							mode="native"
 							styleClass="gray-bg"
 							style="width: calc(100% - 2px); height: 300px; overflow: scroll;">
-							
+							<p:dataView
+								value="#{docsController.selectedNode.children}"
+								var="node"
+			                    layout="grid"
+			                    flex="true">
+			                    <p:dataViewGridItem>
+			                    	<p:outputPanel styleClass="navigation-item">
+				                    	<p:outputLabel styleClass="#{node.data.type.icon}"/><br/>
+						            	<h:outputText value="#{node.data.name}"/>
+			                    	</p:outputPanel>
+			                    </p:dataViewGridItem>
+		                    </p:dataView>
 						</p:scrollPanel>
 						
 					</p:outputPanel>
