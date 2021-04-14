@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import eu.wauz.wazera.WazeraTool;
 import eu.wauz.wazera.model.data.auth.UserData;
+import eu.wauz.wazera.model.data.docs.DocType;
 import eu.wauz.wazera.model.data.docs.DocumentData;
 import eu.wauz.wazera.model.data.docs.FolderData;
 import eu.wauz.wazera.model.entity.docs.Document;
@@ -285,7 +286,7 @@ public class DocumentsDataService {
         		.collect(Collectors.toList());
         documentTagRepository.saveAll(documentTagsToAdd);
 
-        if(isTransient && "workflowNode".equals(documentData.getType())) {
+        if(isTransient && DocType.WORKFLOW.getId().equals(documentData.getType())) {
         	tasksService.saveNewWorkflow(documentData);
         }
         return documentData;
@@ -328,7 +329,7 @@ public class DocumentsDataService {
 		List<DocumentTag> documentTagsToDelete = documentTagRepository.findByDocumentId(documentId);
 		documentTagRepository.deleteAll(documentTagsToDelete);
 		
-		if("workflowNode".equals(documentToDelete.getType())) {
+		if(DocType.WORKFLOW.getId().equals(documentToDelete.getType())) {
         	tasksService.deleteWorkflow(documentId);
         }
 	}

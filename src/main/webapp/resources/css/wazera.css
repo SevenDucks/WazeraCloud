@@ -152,13 +152,14 @@ body {
 	background: none;
 	border: none;
 	box-sizing: content-box;
-	height: 18px;
 	padding: 5px;
 }
 
-.ui-breadcrumb > ul > li > a {
+.ui-breadcrumb > ul > li > a,
+.ui-breadcrumb > ul > li > span {
 	color: #eeaaff;
 	text-decoration: none;
+	display: flex !important;
 }
 
 .ui-tree-draghelper {
@@ -173,22 +174,26 @@ body {
 }
 
 .ui-treenode-label .fa-th-large,
-.ui-contextmenu .fa-th-large {
+.ui-contextmenu .fa-th-large,
+.ui-breadcrumb .fa-th-large {
 	color: plum;
 }
 
 .ui-treenode-label .fa-folder-open,
-.ui-contextmenu .fa-folder-open {
+.ui-contextmenu .fa-folder-open,
+.ui-breadcrumb .fa-folder-open {
 	color: moccasin;
 }
 
 .ui-treenode-label .fa-file,
-.ui-contextmenu .fa-file {
+.ui-contextmenu .fa-file,
+.ui-breadcrumb .fa-file {
 	color: skyblue;
 }
 
 .ui-treenode-label .fa-share-alt,
-.ui-contextmenu .fa-share-alt {
+.ui-contextmenu .fa-share-alt,
+.ui-breadcrumb .fa-share-alt {
 	color: lightsalmon;
 }
 

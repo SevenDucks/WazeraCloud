@@ -5,25 +5,21 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
+import eu.wauz.wazera.model.data.docs.DocType;
 import eu.wauz.wazera.model.data.docs.DocumentData;
 
-public class DocumentTreeNode extends DefaultTreeNode {
+public class DocumentTreeNode extends BaseTreeNode {
 
 	private static final long serialVersionUID = -2541631707902646133L;
 
 	private DocumentData documentData;
-
+	
 	public DocumentTreeNode(DocumentData documentData, TreeNode parent) {
-		super(documentData.getType() != null ? documentData.getType() : "documentNode", documentData.getName(), parent);
+		super(DocType.getFromString(documentData.getType()), documentData.getName(), parent);
 		this.documentData = documentData;
 	}
-
-    public String getName() {
-    	return String.valueOf(getData());
-    }
     
     public String getUser() {
     	return StringUtils.isBlank(documentData.getUser()) ? "unknown" : documentData.getUser();

@@ -27,7 +27,9 @@ import org.springframework.stereotype.Controller;
 
 import eu.wauz.wazera.WazeraTool;
 import eu.wauz.wazera.controller.TasksController;
+import eu.wauz.wazera.controller.docs.BaseTreeNode.BaseTreeNodeMeta;
 import eu.wauz.wazera.model.data.auth.Permission;
+import eu.wauz.wazera.model.data.docs.DocType;
 import eu.wauz.wazera.model.data.docs.DocumentData;
 import eu.wauz.wazera.model.data.docs.FolderData;
 import eu.wauz.wazera.service.AuthDataService;
@@ -147,22 +149,23 @@ public class DocsController implements Serializable {
 
 	public void setSelectedNode(TreeNode selectedNode) {
 		this.selectedNode = selectedNode;
-		if (selectedNode == null) {
+		if(selectedNode == null) {
 			return;
 		}
 		selectedNode.setSelected(true);
 		
-		if (selectedNode instanceof DocumentTreeNode) {
+		if(selectedNode instanceof DocumentTreeNode) {
 			DocumentData documentData = ((DocumentTreeNode) selectedNode).getDocumentData();
 			inputName = documentData.getName();
 			content = documentData.getContent();
 			documentTags = documentData.getTags();
-			if("workflowNode".equals(selectedNode.getType())) {
+			if(DocType.WORKFLOW.getId().equals(selectedNode.getType())) {
 				tasksController.setWorkflowFromDocument(documentData);
 			}
 		}
-		else {
-			inputName = ((FolderTreeNode) selectedNode).getName();
+		else if(selectedNode instanceof FolderTreeNode) {
+			FolderData folderData = ((FolderTreeNode) selectedNode).getFolderData();
+			inputName = folderData.getName();
 			content = "";
 			documentTags = new ArrayList<>();
 		}
@@ -188,10 +191,12 @@ public class DocsController implements Serializable {
 			if(node instanceof DocumentTreeNode) {
 				Integer docId = ((DocumentTreeNode) node).getDocumentData().getId();
 				item.setCommand("#{docsController.selectBreadcrumb(" + docId + ", " + null + ")}");
+				item.setIcon(((BaseTreeNodeMeta) node.getData()).getType().getIcon());
 			}
 			else if(node instanceof FolderTreeNode) {
 				Integer folderId = ((FolderTreeNode) node).getFolderData().getId();
 				item.setCommand("#{docsController.selectBreadcrumb(" + null + ", " + folderId + ")}");
+				item.setIcon(((BaseTreeNodeMeta) node.getData()).getType().getIcon());
 			}
 			item.setAjax(true);
 			item.setOnstart("PF('loading').show();");
@@ -323,15 +328,19 @@ public class DocsController implements Serializable {
 	}
 	
 	public boolean showDashboard() {
-		return selectedNode == null || selectedNode.getType().equals("directoryNode") || selectedNode.getType().equals("rootNode");
+		return selectedNode == null || DocType.ROOT.getId().equals(selectedNode.getType());
+	}
+	
+	public boolean showNavigator() {
+		return selectedNode != null && DocType.DIRECTORY.getId().equals(selectedNode.getType());
 	}
 
 	public boolean showEditor() {
-		return selectedNode != null && selectedNode.getType().equals("documentNode");
+		return selectedNode != null && DocType.DOCUMENT.getId().equals(selectedNode.getType());
 	}
 	
 	public boolean showWorkflow() {
-		return selectedNode != null && selectedNode.getType().equals("workflowNode");
+		return selectedNode != null && DocType.WORKFLOW.getId().equals(selectedNode.getType());
 	}
 	
 	public boolean showButtonBar() {

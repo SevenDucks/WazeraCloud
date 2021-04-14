@@ -64,6 +64,9 @@
 				var dashboardHeader = $("#mainForm\\:dashboardHeader");
 				$("#mainForm\\:dashboardPanel").height($(document).height() - dashboardHeader.outerHeight() - 40);
 				
+				var navigatorHeader = $("#mainForm\\:navigatorHeader");
+				$("#mainForm\\:navigatorPanel").height(newHeight - navigatorHeader.outerHeight() - 40);
+				
 				var openToolbar = $("#mainForm\\:editorOpen_toolbar");
 				$("#mainForm\\:editorOpen_editor").height(newHeight - openToolbar.outerHeight() - 46);
 				var closedToolbar = $("#mainForm\\:editorClosed_toolbar");
@@ -161,8 +164,8 @@
 					        	type="rootNode">
 					        	<h:panelGrid
 					        		columns="4">
-					            	<p:outputLabel styleClass="fa fa-th-large"/>
-					            	<h:outputText value="#{node}"/>
+					            	<p:outputLabel styleClass="#{node.type.icon}"/>
+					            	<h:outputText value="#{node.name}"/>
 					        	</h:panelGrid>
 					        </p:treeNode>
 	
@@ -171,8 +174,8 @@
 					        	type="directoryNode">
 					        	<h:panelGrid
 					        		columns="2">
-					            	<p:outputLabel styleClass="fa fa-folder-open"/>
-					            	<h:outputText value="#{node}"/>
+					            	<p:outputLabel styleClass="#{node.type.icon}"/>
+					            	<h:outputText value="#{node.name}"/>
 					        	</h:panelGrid>
 					        </p:treeNode>
 	
@@ -181,8 +184,8 @@
 					        	type="documentNode">
 					        	<h:panelGrid
 					        		columns="2">
-					            	<p:outputLabel styleClass="fa fa-file"/>
-					            	<h:outputText value="#{node}"/>
+					            	<p:outputLabel styleClass="#{node.type.icon}"/>
+					            	<h:outputText value="#{node.name}"/>
 					        	</h:panelGrid>
 					        </p:treeNode>
 					        
@@ -191,8 +194,8 @@
 					        	type="workflowNode">
 					        	<h:panelGrid
 					        		columns="2">
-					            	<p:outputLabel styleClass="fa fa-share-alt"/>
-					            	<h:outputText value="#{node}"/>
+					            	<p:outputLabel styleClass="#{node.type.icon}"/>
+					            	<h:outputText value="#{node.name}"/>
 					        	</h:panelGrid>
 					        </p:treeNode>
 	
@@ -483,6 +486,25 @@
 								</p:column>
 								
 							</p:dataTable>
+						</p:scrollPanel>
+						
+					</p:outputPanel>
+					
+					<p:outputPanel rendered="#{docsController.showNavigator()}">
+					
+						<p:outputPanel id="navigatorHeader" styleClass="editor-header">
+							<h2 class="no-spacing">#{docsController.selectedNode}</h2>
+							<p class="no-spacing" style="color: #888888;">
+								<b style="font-weight: 800;">#{docsController.selectedNode.childCount}</b> Documents
+							</p>
+							<p:breadCrumb model="#{docsController.breadcrumbModel}" homeDisplay="text"/>
+						</p:outputPanel>
+						<p:scrollPanel
+							id="navigatorPanel"
+							mode="native"
+							styleClass="gray-bg"
+							style="width: calc(100% - 2px); height: 300px; overflow: scroll;">
+							
 						</p:scrollPanel>
 						
 					</p:outputPanel>
