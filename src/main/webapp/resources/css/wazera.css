@@ -149,17 +149,29 @@ body {
 }
 
 .navigation {
-	
+	display: grid;
+	grid-template-columns: repeat(auto-fit, 136px);
+	padding: 3px;
 }
 
 .navigation-item {
-	border: 1px solid #444444;
 	text-align: center;
-	padding: 10px;
+	width: 130px;
+	height: 80px;
+	margin: 3px;
+	padding: 5px;
 }
 
-.navigation-item > .fa {
-	font-size: 3em;
+.navigation-item > .ui-icon {
+	display: contents;
+	font-size: 4em;
+	padding: 5px;
+}
+
+.navigation-item > .ui-button-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 	padding: 5px;
 }
 

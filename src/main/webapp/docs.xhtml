@@ -65,7 +65,7 @@
 				$("#mainForm\\:dashboardPanel").height($(document).height() - dashboardHeader.outerHeight() - 40);
 				
 				var navigatorHeader = $("#mainForm\\:navigatorHeader");
-				$("#mainForm\\:navigatorPanel").height(newHeight - navigatorHeader.outerHeight() - 40);
+				$("#mainForm\\:navigatorPanel").height($(document).height() - navigatorHeader.outerHeight() - 40);
 				
 				var openToolbar = $("#mainForm\\:editorOpen_toolbar");
 				$("#mainForm\\:editorOpen_editor").height(newHeight - openToolbar.outerHeight() - 46);
@@ -161,7 +161,8 @@
 	
 					        <p:treeNode
 					        	id="rootNode"
-					        	type="rootNode">
+					        	type="rootNode"
+					        	styleClass="rootNode">
 					        	<h:panelGrid
 					        		columns="2">
 					            	<p:outputLabel styleClass="#{node.type.icon}"/>
@@ -171,7 +172,8 @@
 	
 					        <p:treeNode
 					        	id="directoryNode"
-					        	type="directoryNode">
+					        	type="directoryNode"
+					        	styleClass="directoryNode">
 					        	<h:panelGrid
 					        		columns="2">
 					            	<p:outputLabel styleClass="#{node.type.icon}"/>
@@ -181,7 +183,8 @@
 	
 					        <p:treeNode
 					        	id="documentNode"
-					        	type="documentNode">
+					        	type="documentNode"
+					        	styleClass="documentNode">
 					        	<h:panelGrid
 					        		columns="2">
 					            	<p:outputLabel styleClass="#{node.type.icon}"/>
@@ -191,7 +194,8 @@
 					        
 					        <p:treeNode
 					        	id="workflowNode"
-					        	type="workflowNode">
+					        	type="workflowNode"
+					        	styleClass="workflowNode">
 					        	<h:panelGrid
 					        		columns="2">
 					            	<p:outputLabel styleClass="#{node.type.icon}"/>
@@ -208,7 +212,7 @@
 				    
 				    </p:scrollPanel>
 
-					<p:contextMenu for="documentTree" nodeType="rootNode">
+					<p:contextMenu for="body" targetFilter=".rootNode" nodeType="rootNode">
 			            <p:menuitem
 			            	value="Collapse All"
 			            	icon="fa fa-folder"
@@ -237,7 +241,7 @@
 			            	update=":addDocumentDialogForm"/>
 				    </p:contextMenu>
 
-					<p:contextMenu for="documentTree" nodeType="directoryNode">
+					<p:contextMenu for="body" targetFilter=".directoryNode" nodeType="directoryNode">
 						<p:menuitem
 							value="Collapse All"
 							icon="fa fa-folder"
@@ -504,18 +508,17 @@
 							mode="native"
 							styleClass="gray-bg"
 							style="width: calc(100% - 2px); height: 300px; overflow: scroll;">
-							<p:dataView
-								value="#{docsController.selectedNode.children}"
-								var="node"
-			                    layout="grid"
-			                    flex="true">
-			                    <p:dataViewGridItem>
-			                    	<p:outputPanel styleClass="navigation-item">
-				                    	<p:outputLabel styleClass="#{node.data.type.icon}"/><br/>
-						            	<h:outputText value="#{node.data.name}"/>
-			                    	</p:outputPanel>
-			                    </p:dataViewGridItem>
-		                    </p:dataView>
+							<p:outputPanel styleClass="navigation">
+								<c:forEach items="#{docsController.selectedNode.children}" var="node">
+									<p:commandButton
+										value="#{node.data.name}"
+										icon="#{node.data.type.icon}"
+										actionListener="#{docsController.selectNavigationItem(node)}"
+										update=":documentMenuForm :mainForm"
+										oncomplete="resizeTreePanel(); resizeEditor();"
+										styleClass="navigation-item #{node.data.type.id}"/>
+								</c:forEach>
+							</p:outputPanel>
 						</p:scrollPanel>
 						
 					</p:outputPanel>

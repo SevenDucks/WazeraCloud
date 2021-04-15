@@ -220,6 +220,11 @@ public class DocsController implements Serializable {
 		selectedNode = null;
 		selectTree();
 	}
+	
+	public void selectNavigationItem(TreeNode node) {
+		setSelectedNode(node);
+		selectTree();
+	}
 
 	public void addDirectoryNode() {
 		FolderTreeNode parent = (FolderTreeNode) selectedNode;
