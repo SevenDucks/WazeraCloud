@@ -203,8 +203,8 @@
 					        	</h:panelGrid>
 					        </p:treeNode>
 	
-					        <p:ajax event="select" update=":mainForm" oncomplete="resizeEditor()"/>
-					        <p:ajax event="contextMenu" update=":mainForm" oncomplete="resizeEditor()"/>
+					        <p:ajax event="select" update=":documentMenuForm :mainForm" onstart="saveScrollPos();" oncomplete="resizeTreePanel(); resizeEditor(); loadScrollPos();"/>
+					        <p:ajax event="contextMenu" update=":mainForm" oncomplete="resizeEditor();"/>
 					        <p:ajax event="dragdrop" listener="#{docsController.onDragDrop}" update=":documentMenuForm" onstart="saveScrollPos();" oncomplete="resizeTreePanel(); loadScrollPos();"/>
 						    <p:ajax event="expand" listener="#{docsController.onNodeExpand}"/>
 							<p:ajax event="collapse" listener="#{docsController.onNodeCollapse}"/>
@@ -212,7 +212,7 @@
 				    
 				    </p:scrollPanel>
 
-					<p:contextMenu for="body" targetFilter=".rootNode" nodeType="rootNode">
+					<p:contextMenu for="documentTree" nodeType="rootNode" widgetVar="rootNodeMenu">
 			            <p:menuitem
 			            	value="Collapse All"
 			            	icon="fa fa-folder"
@@ -241,7 +241,49 @@
 			            	update=":addDocumentDialogForm"/>
 				    </p:contextMenu>
 
-					<p:contextMenu for="body" targetFilter=".directoryNode" nodeType="directoryNode">
+					<p:contextMenu for="documentTree" nodeType="directoryNode" widgetVar="directoryNodeMenu">
+						<p:menuitem
+							value="Collapse All"
+							icon="fa fa-folder"
+							actionListener="#{docsController.collapseRecursive(docsController.selectedNode)}"
+							update="documentTree :mainForm"/>
+			            <p:menuitem
+			            	value="New Folder"
+			            	icon="fa fa-folder-open"
+			            	disabled="#{!docsController.canEditFolders()}"
+			            	actionListener="#{docsController.setName('New Folder')}"
+			            	onclick="PF('dialogAddDirectory').show();"
+			            	update=":addDirectoryDialogForm"/>
+			            <p:menuitem
+			            	value="New Document"
+			            	icon="fa fa-file"
+			            	disabled="#{!docsController.canEditDocuments()}"
+			            	actionListener="#{docsController.setName('New Document', 'documentNode')}"
+			            	onclick="PF('dialogAddDocument').show();"
+			            	update=":addDocumentDialogForm"/>
+			            <p:menuitem
+			            	value="New Workflow"
+			            	icon="fa fa-share-alt"
+			            	disabled="#{!docsController.canEditWorkflows()}"
+			            	actionListener="#{docsController.setName('New Workflow', 'workflowNode')}"
+			            	onclick="PF('dialogAddDocument').show();"
+			            	update=":addDocumentDialogForm"/>
+	       				<p:menuitem
+	       					value="Rename"
+	       					icon="fa fa-refresh"
+	       					disabled="#{!docsController.canEditFolders()}"
+	       					onclick="PF('dialogRenameDirectory').show();"
+	       					update=":renameDirectoryDialogForm"/>
+	       				<p:menuitem
+	       					value="Delete"
+	       					icon="fa fa-trash"
+	       					disabled="#{!docsController.canDeleteFolders()}"
+	       					actionListener="#{docsController.deleteFolder}"
+	       					update="documentTree :mainForm">
+	       					<p:confirm header="Confirm" message="Delete Folder?" icon="ui-icon-alert"/>
+	       				</p:menuitem>
+				    </p:contextMenu>
+				    <p:contextMenu targetFilter=".directoryNode">
 						<p:menuitem
 							value="Collapse All"
 							icon="fa fa-folder"
@@ -284,7 +326,7 @@
 	       				</p:menuitem>
 				    </p:contextMenu>
 
-					<p:contextMenu for="documentTree" nodeType="documentNode">
+					<p:contextMenu for="documentTree" nodeType="documentNode" widgetVar="documentNodeMenu">
 						<p:menuitem
 	       					value="Open in New Tab"
        						icon="fa fa-external-link"
@@ -313,7 +355,7 @@
 	       				</p:menuitem>
 				    </p:contextMenu>
 				    
-				    <p:contextMenu for="documentTree" nodeType="workflowNode">
+				    <p:contextMenu for="documentTree" nodeType="workflowNode" widgetVar="workflowNode">
 						<p:menuitem
 	       					value="Open in New Tab"
        						icon="fa fa-external-link"
@@ -509,14 +551,19 @@
 							styleClass="gray-bg"
 							style="width: calc(100% - 2px); height: 300px; overflow: scroll;">
 							<p:outputPanel styleClass="navigation">
-								<c:forEach items="#{docsController.selectedNode.children}" var="node">
+								<c:forEach items="#{docsController.selectedNode.children}" var="node" varStatus="loop">
 									<p:commandButton
 										value="#{node.data.name}"
 										icon="#{node.data.type.icon}"
 										actionListener="#{docsController.selectNavigationItem(node)}"
+										onmouseover="softSelect${loop.index}();"
+										onstart="saveScrollPos();"
 										update=":documentMenuForm :mainForm"
-										oncomplete="resizeTreePanel(); resizeEditor();"
+										oncomplete="resizeTreePanel(); resizeEditor(); loadScrollPos();"
 										styleClass="navigation-item #{node.data.type.id}"/>
+									<p:remoteCommand
+				            			name="softSelect${loop.index}"
+				            			actionListener="#{docsController.softSetSelectedNode(node)}"/>
 								</c:forEach>
 							</p:outputPanel>
 						</p:scrollPanel>

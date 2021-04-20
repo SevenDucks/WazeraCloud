@@ -172,6 +172,7 @@ body {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	pointer-events: none;
 	padding: 5px;
 }
 
@@ -226,6 +227,16 @@ body {
 .ui-breadcrumb .fa-share-alt,
 .navigation-item .fa-share-alt {
 	color: lightsalmon;
+}
+
+.ui-tree .ui-treenode-leaf-icon {
+	height: 0 !important;
+}
+
+.ui-tree .ui-treenode-children {
+	margin: 0 0 0 5px !important;
+	padding: 0 0 0 8px !important;
+	border-left: 3px dotted #eeaaff !important;
 }
 
 .ui-chips-input-token > .ui-widget {
@@ -386,6 +397,11 @@ th,
 .purple-bg-gradient,
 .purple-bg-gradient > .ui-layout-unit-content {
 	background: linear-gradient(to right, #705296, #2c6aa5) !important;
+}
+
+.purple-bg-gradient-vert,
+.purple-bg-gradient-vert > .ui-layout-unit-content {
+	background: linear-gradient(to bottom, #291e38, #705296) !important;
 }
 
 .purple-bg-dark,

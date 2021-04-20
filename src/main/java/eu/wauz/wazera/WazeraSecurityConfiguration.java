@@ -54,7 +54,7 @@ public class WazeraSecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.formLogin()
 			.loginPage("/login.xhtml")
 			.loginProcessingUrl("/perform_login")
-			.defaultSuccessUrl("/docs.xhtml", true)
+			.defaultSuccessUrl("/docs.xhtml", false)
 			.failureUrl("/login.xhtml?error=true")
 			.and()
 			.logout()

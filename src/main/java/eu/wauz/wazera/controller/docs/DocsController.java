@@ -112,13 +112,18 @@ public class DocsController implements Serializable {
 		if (isRootNode) {
 			node = new RootFolderTreeNode(folderNode, treeNode);
 			node.setExpanded(true);
+			if(folderId == null && docId == null) {
+				node.setSelected(true);
+				setSelectedNode(node);
+				folderId = null;
+			}
 		}
 		else {
 			node = new FolderTreeNode(folderNode, treeNode);
 			node.setExpanded(folderNode.isExpanded() != null ? folderNode.isExpanded() : false);
 		}
 		
-		if(Objects.equals(folderNode.getId(), folderId)) {
+		if(folderId != null && Objects.equals(folderNode.getId(), folderId)) {
 			node.setSelected(true);
 			setSelectedNode(node);
 			folderId = null;
@@ -136,7 +141,7 @@ public class DocsController implements Serializable {
 		DocumentTreeNode node = new DocumentTreeNode(documentNode, treeNode);
 		node.setExpanded(true);
 		
-		if(Objects.equals(documentNode.getId(), docId)) {
+		if(docId != null && Objects.equals(documentNode.getId(), docId)) {
 			node.setSelected(true);
 			setSelectedNode(node);
 			docId = null;
@@ -145,6 +150,21 @@ public class DocsController implements Serializable {
 
 	public TreeNode getSelectedNode() {
 		return selectedNode;
+	}
+	
+	public void softSetSelectedNode(TreeNode selectedNode) {
+		System.out.println("aaa");
+		this.selectedNode = selectedNode;
+		inputName = "Yeet";
+		if(selectedNode instanceof DocumentTreeNode) {
+			docId = ((DocumentTreeNode) selectedNode).getDocumentData().getId();
+			folderId = null;
+		}
+		else if(selectedNode instanceof FolderTreeNode) {
+			docId = null;
+			folderId = ((FolderTreeNode) selectedNode).getFolderData().getId();
+		}
+		System.out.println(selectedNode.toString());
 	}
 
 	public void setSelectedNode(TreeNode selectedNode) {
@@ -168,6 +188,9 @@ public class DocsController implements Serializable {
 			inputName = folderData.getName();
 			content = "";
 			documentTags = new ArrayList<>();
+			if(!selectedNode.isExpanded()) {
+				expand(selectedNode);
+			}
 		}
 		
 		PrimeFaces.current().executeScript("history.pushState({}, null, '" + getDocumentLink() + "');");
@@ -199,9 +222,9 @@ public class DocsController implements Serializable {
 				item.setIcon(((BaseTreeNodeMeta) node.getData()).getType().getIcon());
 			}
 			item.setAjax(true);
-			item.setOnstart("PF('loading').show();");
+			item.setOnstart("PF('loading').show(); saveScrollPos();");
 			item.setUpdate(":documentMenuForm :mainForm");
-			item.setOncomplete("resizeTreePanel(); resizeEditor(); PF('loading').hide();");
+			item.setOncomplete("resizeTreePanel(); resizeEditor(); loadScrollPos(); PF('loading').hide();");
 			if(first) {
 				item.setDisabled(true);
 				first = false;
@@ -422,11 +445,18 @@ public class DocsController implements Serializable {
 	}
 	
 	public void onNodeExpand(NodeExpandEvent event) {
+		expand(event.getTreeNode());
+	}
+	
+	public void expand(TreeNode treeNode) {
 		if(hasSearchTags()) {
 			return;
 		}
+		if(searchTags == null) {
+			searchTags = new ArrayList<String>();
+		}
 
-		FolderData folderData = ((FolderTreeNode) event.getTreeNode()).getFolderData();
+		FolderData folderData = ((FolderTreeNode) treeNode).getFolderData();
 		folderData.setExpanded(true);
 		try {
 			if(folderData.getId() != null) {
@@ -435,33 +465,28 @@ public class DocsController implements Serializable {
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
+			return;
 		}
-
-		if(searchTags == null) {
-			searchTags = new ArrayList<String>();
-		}
-
-		FolderData result = null;
+		
+		FolderData expandedFolderData = null;
 		try {
-			result = documentsService.getDocuments(folderData.getId(), null, null, searchTags);
+			expandedFolderData = documentsService.getDocuments(folderData.getId(), null, null, searchTags);
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
+			return;
 		}
-
-		FolderData expandedFolderData = result;
-		TreeNode treeNode = event.getTreeNode();
 
 		while(treeNode.getChildCount() != 0) {
 			treeNode.getChildren().remove(0);
 		}
-
 		for (FolderData childNode : expandedFolderData.getFolders()) {
 			addFolderNodes(childNode, treeNode, false);
 		}
 		for (DocumentData childNode : expandedFolderData.getDocuments()) {
 			addDocumentNodes(childNode, treeNode);
 		}
+		treeNode.setExpanded(true);
 	}
 
 	public void onNodeCollapse(NodeCollapseEvent event) {
