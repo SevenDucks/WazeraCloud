@@ -2,7 +2,7 @@ body {
 	font-family: Helvetica;
 	font-size: 14px;
 	background-color: #16161f;
-	scrollbar-color: #eeaaff rgba(0, 0, 0, 0.15);
+	scrollbar-color: #eeaaff rgba(0, 0, 0, 0.20);
 }
 
 ::-webkit-scrollbar {
@@ -16,7 +16,7 @@ body {
 
 ::-webkit-scrollbar-track,
 ::-webkit-scrollbar-corner {
-	background: rgba(0, 0, 0, 0.15); 
+	background: rgba(0, 0, 0, 0.20); 
 }
 
 .lds-ring {
@@ -142,6 +142,10 @@ body {
 	min-height: 200px;
 }
 
+.menubar > ul > li > h3 {
+	margin: 2px 5px !important;
+}
+
 .search-container > .ui-chips-container,
 .search-container > .ui-chips-container > .ui-chips-input-token,
 .search-container > .ui-chips-container > .ui-chips-input-token > input {
@@ -190,6 +194,10 @@ body {
 	display: flex !important;
 }
 
+.ui-treenode {
+	padding: 0 !important;
+}
+
 .ui-tree-draghelper {
 	pointer-events: none;
 }
@@ -197,8 +205,8 @@ body {
 .ui-tree-droppoint {
 	background-color: #16161f;
 	width: 200px;
-	height: 6px;
-	margin: 3px;
+	height: 5px;
+	margin: 1px;
 }
 
 .ui-treenode-label .fa-th-large,
@@ -236,7 +244,7 @@ body {
 .ui-tree .ui-treenode-children {
 	margin: 0 0 0 5px !important;
 	padding: 0 0 0 8px !important;
-	border-left: 3px dotted #eeaaff !important;
+	border-left: 5px solid rgba(0, 0, 0, 0.20) !important;
 }
 
 .ui-chips-input-token > .ui-widget {

@@ -283,49 +283,7 @@
 	       					<p:confirm header="Confirm" message="Delete Folder?" icon="ui-icon-alert"/>
 	       				</p:menuitem>
 				    </p:contextMenu>
-				    <p:contextMenu targetFilter=".directoryNode">
-						<p:menuitem
-							value="Collapse All"
-							icon="fa fa-folder"
-							actionListener="#{docsController.collapseRecursive(docsController.selectedNode)}"
-							update="documentTree :mainForm"/>
-			            <p:menuitem
-			            	value="New Folder"
-			            	icon="fa fa-folder-open"
-			            	disabled="#{!docsController.canEditFolders()}"
-			            	actionListener="#{docsController.setName('New Folder')}"
-			            	onclick="PF('dialogAddDirectory').show();"
-			            	update=":addDirectoryDialogForm"/>
-			            <p:menuitem
-			            	value="New Document"
-			            	icon="fa fa-file"
-			            	disabled="#{!docsController.canEditDocuments()}"
-			            	actionListener="#{docsController.setName('New Document', 'documentNode')}"
-			            	onclick="PF('dialogAddDocument').show();"
-			            	update=":addDocumentDialogForm"/>
-			            <p:menuitem
-			            	value="New Workflow"
-			            	icon="fa fa-share-alt"
-			            	disabled="#{!docsController.canEditWorkflows()}"
-			            	actionListener="#{docsController.setName('New Workflow', 'workflowNode')}"
-			            	onclick="PF('dialogAddDocument').show();"
-			            	update=":addDocumentDialogForm"/>
-	       				<p:menuitem
-	       					value="Rename"
-	       					icon="fa fa-refresh"
-	       					disabled="#{!docsController.canEditFolders()}"
-	       					onclick="PF('dialogRenameDirectory').show();"
-	       					update=":renameDirectoryDialogForm"/>
-	       				<p:menuitem
-	       					value="Delete"
-	       					icon="fa fa-trash"
-	       					disabled="#{!docsController.canDeleteFolders()}"
-	       					actionListener="#{docsController.deleteFolder}"
-	       					update="documentTree :mainForm">
-	       					<p:confirm header="Confirm" message="Delete Folder?" icon="ui-icon-alert"/>
-	       				</p:menuitem>
-				    </p:contextMenu>
-
+				    
 					<p:contextMenu for="documentTree" nodeType="documentNode" widgetVar="documentNodeMenu">
 						<p:menuitem
 	       					value="Open in New Tab"
@@ -425,7 +383,7 @@
 								tableStyle="width: auto;">
 								
 								<f:facet name="header">
-							        Connected File Systems (above 16 GiB)
+							        File Systems (above 16 GiB)
 							    </f:facet>
 							    
 							    <p:column
@@ -532,6 +490,19 @@
 								</p:column>
 								
 							</p:dataTable>
+							
+							<p:outputPanel styleClass="navigation">
+								<c:forEach items="#{docsController.selectedNode.children}" var="node" varStatus="loop">
+									<p:commandButton
+										value="#{node.data.name}"
+										icon="#{node.data.type.icon}"
+										actionListener="#{docsController.selectNavigationItem(node)}"
+										onstart="saveScrollPos();"
+										update=":documentMenuForm :mainForm"
+										oncomplete="resizeTreePanel(); resizeEditor(); loadScrollPos();"
+										styleClass="navigation-item #{node.data.type.id}"/>
+								</c:forEach>
+							</p:outputPanel>
 						</p:scrollPanel>
 						
 					</p:outputPanel>
@@ -556,14 +527,10 @@
 										value="#{node.data.name}"
 										icon="#{node.data.type.icon}"
 										actionListener="#{docsController.selectNavigationItem(node)}"
-										onmouseover="softSelect${loop.index}();"
 										onstart="saveScrollPos();"
 										update=":documentMenuForm :mainForm"
 										oncomplete="resizeTreePanel(); resizeEditor(); loadScrollPos();"
 										styleClass="navigation-item #{node.data.type.id}"/>
-									<p:remoteCommand
-				            			name="softSelect${loop.index}"
-				            			actionListener="#{docsController.softSetSelectedNode(node)}"/>
 								</c:forEach>
 							</p:outputPanel>
 						</p:scrollPanel>
@@ -580,6 +547,7 @@
 										widgetVar="textEditorOpen"
 										value="#{docsController.content}"
 										readonly="false"
+										secure="false"
 										rendered="#{docsController.allowEditing}"
 										height="300"
 										styleClass="text-editor">
@@ -596,6 +564,7 @@
 										widgetVar="textEditorClosed"
 										value="#{docsController.content}"
 										readonly="true"
+										secure="false"
 										rendered="#{!docsController.allowEditing}"
 										height="300"
 										styleClass="text-editor">
@@ -992,6 +961,7 @@
 						value="#{tasksController.workflowTask.description}"
 						toolbarVisible="#{tasksController.allowEditing}"
 						readonly="#{!tasksController.allowEditing}"
+						secure="false"
 						height="#{tasksController.allowEditing ? '314' : '392'}"
 						styleClass="text-editor"/>
 					

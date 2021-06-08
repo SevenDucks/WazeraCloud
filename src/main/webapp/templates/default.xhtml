@@ -29,7 +29,7 @@
 			<p:autoUpdate />
 		</p:growl>
 		
-		<p:ajaxStatus onstart="PF('loading').show()" oncomplete="PF('loading').hide()"/>
+		<p:ajaxStatus onstart="PF('loading').show()" oncomplete="PF('loading').hide()" delay="360"/>
 	    <p:dialog
 	    	widgetVar="loading"
 	    	modal="false"
@@ -37,8 +37,6 @@
 	    	closable="false"
 	    	resizable="false"
 	    	showHeader="false"
-	    	showEffect="fade"
-	    	hideEffect="fade"
 	    	style="background: none; border: none; box-shadow: none;">
 	        <div class="p-text-center">
 	            <div class="lds-ring">
@@ -93,7 +91,7 @@
 			
 			<p:layoutUnit position="west" gutter="0" styleClass="no-border purple-bg-gradient-vert">
 				<p:menu styleClass="menubar no-border" style="width: 80px; background: transparent;">
-					<p:submenu label="Views">
+					<p:submenu label="Cloud">
 		        		<p:menuitem
 		        			icon="fa fa-file-text"
 		        			value="Docs"

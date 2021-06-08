@@ -57,7 +57,7 @@ public class DocsController implements Serializable {
 	private TreeNode documentTree;
 	
 	private TreeNode selectedNode;
-
+	
 	private FolderData rootNodeData;
 	
 	private MenuModel breadcrumbModel;
@@ -147,24 +147,9 @@ public class DocsController implements Serializable {
 			docId = null;
 		}
 	}
-
+	
 	public TreeNode getSelectedNode() {
 		return selectedNode;
-	}
-	
-	public void softSetSelectedNode(TreeNode selectedNode) {
-		System.out.println("aaa");
-		this.selectedNode = selectedNode;
-		inputName = "Yeet";
-		if(selectedNode instanceof DocumentTreeNode) {
-			docId = ((DocumentTreeNode) selectedNode).getDocumentData().getId();
-			folderId = null;
-		}
-		else if(selectedNode instanceof FolderTreeNode) {
-			docId = null;
-			folderId = ((FolderTreeNode) selectedNode).getFolderData().getId();
-		}
-		System.out.println(selectedNode.toString());
 	}
 
 	public void setSelectedNode(TreeNode selectedNode) {
@@ -210,7 +195,8 @@ public class DocsController implements Serializable {
 		TreeNode node = selectedNode;
 		boolean first = true;
 		while(node != null && node != documentTree) {
-			DefaultMenuItem item = new DefaultMenuItem(node.toString());
+			DefaultMenuItem item = new DefaultMenuItem();
+			item.setValue(node.toString());
 			if(node instanceof DocumentTreeNode) {
 				Integer docId = ((DocumentTreeNode) node).getDocumentData().getId();
 				item.setCommand("#{docsController.selectBreadcrumb(" + docId + ", " + null + ")}");
@@ -222,9 +208,9 @@ public class DocsController implements Serializable {
 				item.setIcon(((BaseTreeNodeMeta) node.getData()).getType().getIcon());
 			}
 			item.setAjax(true);
-			item.setOnstart("PF('loading').show(); saveScrollPos();");
+			item.setOnstart("saveScrollPos();");
 			item.setUpdate(":documentMenuForm :mainForm");
-			item.setOncomplete("resizeTreePanel(); resizeEditor(); loadScrollPos(); PF('loading').hide();");
+			item.setOncomplete("resizeTreePanel(); resizeEditor(); loadScrollPos();");
 			if(first) {
 				item.setDisabled(true);
 				first = false;
@@ -233,7 +219,7 @@ public class DocsController implements Serializable {
 			node = node.getParent();
 		}
         while(!stack.isEmpty()) {
-        	breadcrumbModel.addElement(stack.pop());
+        	breadcrumbModel.getElements().add(stack.pop());
         }
 	}
 	
