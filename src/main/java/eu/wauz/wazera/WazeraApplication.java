@@ -1,5 +1,7 @@
 package eu.wauz.wazera;
 
+import java.sql.SQLException;
+
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
@@ -33,7 +35,7 @@ public class WazeraApplication extends SpringBootServletInitializer {
 	
 	public static final String APP_ROOT = "~/wazera/";
 	
-	public static final boolean EMBED_DB = true;
+	private String databasePlatform;
 	
 	@Autowired
 	private BuildProperties buildProperties;
@@ -87,20 +89,23 @@ public class WazeraApplication extends SpringBootServletInitializer {
     @Bean
     @Autowired
 	public DataSource wazeraDataSource() {
-    	if(EMBED_DB) {
-    		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-    		dataSource.setUsername("root");
-    		dataSource.setDriverClassName("org.h2.Driver");
-    		dataSource.setUrl("jdbc:h2:file:" + APP_ROOT + "Wazera");
-    		return dataSource;
-    	}
-    	else {
+    	try {
     		BasicDataSource dataSource = new BasicDataSource();
     		dataSource.setUsername("root");
     		dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
     		dataSource.setUrl("jdbc:mariadb://localhost:3306/wazera");
+    		dataSource.getConnection();
+    		databasePlatform = "org.hibernate.dialect.MySQL5Dialect";
     		return dataSource;
     	}
+    	catch (SQLException e) {
+    		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+    		dataSource.setUsername("root");
+    		dataSource.setDriverClassName("org.h2.Driver");
+    		dataSource.setUrl("jdbc:h2:file:" + APP_ROOT + "Wazera");
+    		databasePlatform = "org.hibernate.dialect.H2Dialect";
+    		return dataSource;
+		}
 	}
     
     @Bean
@@ -108,12 +113,7 @@ public class WazeraApplication extends SpringBootServletInitializer {
         HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
         hibernateJpaVendorAdapter.setShowSql(false);
         hibernateJpaVendorAdapter.setGenerateDdl(true);
-        if(EMBED_DB) {
-        	hibernateJpaVendorAdapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
-        }
-        else {
-        	hibernateJpaVendorAdapter.setDatabasePlatform("org.hibernate.dialect.MySQL5Dialect");
-        }
+    	hibernateJpaVendorAdapter.setDatabasePlatform(databasePlatform);
         return hibernateJpaVendorAdapter;
     }
     

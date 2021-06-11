@@ -11,6 +11,8 @@
     xmlns:s="http://java.sun.com/jsf/composite/components/shared"
 	xmlns:tw="http://java.sun.com/jsf/composite/components/tasks"
     template="/templates/default.xhtml" >
+    
+    <ui:define name="title"> - #{docsController.selectedNode}</ui:define>
 
     <ui:define name="center">
 
@@ -42,14 +44,18 @@
 				    }
 				});
 			}
-
-			$(document).ready(function () {
-				setTimeout(updateTree, 250);
+			
+			$(window).on("popstate", function () {
+				location.reload();
 			});
 
 			$(window).on('resize', function() {
 				setTimeout(resizeTreePanel, 250);
 				setTimeout(resizeEditor, 250);
+			});
+
+			$(document).ready(function () {
+				setTimeout(updateTree, 250);
 			});
 
 			function resizeTreePanel() {
@@ -279,7 +285,9 @@
 	       					icon="fa fa-trash"
 	       					disabled="#{!docsController.canDeleteFolders()}"
 	       					actionListener="#{docsController.deleteFolder}"
-	       					update="documentTree :mainForm">
+	       					update="documentTree :mainForm"
+	       					onstart="saveScrollPos()"
+							oncomplete="resizeEditor(); resizeTreePanel(); loadScrollPos();">
 	       					<p:confirm header="Confirm" message="Delete Folder?" icon="ui-icon-alert"/>
 	       				</p:menuitem>
 				    </p:contextMenu>
@@ -308,7 +316,9 @@
 	       					icon="fa fa-trash"
 	       					disabled="#{!docsController.canDeleteDocuments()}"
 	       					actionListener="#{docsController.deleteDocument}"
-	       					update="documentTree :mainForm">
+	       					update="documentTree :mainForm"
+	       					onstart="saveScrollPos()"
+							oncomplete="resizeEditor(); resizeTreePanel(); loadScrollPos();">
 	       					<p:confirm header="Confirm" message="Delete Element?" icon="ui-icon-alert"/>
 	       				</p:menuitem>
 				    </p:contextMenu>
@@ -330,7 +340,9 @@
 	       					icon="fa fa-trash"
 	       					disabled="#{!docsController.canDeleteWorkflows()}"
 	       					actionListener="#{docsController.deleteDocument}"
-	       					update="documentTree :mainForm">
+	       					update="documentTree :mainForm"
+	       					onstart="saveScrollPos()"
+							oncomplete="resizeEditor(); resizeTreePanel(); loadScrollPos();">
 	       					<p:confirm header="Confirm" message="Delete Document?" icon="ui-icon-alert"/>
 	       				</p:menuitem>
 				    </p:contextMenu>
@@ -359,7 +371,7 @@
 				style="padding: 3px;">
 
 				<h:form id="mainForm">
-					
+				
 					<p:outputPanel rendered="#{docsController.showDashboard()}">
 					
 						<p:outputPanel id="dashboardHeader" styleClass="editor-header">

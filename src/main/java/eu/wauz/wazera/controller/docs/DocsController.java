@@ -179,6 +179,7 @@ public class DocsController implements Serializable {
 		}
 		
 		PrimeFaces.current().executeScript("history.pushState({}, null, '" + getDocumentLink() + "');");
+		//PrimeFaces.current().ajax().update("headPanel");
 		updateBreadcrumbModel();
 	}
 	
@@ -208,9 +209,9 @@ public class DocsController implements Serializable {
 				item.setIcon(((BaseTreeNodeMeta) node.getData()).getType().getIcon());
 			}
 			item.setAjax(true);
-			item.setOnstart("saveScrollPos();");
+			item.setOnstart("PF('loading').show(); saveScrollPos();");
 			item.setUpdate(":documentMenuForm :mainForm");
-			item.setOncomplete("resizeTreePanel(); resizeEditor(); loadScrollPos();");
+			item.setOncomplete("resizeTreePanel(); resizeEditor(); loadScrollPos(); PF('loading').hide();");
 			if(first) {
 				item.setDisabled(true);
 				first = false;
@@ -232,7 +233,7 @@ public class DocsController implements Serializable {
 	
 	public void selectNavigationItem(TreeNode node) {
 		setSelectedNode(node);
-		selectTree();
+		selectTree(true);
 	}
 
 	public void addDirectoryNode() {
@@ -404,14 +405,18 @@ public class DocsController implements Serializable {
 	public void setAllowSorting(boolean allowSorting) {
 		this.allowSorting = allowSorting;
 	}
-
+	
 	public void selectTree() {
+		selectTree(false);
+	}
+
+	public void selectTree(boolean keepSelection) {
 		documentTree = new DefaultTreeNode("documentTree", null);
 
 		if(searchTags == null) {
 			searchTags = new ArrayList<String>();
 		}
-		if(searchTags.size() == 0) {
+		if(searchTags.size() == 0 || keepSelection) {
 			if(selectedNode instanceof DocumentTreeNode) {
 				docId = ((DocumentTreeNode) selectedNode).getDocumentData().getId();
 			}
@@ -514,6 +519,7 @@ public class DocsController implements Serializable {
 
 		try {
 			foldersService.deleteFolder(node.getFolderData());
+			selectedNode = null;
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
@@ -527,6 +533,7 @@ public class DocsController implements Serializable {
 		
 		try {
 			documentsService.deleteDocument(node.getDocumentData().getId());
+			selectedNode = null;
 		}
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
