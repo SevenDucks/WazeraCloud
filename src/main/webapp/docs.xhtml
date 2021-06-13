@@ -12,8 +12,6 @@
 	xmlns:tw="http://java.sun.com/jsf/composite/components/tasks"
     template="/templates/default.xhtml" >
     
-    <ui:define name="title"> - #{docsController.selectedNode}</ui:define>
-
     <ui:define name="center">
 
 		<script type="text/javascript">
@@ -45,10 +43,6 @@
 				});
 			}
 			
-			$(window).on("popstate", function () {
-				location.reload();
-			});
-
 			$(window).on('resize', function() {
 				setTimeout(resizeTreePanel, 250);
 				setTimeout(resizeEditor, 250);
@@ -219,6 +213,11 @@
 				    </p:scrollPanel>
 
 					<p:contextMenu for="documentTree" nodeType="rootNode" widgetVar="rootNodeMenu">
+						<p:menuitem
+	       					value="Open in New Tab"
+       						icon="fa fa-external-link"
+	       					update="documentLinkPanel"
+	       					oncomplete="openDocumentLink();"/>
 			            <p:menuitem
 			            	value="Collapse All"
 			            	icon="fa fa-folder"
@@ -248,6 +247,11 @@
 				    </p:contextMenu>
 
 					<p:contextMenu for="documentTree" nodeType="directoryNode" widgetVar="directoryNodeMenu">
+						<p:menuitem
+	       					value="Open in New Tab"
+       						icon="fa fa-external-link"
+	       					update="documentLinkPanel"
+	       					oncomplete="openDocumentLink();"/>
 						<p:menuitem
 							value="Collapse All"
 							icon="fa fa-folder"

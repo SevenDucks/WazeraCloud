@@ -178,8 +178,8 @@ public class DocsController implements Serializable {
 			}
 		}
 		
-		PrimeFaces.current().executeScript("history.pushState({}, null, '" + getDocumentLink() + "');");
-		//PrimeFaces.current().ajax().update("headPanel");
+		PrimeFaces.current().executeScript("document.title='" + selectedNode + " - Wazera Cloud'");
+		PrimeFaces.current().executeScript("pushHistoryState('" + getDocumentLink() + "');");
 		updateBreadcrumbModel();
 	}
 	
@@ -198,15 +198,14 @@ public class DocsController implements Serializable {
 		while(node != null && node != documentTree) {
 			DefaultMenuItem item = new DefaultMenuItem();
 			item.setValue(node.toString());
+			item.setIcon(((BaseTreeNodeMeta) node.getData()).getType().getIcon());
 			if(node instanceof DocumentTreeNode) {
 				Integer docId = ((DocumentTreeNode) node).getDocumentData().getId();
 				item.setCommand("#{docsController.selectBreadcrumb(" + docId + ", " + null + ")}");
-				item.setIcon(((BaseTreeNodeMeta) node.getData()).getType().getIcon());
 			}
 			else if(node instanceof FolderTreeNode) {
 				Integer folderId = ((FolderTreeNode) node).getFolderData().getId();
 				item.setCommand("#{docsController.selectBreadcrumb(" + null + ", " + folderId + ")}");
-				item.setIcon(((BaseTreeNodeMeta) node.getData()).getType().getIcon());
 			}
 			item.setAjax(true);
 			item.setOnstart("PF('loading').show(); saveScrollPos();");

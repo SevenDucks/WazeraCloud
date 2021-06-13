@@ -10,7 +10,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 		<link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/images/favicon.png"/>
 		<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/wazera.css"/>
-		<title><ui:insert name="title"/>Wazera Cloud</title>
+		<title>Wazera Cloud</title>
 	</h:head>
 	
 	<h:body id="body">
@@ -22,6 +22,16 @@
 		        	$.get('ping.txt');
 		        }, 60000);
 			});
+			
+			$(window).on("popstate", function () {
+				window.location.reload();
+			});
+			
+			function pushHistoryState(historyUrl) {
+				if(!window.location.href.endsWith(historyUrl)) {
+					history.pushState({}, null, historyUrl);
+				}
+			}
 			
 		</script>
 	
@@ -97,6 +107,13 @@
 		        			value="Docs"
 		        			url="#{request.contextPath}/docs.xhtml"
 		        			styleClass="#{view.viewId.toLowerCase().contains('doc') ? 'ui-state-active' : ''}"/>
+		        		<p:menuitem
+		        			icon="fa fa-question-circle"
+		        			value="Help"
+		        			url="#{request.contextPath}/help.xhtml"
+		        			styleClass="#{view.viewId.toLowerCase().contains('help') ? 'ui-state-active' : ''}"/>
+		        	</p:submenu>
+		        	<p:submenu label="Config">
 		        		<p:menuitem
 		        			icon="fa fa-user"
 		        			value="Users"
