@@ -35,6 +35,10 @@ public class UserData implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public String toLink() {
+		return "editUser.xhtml?faces-redirect=true&username=" + username;
+	}
 
 	public String toString() {
 		return "UserData(" + (id != null ? id : "new") + ")";

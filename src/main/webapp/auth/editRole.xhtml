@@ -13,77 +13,94 @@
     template="/templates/administration.xhtml" >
     
     <ui:define name="restricted">
+    
+    	<script type="text/javascript">
+		
+			$(document).ready(function () {
+				setTimeout(resizeMainPanel, 250);
+			});
+			
+			$(window).on('resize', function() {
+				setTimeout(resizeMainPanel, 250);
+			});
+	
+			function resizeMainPanel() {
+				$("#mainPanel").height($(document).height() - 40);
+			}
+			
+		</script>
 
-		<p:tabView styleClass="no-border gray-bg" style="margin: 1px;">
-		
-			<p:tab title="Assign Permissions">
+		<p:scrollPanel
+			id="mainPanel"
+			mode="native"
+			styleClass="gray-bg"
+			style="width: calc(100% - 8px); height: 300px; margin: 3px; overflow: scroll;">
+			<p:tabView styleClass="no-border gray-bg" style="margin: 1px;">
 			
-				<h:form styleClass="editRoleForm">
-					<p:panelGrid columns="2" styleClass="no-border gray-bg">
-						<f:facet name="header">
-							<p:outputLabel value="Assign Permissions to #{roleController.role.name}"/>
-						</f:facet>
-						
-						<p:outputLabel value="Name: "/>
-						<p:inputText value="#{roleController.role.name}"/>
-			
-						<p:outputLabel value="Scope: "/>
-						<p:selectOneMenu value="#{roleController.role.scope}">
-							<f:selectItems
-								value="#{roleController.getPermissionScopes()}"
-								var="permissionScope"
-								itemLabel="#{permissionScope.name()}"
-								itemValue="#{permissionScope.id}"/>
-							<p:ajax event="itemSelect" update="@(.permission-table)"/>
-						</p:selectOneMenu>
-			
-						<p:outputLabel value="Values: "/>
-						<p:dataTable
-							styleClass="permission-table no-border"
-							value="#{roleController.rolePermissionHandles}"
-							var="rolePermissionHandle"
-				            paginator="true"
-				            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-				            paginatorPosition="top"
-							rows="15"
-							rowsPerPageTemplate="15, 30, 60, 100"
-							style="width: 100%;"
-							tableStyle="width: auto;">
+				<p:tab title="Assign Permissions">
 				
-							<p:column headerText="Name">
-								<p:outputLabel value="#{rolePermissionHandle.permission.name()}"/>
-							</p:column>
-				
-							<p:column headerText="Scope">
-								<p:outputLabel value="#{rolePermissionHandle.permission.getScope().name()}"/>
-							</p:column>
-							
-							<p:column
-								style="width: 99%;">
-							</p:column>
-				
-							<p:column headerText="Active" style="text-align: center;">
-								<p:selectBooleanCheckbox
-									rendered="#{roleController.isRolePermissionHandleVisible(rolePermissionHandle)}"
-									value="#{rolePermissionHandle.hasPermission}"/>
-							</p:column>
-							
-							<f:facet name="footer">
-								<p:spacer height="10"/>
+					<h:form styleClass="editRoleForm">
+						<p:panelGrid columns="2" styleClass="no-border gray-bg">
+							<f:facet name="header">
+								<p:outputLabel value="Assign Permissions to #{roleController.role.name}"/>
 							</f:facet>
-						</p:dataTable>
-			
-						<p:commandButton
-							icon="ui-icon-disk"
-							value="Save"
-							actionListener="#{roleController.updateRole()}"
-							update="@(.editRoleForm)"/>
-					</p:panelGrid>
-				</h:form>
+							
+							<p:outputLabel value="Name: "/>
+							<p:inputText value="#{roleController.role.name}"/>
 				
-			</p:tab>
-		
-		</p:tabView>
+							<p:outputLabel value="Scope: "/>
+							<p:selectOneMenu value="#{roleController.role.scope}">
+								<f:selectItems
+									value="#{roleController.getPermissionScopes()}"
+									var="permissionScope"
+									itemLabel="#{permissionScope.name()}"
+									itemValue="#{permissionScope.id}"/>
+								<p:ajax event="itemSelect" update="@(.permission-table)"/>
+							</p:selectOneMenu>
+				
+							<p:outputLabel value="Values: "/>
+							<p:dataTable
+								styleClass="permission-table no-border"
+								value="#{roleController.rolePermissionHandles}"
+								var="rolePermissionHandle"
+								style="width: 100%;"
+								tableStyle="width: auto;">
+					
+								<p:column headerText="Name">
+									<p:outputLabel value="#{rolePermissionHandle.permission.name()}"/>
+								</p:column>
+					
+								<p:column headerText="Scope">
+									<p:outputLabel value="#{rolePermissionHandle.permission.getScope().name()}"/>
+								</p:column>
+								
+								<p:column
+									style="width: 99%;">
+								</p:column>
+					
+								<p:column headerText="Active" style="text-align: center;">
+									<p:selectBooleanCheckbox
+										rendered="#{roleController.isRolePermissionHandleVisible(rolePermissionHandle)}"
+										value="#{rolePermissionHandle.hasPermission}"/>
+								</p:column>
+								
+								<f:facet name="footer">
+									<p:spacer height="10"/>
+								</f:facet>
+							</p:dataTable>
+				
+							<p:commandButton
+								icon="ui-icon-disk"
+								value="Save"
+								actionListener="#{roleController.updateRole()}"
+								update="@(.editRoleForm)"/>
+						</p:panelGrid>
+					</h:form>
+					
+				</p:tab>
+			
+			</p:tabView>
+		</p:scrollPanel>
 		
 	</ui:define>
 

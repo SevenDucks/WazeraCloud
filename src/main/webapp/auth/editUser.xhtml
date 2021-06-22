@@ -13,99 +13,118 @@
     template="/templates/default.xhtml" >
     
     <ui:define name="center">
-
-		<p:tabView styleClass="no-border gray-bg" style="margin: 1px;">
+    
+    	<script type="text/javascript">
 		
-			<p:tab title="Profile Page">
-				<p:panelGrid columns="1" styleClass="no-border gray-bg">
-					<f:facet name="header">
-						<p:outputLabel value="Profile Page of #{userController.user.username}" style="font-weight: 800;"/>
-					</f:facet>
-					
-					<p:outputLabel value="Profile Pages will be added in a future update!"/>
-				</p:panelGrid>
-			</p:tab>
-	
-			<p:tab title="Change Password" disabled="#{!userController.mayChangePassword()}">
+			$(document).ready(function () {
+				setTimeout(resizeMainPanel, 250);
+			});
 			
-				<h:form>
-					<p:panelGrid columns="2" styleClass="no-border gray-bg">
-						<f:facet name="header">
-							<p:outputLabel value="Change Password of #{userController.user.username}" style="font-weight: 800;"/>
-						</f:facet>
-						
-						<p:outputLabel value="New Password: "/>
-						<p:password value="#{userController.passwordInput1}"/>
-						
-						<p:outputLabel value="Repeat Password: "/>
-						<p:password value="#{userController.passwordInput2}"/>
-						
-						<p:commandButton
-							icon="ui-icon-disk"
-							value="Save"
-							actionListener="#{userController.changePassword()}"
-							disabled="#{!userController.mayChangePassword()}"/>
-					</p:panelGrid>
-				</h:form>
+			$(window).on('resize', function() {
+				setTimeout(resizeMainPanel, 250);
+			});
+	
+			function resizeMainPanel() {
+				$("#mainPanel").height($(document).height() - 40);
+			}
+			
+		</script>
+
+		<p:scrollPanel
+			id="mainPanel"
+			mode="native"
+			styleClass="gray-bg"
+			style="width: calc(100% - 8px); height: 300px; margin: 3px; overflow: scroll;">
+			<p:tabView styleClass="no-border gray-bg" style="margin: 1px;">
+			
+				<p:tab title="Profile Page">
 				
-			</p:tab>
-	
-			<p:tab title="Assign Roles" disabled="#{!userController.isAuthAdmin()}">
-			
-				<h:form>
 					<p:panelGrid columns="1" styleClass="no-border gray-bg">
 						<f:facet name="header">
-							<p:outputLabel value="Assign Roles to #{userController.user.username}" style="font-weight: 800;"/>
+							<p:outputLabel value="Profile Page of #{userController.user.username}" style="font-weight: 800;"/>
 						</f:facet>
 						
-						<p:dataTable
-							styleClass="role-table no-border"
-							value="#{userController.userRoleHandles}"
-							var="userRoleHandle"
-				           	paginator="true"
-				            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-				            paginatorPosition="top"
-							rows="15"
-							rowsPerPageTemplate="15, 30, 60, 100"
-							style="width: 100%;"
-							tableStyle="width: auto;">
-	
-							<p:column headerText="Role">
-								<p:outputLabel value="#{userRoleHandle.role.getName()}"/>
-							</p:column>
-							
-							<p:column
-								style="width: 99%;">
-							</p:column>
-	
-							<p:column headerText="Global" style="text-align: center;">
-								<p:selectBooleanCheckbox value="#{userRoleHandle.hasRoleGlobally}"/>
-							</p:column>
-	
-							<c:forEach items="#{groupController.groups}" var="group">
-								<p:column headerText="#{group.getName()}" style="text-align: center;">
-									<p:selectBooleanCheckbox
-										rendered="#{!userRoleHandle.isRoleGlobal()}"
-										value="#{userRoleHandle.getHasRoleInGroupMap()[group.id]}"/>
-								</p:column>
-							</c:forEach>
-							
-							<f:facet name="footer">
-								<p:spacer height="10"/>
-							</f:facet>
-						</p:dataTable>
-						
-						<p:commandButton
-							icon="ui-icon-disk"
-							value="Save"
-							actionListener="#{userController.updateRoles()}"
-							disabled="#{!userController.isAuthAdmin()}"/>
+						<p:outputLabel value="Profile Pages will be added in a future update!"/>
 					</p:panelGrid>
-				</h:form>
+					
+				</p:tab>
+		
+				<p:tab title="Change Password" disabled="#{!userController.mayChangePassword()}">
 				
-			</p:tab>
-	
-		</p:tabView>
+					<h:form>
+						<p:panelGrid columns="2" styleClass="no-border gray-bg">
+							<f:facet name="header">
+								<p:outputLabel value="Change Password of #{userController.user.username}" style="font-weight: 800;"/>
+							</f:facet>
+							
+							<p:outputLabel value="New Password: "/>
+							<p:password value="#{userController.passwordInput1}"/>
+							
+							<p:outputLabel value="Repeat Password: "/>
+							<p:password value="#{userController.passwordInput2}"/>
+							
+							<p:commandButton
+								icon="ui-icon-disk"
+								value="Save"
+								actionListener="#{userController.changePassword()}"
+								disabled="#{!userController.mayChangePassword()}"/>
+						</p:panelGrid>
+					</h:form>
+					
+				</p:tab>
+		
+				<p:tab title="Assign Roles" disabled="#{!userController.isAuthAdmin()}">
+				
+					<h:form>
+						<p:panelGrid columns="1" styleClass="no-border gray-bg">
+							<f:facet name="header">
+								<p:outputLabel value="Assign Roles to #{userController.user.username}" style="font-weight: 800;"/>
+							</f:facet>
+							
+							<p:dataTable
+								styleClass="role-table no-border"
+								value="#{userController.userRoleHandles}"
+								var="userRoleHandle"
+								style="width: 100%;"
+								tableStyle="width: auto;">
+		
+								<p:column headerText="Role">
+									<p:outputLabel value="#{userRoleHandle.role.getName()}"/>
+								</p:column>
+								
+								<p:column
+									style="width: 99%;">
+								</p:column>
+		
+								<p:column headerText="Global" style="text-align: center;">
+									<p:selectBooleanCheckbox value="#{userRoleHandle.hasRoleGlobally}"/>
+								</p:column>
+		
+								<c:forEach items="#{groupController.groups}" var="group">
+									<p:column headerText="#{group.getName()}" style="text-align: center;">
+										<p:selectBooleanCheckbox
+											rendered="#{!userRoleHandle.isRoleGlobal()}"
+											value="#{userRoleHandle.getHasRoleInGroupMap()[group.id]}"/>
+									</p:column>
+								</c:forEach>
+								
+								<f:facet name="footer">
+									<p:spacer height="10"/>
+								</f:facet>
+							</p:dataTable>
+							
+							<p:commandButton
+								icon="ui-icon-disk"
+								value="Save"
+								actionListener="#{userController.updateRoles()}"
+								disabled="#{!userController.isAuthAdmin()}"/>
+						</p:panelGrid>
+					</h:form>
+					
+				</p:tab>
+		
+			</p:tabView>
+		</p:scrollPanel>
 	
 	</ui:define>
 

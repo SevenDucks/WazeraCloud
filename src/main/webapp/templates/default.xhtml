@@ -108,13 +108,6 @@
 		        			url="#{request.contextPath}/docs.xhtml"
 		        			styleClass="#{view.viewId.toLowerCase().contains('doc') ? 'ui-state-active' : ''}"/>
 		        		<p:menuitem
-		        			icon="fa fa-question-circle"
-		        			value="Help"
-		        			url="#{request.contextPath}/help.xhtml"
-		        			styleClass="#{view.viewId.toLowerCase().contains('help') ? 'ui-state-active' : ''}"/>
-		        	</p:submenu>
-		        	<p:submenu label="Config">
-		        		<p:menuitem
 		        			icon="fa fa-user"
 		        			value="Users"
 		        			url="#{request.contextPath}/auth/users.xhtml"
@@ -129,6 +122,11 @@
 		        			value="Roles"
 		        			url="#{request.contextPath}/auth/roles.xhtml"
 		        			styleClass="#{view.viewId.toLowerCase().contains('role') ? 'ui-state-active' : ''}"/>
+		        		<p:menuitem
+		        			icon="fa fa-question-circle"
+		        			value="Help"
+		        			url="#{request.contextPath}/help.xhtml"
+		        			styleClass="#{view.viewId.toLowerCase().contains('help') ? 'ui-state-active' : ''}"/>
 					</p:submenu>
 					<p:submenu label="Web">
 						<p:menuitem

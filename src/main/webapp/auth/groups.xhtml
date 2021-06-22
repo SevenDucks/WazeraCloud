@@ -13,80 +13,95 @@
     template="/templates/administration.xhtml" >
 
     <ui:define name="restricted">
-
-		<h:form>
+    
+    	<script type="text/javascript">
+		
+			$(document).ready(function () {
+				setTimeout(resizeMainPanel, 250);
+			});
+			
+			$(window).on('resize', function() {
+				setTimeout(resizeMainPanel, 250);
+			});
 	
-			<p:dataTable
-				styleClass="group-table no-border"
-				value="#{groupController.groups}"
-				var="group"
-	            paginator="true"
-	            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-	            paginatorPosition="top"
-				rows="15"
-				rowsPerPageTemplate="15, 30, 60, 100"
-				style="width: calc(100% - 6px); margin: 3px;"
-				tableStyle="width: auto;">
-				
-				<f:facet name="header">
-			        Group Database
-			    </f:facet>
+			function resizeMainPanel() {
+				$("#mainForm\\:mainPanel").height($(document).height() - 40);
+			}
+			
+		</script>
 
-				<p:column
-					headerText="ID"
-					sortBy="#{group.id}"
-					filterBy="#{group.id}"
-					filterMatchMode="contains"
-					styleClass="no-wrap"
-					style="min-width: 100px;">
-					<p:outputLabel value="#{group.id}"/>
-				</p:column>
-
-				<p:column
-					headerText="Group"
-					sortBy="#{group.name}"
-					filterBy="#{group.name}"
-					filterMatchMode="contains"
-					styleClass="no-wrap"
-					style="min-width: 100px;">
-					<p:outputLabel value="#{group.name}"/>
-				</p:column>
-				
-				<p:column
-					style="width: 99%;">
-				</p:column>
-
-				<p:column
-					headerText="Options"
-					styleClass="no-wrap"
-					style="text-align: center;">
-					<p:commandButton
-	        			icon="ui-icon-pencil"
-	        			title="Edit"
-	        			actionListener="#{groupController.setGroup(group)}"
-	        			update="@(.editGroupDialog)"
-	        			oncomplete="PF('editGroupDialog').show();"
-	        			style="height: 18px;"/>
-					<p:commandButton
-						icon="ui-icon-trash"
-						title="Delete"
-						actionListener="#{groupController.deleteGroup(group)}"
-						update="@(.group-table)"
-						style="height: 18px;">
-						<p:confirm header="Confirm" message="Delete Group &lt;#{group.name}&gt; permanently?" icon="ui-icon-alert"/>
-					</p:commandButton>
-				</p:column>
-
-				<f:facet name="footer">
-	        		<p:commandButton
-	        			icon="ui-icon-plus"
-	        			value="New Group"
-	        			actionListener="#{groupController.setNewGroup()}"
-	        			update="@(.newGroupDialog)"
-	        			oncomplete="PF('newGroupDialog').show();"/>
-	    		</f:facet>
-			</p:dataTable>
+		<h:form id="mainForm">
+			<p:scrollPanel
+				id="mainPanel"
+				mode="native"
+				styleClass="gray-bg"
+				style="width: calc(100% - 8px); height: 300px; margin: 3px; overflow: scroll;">
+				<p:dataTable
+					styleClass="group-table no-border"
+					value="#{groupController.groups}"
+					var="group"
+					style="width: calc(100% - 6px); margin: 3px;"
+					tableStyle="width: auto;">
+					
+					<f:facet name="header">
+				        Group Database
+				    </f:facet>
 	
+					<p:column
+						headerText="ID"
+						sortBy="#{group.id}"
+						filterBy="#{group.id}"
+						filterMatchMode="contains"
+						styleClass="no-wrap"
+						style="min-width: 100px;">
+						<p:outputLabel value="#{group.id}"/>
+					</p:column>
+	
+					<p:column
+						headerText="Group"
+						sortBy="#{group.name}"
+						filterBy="#{group.name}"
+						filterMatchMode="contains"
+						styleClass="no-wrap"
+						style="min-width: 100px;">
+						<p:outputLabel value="#{group.name}"/>
+					</p:column>
+					
+					<p:column
+						style="width: 99%;">
+					</p:column>
+	
+					<p:column
+						headerText="Options"
+						styleClass="no-wrap"
+						style="text-align: center;">
+						<p:commandButton
+		        			icon="ui-icon-pencil"
+		        			title="Edit"
+		        			actionListener="#{groupController.setGroup(group)}"
+		        			update="@(.editGroupDialog)"
+		        			oncomplete="PF('editGroupDialog').show();"
+		        			style="height: 18px;"/>
+						<p:commandButton
+							icon="ui-icon-trash"
+							title="Delete"
+							actionListener="#{groupController.deleteGroup(group)}"
+							update="@(.group-table)"
+							style="height: 18px;">
+							<p:confirm header="Confirm" message="Delete Group &lt;#{group.name}&gt; permanently?" icon="ui-icon-alert"/>
+						</p:commandButton>
+					</p:column>
+	
+					<f:facet name="footer">
+		        		<p:commandButton
+		        			icon="ui-icon-plus"
+		        			value="New Group"
+		        			actionListener="#{groupController.setNewGroup()}"
+		        			update="@(.newGroupDialog)"
+		        			oncomplete="PF('newGroupDialog').show();"/>
+		    		</f:facet>
+				</p:dataTable>
+			</p:scrollPanel>
 		</h:form>
 		
 		<p:dialog

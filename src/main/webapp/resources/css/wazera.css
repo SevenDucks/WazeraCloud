@@ -425,7 +425,8 @@ th,
 .gray-bg,
 .gray-bg > .ui-layout-unit-content,
 .gray-bg > tbody > tr,
-.ui-datatable-data > tr {
+.ui-datatable-data > tr,
+.ui-accordion .ui-accordion-content {
 	background: #16161f !important;
 }
 

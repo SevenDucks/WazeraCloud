@@ -10,11 +10,54 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:s="http://java.sun.com/jsf/composite/components/shared"
 	xmlns:tw="http://java.sun.com/jsf/composite/components/tasks"
-    template="/templates/default.xhtml" >
+    template="/templates/default.xhtml">
 
     <ui:define name="center">
 
-
+		<script type="text/javascript">
+		
+			$(document).ready(function () {
+				setTimeout(resizeMainPanel, 250);
+			});
+			
+			$(window).on('resize', function() {
+				setTimeout(resizeMainPanel, 250);
+			});
+	
+			function resizeMainPanel() {
+				$("#mainForm\\:mainPanel").height($(document).height() - 40);
+			}
+			
+		</script>
+		
+		<h:form id="mainForm">
+			<p:scrollPanel
+				id="mainPanel"
+				mode="native"
+				styleClass="gray-bg"
+				style="width: calc(100% - 8px); height: 300px; margin: 3px; overflow: scroll;">
+				
+				<p:accordionPanel multiple="true" style="margin: 3px;">
+        			<p:tab title="About Wazera - Getting Started">
+        				A B C
+        				The duck says quack.
+        			</p:tab>
+        			<p:tab title="Admin Guide - Users">
+        				A B C
+        				The duck says quack.
+        			</p:tab>
+        			<p:tab title="Admin Guide - Groups">
+        				A B C
+        				The duck says quack.
+        			</p:tab>
+        			<p:tab title="Admin Guide - Roles">
+        				A B C
+        				The duck says quack.
+        			</p:tab>
+        		</p:accordionPanel>
+				
+			</p:scrollPanel>
+		</h:form>
 
     </ui:define>
     

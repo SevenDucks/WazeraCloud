@@ -40,12 +40,7 @@ public class RoleController implements Serializable {
 		wazeraTool = new WazeraTool();
 		
 		String roleIdString = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("roleId");
-		if(StringUtils.isNotBlank(roleIdString)) {
-			role = authService.findRoleById(Integer.parseInt(roleIdString));
-		}
-		else {
-			role = new RoleData();
-		}
+		role = StringUtils.isNotBlank(roleIdString) ? authService.findRoleById(Integer.parseInt(roleIdString)) : new RoleData();
 	}
 
 	public List<PermissionScope> getPermissionScopes() {

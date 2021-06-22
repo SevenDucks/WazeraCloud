@@ -35,6 +35,10 @@ public class RoleData {
 	public String getScopeName() {
 		return PermissionScope.values()[scope - 1].name();
 	}
+	
+	public String toLink() {
+		return "editRole.xhtml?faces-redirect=true&roleId=" + id;
+	}
 
 	@Override
 	public String toString() {
