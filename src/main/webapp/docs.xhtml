@@ -1100,7 +1100,7 @@
 		</p:dialog>
 		
 		<p:dialog
-			header="Workflow State"
+			header="#{tasksController.workflowState.isTransient() ? 'New' : 'Rename'} Workflow State"
 			widgetVar="dialogAddWorkflowState"
 			showEffect="fade" hideEffect="fade"
 			resizable="false"
