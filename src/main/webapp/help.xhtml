@@ -41,10 +41,43 @@
         			<p:tab title="About Wazera - Getting Started">
         				<h2>What is Wazera?</h2>
         				<p>
+        					The Wazera Cloud allows you to work on projects with your team,
+        					by letting you manage documents and tasks on a web based platform,
+        					connected to a MySQL database. Keep all of your work organized inside a tree structure,
+        					inspired by Windows' file system and share it with your colleagues through dynamic links.
         				</p>
         				<h2>Navigating through Wazera</h2>
         				<p>
+        					In the top right corner of your screen, you are able to manage your session.
+        					The feedback button lets you send an E-Mail to the developers of Wazera.
+        					The profile button lets you edit your personal settings, including your password.
+        					The logout button will end your session, bringing you back to the login screen.
+        					You can navigate to different parts of the application through the sidebar
+        					on the left side of your screen:
         				</p>
+        				<ul>
+        					<li>
+        						DOCS is the main page of Wazera, where you view and edit your documents.
+        					</li>
+        					<li>
+        						USERS lets admins create and edit user accounts.
+        					</li>
+        					<li>
+        						GROUPS lets admins create and edit groups for users and documents.
+        					</li>
+        					<li>
+        						ROLES lets admins create and edit roles to give permissions to users.
+        					</li>
+        					<li>
+        						HELP is the page you are reading right now.
+        					</li>
+        					<li>
+        						SDS redirects you to the website of Seven Ducks Studios, the developers of Wazera.
+        					</li>
+        					<li>
+        						GITHUB redirects you to the GitHub repository with the code of Wazera.
+        					</li>
+        				</ul>
         			</p:tab>
         			<p:tab title="User Guide - Docs">
         				<h2>The Document Tree</h2>
@@ -59,24 +92,69 @@
         					that it is the root of the tree and cannot be moved, renamed or deleted.
         					When a folder has any content, an arrow will appear next to its icon,
         					letting you expand or collapse the content.
-        					Left clicking a document will open it,
-        					displaying its content on the right column of the screen.
+        					Left clicking a document in the tree will open it,
+        					displaying its content on the right side of the screen.
         					You can only have one document opened at a time.
-        					Right clicking a document will show you a context menu,
+        					Right clicking a document in the tree will show you a context menu,
         					displaying all available actions.
         					This way you can create or modify documents.
         				</p>
-        					
         				<p>
+        					There are 3 additional buttons above the tree, giving you control over its content.
+        					The first one is the sort mode, which can be toggled on and off.
+        					While sort mode is active, you can drag and drop all documents inside the tree
+        					to rearrange them freely however you want.
+        					The second one is the refresh button, which updates the entire tree.
+        					This way you will be able to see all changes that were made in other sessions.
+        					The third one is the search button, that filters the tree.
+        					In the search bar you can define tags to search for.
+        					With enter you can seperate the search tags, to search for multiple tags.
+        					The tag "one two" would only find results for "one two" as a whole,
+        					while "one" and "two" as separate tags, would find documents containing them
+        					in any combination. "two bones" would be a match this way.
         				</p>
         				<h2>Document Type - Folder (and Dashboard)</h2>
         				<p>
+        					Folders are documents that can contain other documents within them.
+        					Their content will be shown as a list of everything inside.
+        					You can click any of these contents to open them, or use the breadcrumbs
+        					in the header to navigate to parent folders.
+        					On the dashboard you can also see how much storage Wazera has left,
+        					aswell as an overview table of tasks, that are assigned to you.
+        					Each task entry provides details and delete options in the leftmost column.
+        					Like any document type, you can rename and delete folders (except for the dashboard)
+        					from the context menu in the document tree.
+        					Additionally you have the options to create new documents inside it
+        					or completely collapse its content.
         				</p>
-        				<h2>Document Type - Document</h2>
+        				<h2>Document Type - (Rich Text) Document</h2>
         				<p>
+        					Documents that are just referred to as document contain rich text.
+        					This can range from formatted paragraphs to basic images.
+        					In the footer you can copy the link to the document
+        					or start editing it. While editing, the header turns into a toolbar
+        					and the search tags field becomes also editable.
+        					You could define tags like "management" there, to make the document
+        					come up when typing "management" in the search bar.
+        					"Quick Save" (or CTRL+S) saves the document while keeping the editor open.
+        					"Save" saves the document and exits the editor afterwards.
+        					"Cancel" exits the editor without saving.
+        					Like any document type, you can rename and delete text documents
+        					from the context menu in the document tree.
+        					Additionally you have the option to create a copy of it.
         				</p>
         				<h2>Document Type - Workflow</h2>
         				<p>
+        					Workflows are documents that are used to organize tasks.
+        					Each workflow has different states, that a task can be in.
+        					These states are displayed as columns and can be
+        					renamed, reordered or deleted with buttons in the column header.
+        					In the footer you can copy the link to the document
+        					or add new tasks or states to the workflow.
+        					Once created, tasks can be simply dragged by their header into different states.
+        					Each task entry provides details and delete options in their body.
+        					Like any document type, you can rename and delete workflows
+        					from the context menu in the document tree.
         				</p>
         			</p:tab>
         			<p:tab title="Admin Guide - Users">
@@ -88,7 +166,7 @@
         					usernames or database IDs.
         					You will find a button to create new entries in the footer on the very bottom.
         					Each user entry provides edit and delete options in the leftmost column.
-        					All listed users, will be able to log into Wazera.
+        					All listed users will be able to log into Wazera.
         				</p>
         				<h2>User Pages</h2>
         				<p>
@@ -151,14 +229,14 @@
         				<ul>
         					<li>
         						ADMINISTRATE_ACCOUNTS allows you to edit users, groups and roles.
-        						This <b>includes your own roles</b>, so be careful with this permission.
+        						This includes your own roles, so be careful with this permission.
        						</li>
         					<li>
         						EDIT_FOLDERS allows you to create and edit folder documents,
         						aswell as sorting the document tree.
        						</li>
         					<li>
-        						DELETE_FOLDERS allows you to delete whole folders, <b>including content</b>.
+        						DELETE_FOLDERS allows you to delete whole folders, including content.
        						</li>
         					<li>
         						VIEW_DOCUMENTS allows you to view the content of text documents.
