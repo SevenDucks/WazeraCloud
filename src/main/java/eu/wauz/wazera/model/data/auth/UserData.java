@@ -37,7 +37,7 @@ public class UserData implements Serializable {
 	}
 	
 	public String toLink() {
-		return "editUser.xhtml?faces-redirect=true&username=" + username;
+		return "editUser.xhtml?faces-redirect=true&userId=" + id;
 	}
 
 	public String toString() {

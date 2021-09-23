@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,8 +40,11 @@ public class RoleController implements Serializable {
 	private void init() {
 		wazeraTool = new WazeraTool();
 		
-		String roleIdString = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("roleId");
-		role = StringUtils.isNotBlank(roleIdString) ? authService.findRoleById(Integer.parseInt(roleIdString)) : new RoleData();
+		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+		String roleIdString = context.getRequestParameterMap().get("roleId");
+		role = StringUtils.isNotBlank(roleIdString)
+				? authService.findRoleById(Integer.parseInt(roleIdString))
+				: new RoleData();
 	}
 
 	public List<PermissionScope> getPermissionScopes() {

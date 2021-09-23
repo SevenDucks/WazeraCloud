@@ -35,5 +35,9 @@ public class SessionController implements Serializable {
 	public boolean isChrome() {
 		return StringUtils.contains(wazeraTool.getBrowser(), "Chrome");
 	}
+	
+	public void setTitle(String title) {
+		wazeraTool.setTitle(title);
+	}
 
 }

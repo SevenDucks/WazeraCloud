@@ -29,6 +29,10 @@
 			}
 			
 		</script>
+		
+		<p:remoteCommand
+			autoRun="true"
+			actionListener="#{sessionController.setTitle(roleController.role.name)}"/>
 
 		<p:scrollPanel
 			id="mainPanel"

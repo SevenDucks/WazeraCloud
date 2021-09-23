@@ -90,6 +90,7 @@ public class DocumentsDataService {
 	        Set<Document> matchingDocuments = new HashSet<>(documentJpaRepository.findByTags(searchTokens));
 	        Map<Integer, FolderData> folderDataMap = new HashMap<>();
 	        Map<Integer, Folder> folderMap = new HashMap<>();
+	        matchingFolders.remove(rootFolder);
 	        folderMap.put(rootFolder.getId(), rootFolder);
 	        folderDataMap.put(rootNode.getId(), rootNode);
 	        Queue<Folder> queue = new ArrayDeque<>(matchingFolders);

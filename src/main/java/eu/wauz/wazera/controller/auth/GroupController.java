@@ -32,6 +32,7 @@ public class GroupController implements Serializable {
 	@PostConstruct
 	private void init() {
 		wazeraTool = new WazeraTool();
+		
 		group = new GroupData();
 	}
 

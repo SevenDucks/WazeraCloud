@@ -23,13 +23,28 @@
 		        }, 60000);
 			});
 			
+			$(window).on('resize', function() {
+				for (var widgetVar in PrimeFaces.widgets) {
+					var widget = PF(widgetVar);
+					if (widget instanceof PrimeFaces.widget.Dialog) {
+						widget.initPosition();
+					}
+				}
+			});
+			
 			$(window).on("popstate", function () {
 				window.location.reload();
 			});
 			
 			function pushHistoryState(historyUrl) {
-				if(!window.location.href.endsWith(historyUrl)) {
-					history.pushState({}, null, historyUrl);
+				var href = window.location.href;
+				if(!href.endsWith(historyUrl)) {
+					if(href.endsWith("docs.xhtml")) {
+						history.replaceState({}, null, historyUrl);
+					}
+					else {
+						history.pushState({}, null, historyUrl);
+					}
 				}
 			}
 			

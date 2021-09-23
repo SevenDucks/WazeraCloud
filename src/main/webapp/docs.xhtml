@@ -94,22 +94,26 @@
 						id="searchTags"
 						value="#{docsController.searchTags}"
 						placeholder="Search for Document Names or Tags..."
-						disabled="#{docsController.allowEditing}"
+						disabled="#{docsController.allowEditing || docsController.allowSorting}"
 						onkeyup="searchKeyPress(event)"
 						styleClass="search-container"
 						style="width: calc(100% - 2px); height: 23px; color: #ffffff;">
-						<p:ajax event="itemUnselect" oncomplete="updateTree()"/>
+						<p:ajax
+							event="itemUnselect"
+							oncomplete="updateTree()"/>
 					</p:chips>
 					<p:selectBooleanButton
 						id="buttonToggleSort"
 						value="#{docsController.allowSorting}"
-						disabled="#{docsController.allowEditing || !docsController.canEditFolders()}"
+						disabled="#{docsController.disableToggleSorting}"
 						onLabel="Leave Sort Mode"
 						offLabel="Enter Sort Mode"
 						onIcon="ui-icon-close"
 						offIcon="ui-icon-caret-2-n-s"
 						style="width: 132px; height: 21px; margin: 0;">
-						<p:ajax update="documentTree" oncomplete="resizeTreePanel(); resetScrollPos();" />
+						<p:ajax
+							update="documentTree searchTags buttonSearch"
+							oncomplete="resizeTreePanel(); resetScrollPos();"/>
 					</p:selectBooleanButton>
 		        	<p:commandButton
 		        		id="buttonRefresh"
@@ -125,13 +129,13 @@
 						id="buttonSearch"
 						value="Search"
 			        	icon="ui-icon-search"
-						disabled="#{docsController.allowEditing}"
+						disabled="#{docsController.allowEditing || docsController.allowSorting}"
 						onclick="updateTree()"
 						style="width: 110px; height: 23px; margin: 0;"/>
 					<p:remoteCommand
 						name="updateTree"
 						actionListener="#{docsController.selectTree}"
-						update="documentTree :mainForm"
+						update="buttonToggleSort documentTree :mainForm"
 						oncomplete="resizeTreePanel(); resizeEditor();"/>
 					<p:remoteCommand
 						name="updateAll"
@@ -212,12 +216,14 @@
 				    
 				    </p:scrollPanel>
 
+					<!--
+					<p:menuitem
+       					value="Open in New Tab"
+      						icon="fa fa-external-link"
+       					update="documentLinkPanel"
+       					oncomplete="openDocumentLink();"/>
+					-->
 					<p:contextMenu for="documentTree" nodeType="rootNode" widgetVar="rootNodeMenu">
-						<p:menuitem
-	       					value="Open in New Tab"
-       						icon="fa fa-external-link"
-	       					update="documentLinkPanel"
-	       					oncomplete="openDocumentLink();"/>
 			            <p:menuitem
 			            	value="Collapse All"
 			            	icon="fa fa-folder"
@@ -246,12 +252,14 @@
 			            	update=":addDocumentDialogForm"/>
 				    </p:contextMenu>
 
+					<!--
+					<p:menuitem
+       					value="Open in New Tab"
+      						icon="fa fa-external-link"
+       					update="documentLinkPanel"
+       					oncomplete="openDocumentLink();"/>
+					-->
 					<p:contextMenu for="documentTree" nodeType="directoryNode" widgetVar="directoryNodeMenu">
-						<p:menuitem
-	       					value="Open in New Tab"
-       						icon="fa fa-external-link"
-	       					update="documentLinkPanel"
-	       					oncomplete="openDocumentLink();"/>
 						<p:menuitem
 							value="Collapse All"
 							icon="fa fa-folder"
@@ -296,12 +304,14 @@
 	       				</p:menuitem>
 				    </p:contextMenu>
 				    
+					<!--
+					<p:menuitem
+       					value="Open in New Tab"
+      						icon="fa fa-external-link"
+       					update="documentLinkPanel"
+       					oncomplete="openDocumentLink();"/>
+					-->
 					<p:contextMenu for="documentTree" nodeType="documentNode" widgetVar="documentNodeMenu">
-						<p:menuitem
-	       					value="Open in New Tab"
-       						icon="fa fa-external-link"
-	       					update="documentLinkPanel"
-	       					oncomplete="openDocumentLink();"/>
 	       				<p:menuitem
 			            	value="Copy"
 			            	icon="fa fa-copy"
@@ -327,12 +337,14 @@
 	       				</p:menuitem>
 				    </p:contextMenu>
 				    
+					<!--
+					<p:menuitem
+       					value="Open in New Tab"
+      						icon="fa fa-external-link"
+       					update="documentLinkPanel"
+       					oncomplete="openDocumentLink();"/>
+					-->
 				    <p:contextMenu for="documentTree" nodeType="workflowNode" widgetVar="workflowNode">
-						<p:menuitem
-	       					value="Open in New Tab"
-       						icon="fa fa-external-link"
-	       					update="documentLinkPanel"
-	       					oncomplete="openDocumentLink();"/>
 	       				<p:menuitem
 	       					value="Rename"
        						icon="fa fa-refresh"

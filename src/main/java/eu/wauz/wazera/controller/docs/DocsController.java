@@ -178,8 +178,8 @@ public class DocsController implements Serializable {
 			}
 		}
 		
-		PrimeFaces.current().executeScript("document.title='" + selectedNode + " - Wazera Cloud'");
 		PrimeFaces.current().executeScript("pushHistoryState('" + getDocumentLink() + "');");
+		wazeraTool.setTitle(selectedNode.toString());
 		updateBreadcrumbModel();
 	}
 	
@@ -403,6 +403,10 @@ public class DocsController implements Serializable {
 
 	public void setAllowSorting(boolean allowSorting) {
 		this.allowSorting = allowSorting;
+	}
+	
+	public boolean isDisableToggleSorting() {
+		return isAllowEditing() || hasSearchTags() || !canEditFolders();
 	}
 	
 	public void selectTree() {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.commons.lang3.StringUtils;
@@ -43,8 +44,11 @@ public class UserController implements Serializable {
 	private void init() {
 		wazeraTool = new WazeraTool();
 
-		String username = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("username");
-		user = StringUtils.isNotBlank(username) ? authService.findUserByName(username) : authService.getLoggedInUser();
+		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+		String userIdString = context.getRequestParameterMap().get("userId");
+		user = StringUtils.isNotBlank(userIdString)
+				? authService.findUserById(Integer.parseInt(userIdString))
+				: authService.getLoggedInUser();
 	}
 
 	public void changePassword() {
