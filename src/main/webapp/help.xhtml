@@ -39,20 +39,166 @@
 				
 				<p:accordionPanel multiple="true" style="margin: 3px;">
         			<p:tab title="About Wazera - Getting Started">
-        				A B C
-        				The duck says quack.
+        				<h2>What is Wazera?</h2>
+        				<p>
+        				</p>
+        				<h2>Navigating through Wazera</h2>
+        				<p>
+        				</p>
+        			</p:tab>
+        			<p:tab title="User Guide - Docs">
+        				<h2>The Document Tree</h2>
+        				<p>
+        					The main feature of the "Docs" page is the document tree,
+        					which completely fills the left column of the screen.
+        					It displays every document in the database, that you have access to.
+        					Each document has an icon in front of it, to represent its type.
+        					However only "Folder" documents can contain other documents,
+        					similar to the file explorer in Windows or other operating systems.
+        					The "Dashboard" also behaves like a folder, with the exception
+        					that it is the root of the tree and cannot be moved, renamed or deleted.
+        					When a folder has any content, an arrow will appear next to its icon,
+        					letting you expand or collapse the content.
+        					Left clicking a document will open it,
+        					displaying its content on the right column of the screen.
+        					You can only have one document opened at a time.
+        					Right clicking a document will show you a context menu,
+        					displaying all available actions.
+        					This way you can create or modify documents.
+        				</p>
+        					
+        				<p>
+        				</p>
+        				<h2>Document Type - Folder (and Dashboard)</h2>
+        				<p>
+        				</p>
+        				<h2>Document Type - Document</h2>
+        				<p>
+        				</p>
+        				<h2>Document Type - Workflow</h2>
+        				<p>
+        				</p>
         			</p:tab>
         			<p:tab title="Admin Guide - Users">
-        				A B C
-        				The duck says quack.
+        				<h2>The User Database</h2>
+        				<p>
+        					On the "Users" page, admins will find a big table of all users,
+        					known as the user database.
+        					The fields in the header allow you to filter for
+        					usernames or database IDs.
+        					You will find a button to create new entries in the footer on the very bottom.
+        					Each user entry provides edit and delete options in the leftmost column.
+        					All listed users, will be able to log into Wazera.
+        				</p>
+        				<h2>User Pages</h2>
+        				<p>
+        					Clicking the edit option on an user will bring you to the user page.
+        					You can also go to your own user page by clicking the profile button.
+        					Under "Profile Page" you will find user related infos in the future.
+        					Under "Change Password" you can set a new password for the user.
+        					Under "Assign Roles" you can edit the roles of the user to change their permissions.
+        					Global roles can simply be assigned with a checkbox.
+        					Group roles will have additional checkboxes - one for each group in the database.
+        					This way you can make the permissions of that role only impact documents within
+        					one or multiple groups. You can also just check the global checkbox,
+        					to apply it for everything, including ungrouped documents.
+        					To save changes to a user, simply press the save button at the bottom.
+        				</p>
         			</p:tab>
         			<p:tab title="Admin Guide - Groups">
-        				A B C
-        				The duck says quack.
+        				<h2>The Group Database</h2>
+        				<p>
+        					On the "Groups" page, admins will find a big table of all groups,
+        					known as the group database.
+        					The fields in the header allow you to filter for
+        					group names or database IDs.
+        					You will find a button to create new entries in the footer on the very bottom.
+        					Each group entry provides edit and delete options in the leftmost column.
+        					Groups are currently unused and have no effect.
+        				</p>
         			</p:tab>
         			<p:tab title="Admin Guide - Roles">
-        				A B C
-        				The duck says quack.
+        				<h2>The Role Database</h2>
+        				<p>
+        					On the "Roles" page, admins will find a big table of all roles,
+        					known as the role database.
+        					The fields in the header allow you to filter for
+        					role names, scopes or database IDs.
+        					You will find a button to create new entries in the footer on the very bottom.
+        					Each role entry provides edit and delete options in the leftmost column.
+        					All listed roles, will be assignable to users.
+        				</p>
+        				<h2>Role Pages</h2>
+        				<p>
+        					Clicking the edit option on a role will bring you to the role page.
+        					Under "Assign Permissions" you will be able to set
+        					what users with this role can and can't do.
+        					You are also able to freely change the name of the role here.
+        					The scope determines what kind of permissions can be assigned.
+        					GLOBAL permissions are used to give access to features,
+        					that impact the whole application.
+        					GROUP permissions on the other hand only impact confined spaces.
+        					For example, you could create a group scoped role with the permission
+        					to edit documents. When assigning this permission from the user page,
+        					you can choose to only apply it to a certain group.
+        					Now the user can edit documents that belong to this group,
+        					while the option would stay disabled on a document within another group.
+        					You can also assign group scoped roles globally,
+        					so they apply for all groups.
+        					To save changes to a role, simply press the save button at the bottom.
+        				</p>
+        				<h2>Assignable Permissions</h2>
+        				<ul>
+        					<li>
+        						ADMINISTRATE_ACCOUNTS allows you to edit users, groups and roles.
+        						This <b>includes your own roles</b>, so be careful with this permission.
+       						</li>
+        					<li>
+        						EDIT_FOLDERS allows you to create and edit folder documents,
+        						aswell as sorting the document tree.
+       						</li>
+        					<li>
+        						DELETE_FOLDERS allows you to delete whole folders, <b>including content</b>.
+       						</li>
+        					<li>
+        						VIEW_DOCUMENTS allows you to view the content of text documents.
+       						</li>
+        					<li>
+        						EDIT_DOCUMENTS allows you to edit text documents.
+       						</li>
+        					<li>
+        						DELETE_DOCUMENTS allows you to delete text documents.
+       						</li>
+        					<li>
+        						VIEW_WORKFLOWS allows you to view workflow documents.
+        						This includes the names of the tasks inside it.
+       						</li>
+        					<li>
+        						EDIT_WORKFLOWS allows you to edit workflow documents.
+       						</li>
+        					<li>
+        						DELETE_WORKFLOWS allows you to delete workflow documents.
+        						This includes the tasks inside it.
+       						</li>
+        					<li>
+        						VIEW_TASKS allows you to view tasks inside workflow documents.
+       						</li>
+        					<li>
+        						EDIT_TASKS allows you to edit and move tasks inside workflow documents.
+       						</li>
+        					<li>
+        						DELETE_TASKS allows you to delete tasks inside workflow documents.
+       						</li>
+        					<li>
+        						VIEW_ASSIGNED_TASKS allows you to view tasks that are assigned to you.
+       						</li>
+        					<li>
+        						EDIT_ASSIGNED_TASKS allows you to edit and move tasks that are assigned to you.
+       						</li>
+        					<li>
+        						DELETE_ASSIGNED_TASKS allows you to delete tasks that are assigned to you.
+       						</li>
+        				</ul>
         			</p:tab>
         		</p:accordionPanel>
 				
