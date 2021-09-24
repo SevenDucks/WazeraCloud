@@ -273,6 +273,10 @@ body {
 	stroke: #ffffff !important;
 }
 
+.text-editor > .ql-snow .ql-tooltip {
+	transform: translateX(50%) translateY(5px);
+}
+
 .text-editor > .ql-snow.ql-toolbar button:hover .ql-stroke,
 .text-editor > .ql-snow .ql-toolbar button:hover .ql-stroke,
 .text-editor > .ql-snow.ql-toolbar button:focus .ql-stroke,
