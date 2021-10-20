@@ -48,6 +48,11 @@
 				}
 			}
 			
+			function setConfirmUnload(on) {
+		    	var message = "You are currently editng data. Do you really want to leave the page?";
+				window.onbeforeunload = (on) ? function() { return message; } : null;
+			}
+			
 		</script>
 	
 		<p:growl id="growl" showDetail="true" life="2500">

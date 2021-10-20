@@ -1,6 +1,10 @@
 package eu.wauz.wazera.controller.docs;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +19,9 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.TreeDragDropEvent;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
@@ -626,6 +632,16 @@ public class DocsController implements Serializable {
 		catch (Exception e) {
 			wazeraTool.showErrorMessage(e.getMessage());
 			return "";
+		}
+    }
+    
+    public StreamedContent exportDocument() {
+    	try(InputStream inputStram = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
+    		return new DefaultStreamedContent(inputStram, "text/html", selectedNode.toString() + ".html");
+    	}
+    	catch (IOException e) {
+    		wazeraTool.showErrorMessage(e.getMessage());
+			return null;
 		}
     }
     

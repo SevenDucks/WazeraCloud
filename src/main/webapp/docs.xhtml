@@ -764,15 +764,26 @@
 							onclick="PF('dialogAddWorkflowState').show();"
 			            	update=":addWorkflowStateDialogForm"
 			            	style="height: 25px; margin-right: 3px;"/>
+			            	
+			            <p:commandButton
+							id="buttonExport"
+							value="Export"
+							icon="ui-icon-arrowthick-1-s"
+							rendered="#{docsController.showEditor()}"
+							disabled="#{docsController.allowEditing}"
+							onclick="PrimeFaces.monitorDownload(start, stop);"
+							style="height: 25px; margin-right: 3px;">
+							<p:fileDownload value="#{docsController.exportDocument()}"/>
+						</p:commandButton>
 							
 						<p:commandButton
-							id="buttonToggleEdit"
+							id="buttonEdit"
 							value="Edit"
 							icon="ui-icon-pencil"
 							rendered="#{docsController.showEditor()}"
 							disabled="#{docsController.allowEditing || !docsController.canEditDocuments()}"
 							actionListener="#{docsController.setAllowEditing(true)}"
-							oncomplete="updateAll();"
+							oncomplete="setConfirmUnload(true); updateAll();"
 							style="height: 25px; margin-right: 3px;"/>
 							
 						<p:chips
@@ -798,12 +809,12 @@
 							
 						<p:commandButton
 							id="buttonSave"
-							value="Save"
+							value="Save and Close"
 							icon="ui-icon-disk"
 							rendered="#{docsController.showEditor()}"
 							disabled="#{!docsController.allowEditing}"
 							actionListener="#{docsController.saveDocument(true)}"
-							oncomplete="updateAll();"
+							oncomplete="setConfirmUnload(false); updateAll();"
 							style="height: 25px; margin-right: 3px;"/>
 							
 						<p:commandButton
@@ -813,7 +824,7 @@
 							rendered="#{docsController.showEditor()}"
 							disabled="#{!docsController.allowEditing}"
 							actionListener="#{docsController.setAllowEditing(false)}"
-							oncomplete="updateAll();"
+							oncomplete="setConfirmUnload(false); updateAll();"
 							style="height: 25px;">
 							<p:confirm
 								header="Confirm"
@@ -969,7 +980,8 @@
 			height="500"
 			appendTo="@(body)"
 			styleClass="gray-bg">
-			<p:ajax event="open" update=":addWorkflowTaskDialogForm"/>
+			<p:ajax event="open" update=":addWorkflowTaskDialogForm" oncomplete="setConfirmUnload(true);"/>
+			<p:ajax event="close" oncomplete="setConfirmUnload(false);"/>
 			<h:form id="addWorkflowTaskDialogForm">
 				<h:panelGrid
 					id="addWorkflowTaskDialogGrid"
@@ -1086,7 +1098,7 @@
 					oncomplete="resizeEditor();"
 					style="height: 25px; margin-left: 3px;"/>
 				<p:commandButton
-					value="Save"
+					value="Save and Close"
 					icon="ui-icon-disk"
 					disabled="#{!tasksController.allowEditing}"
 					actionListener="#{tasksController.saveWorkflowTask(true)}"
