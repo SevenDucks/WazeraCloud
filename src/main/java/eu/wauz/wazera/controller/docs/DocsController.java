@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -47,6 +49,12 @@ import eu.wauz.wazera.service.FoldersDataService;
 public class DocsController implements Serializable {
 
 	private static final long serialVersionUID = -7261056043638925780L;
+	
+	private static final Pattern COLOR_HEX_PATTERN = Pattern.compile("#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})");
+	
+	private static final String COLOR_PREFIX = "<span style=\"color: ";
+	
+	private static final String COLOR_SUFFIX = "; background: white;\"> &#x23F9; </span> ";
 
 	@Autowired
 	private DocumentsDataService documentsService;
@@ -385,6 +393,17 @@ public class DocsController implements Serializable {
 	
 	public void showInfoMessage(String infoMessage) {
 		wazeraTool.showInfoMessage(infoMessage);
+	}
+	
+	public String getFormattedContent() {
+		StringBuffer stringBuffer = new StringBuffer();
+		Matcher matcher = COLOR_HEX_PATTERN.matcher(content);
+		while(matcher.find()) {
+			String hex = matcher.group();
+			matcher.appendReplacement(stringBuffer, COLOR_PREFIX + hex + COLOR_SUFFIX + hex);
+		}
+		matcher.appendTail(stringBuffer);
+		return stringBuffer.toString();
 	}
 	
 	public String getContent() {
