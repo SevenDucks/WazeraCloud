@@ -160,10 +160,21 @@ body {
 	text-decoration: none;
 }
 
+.new-tab:hover {
+	color: #eeaaff !important;
+}
+
 .navigation {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, 136px);
 	padding: 3px;
+}
+
+.navigation .new-tab {
+	position: relative;
+	left: 105px;
+	bottom: 80px;
+	height: 20px;
 }
 
 .navigation-item {

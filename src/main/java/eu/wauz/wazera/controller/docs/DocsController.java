@@ -35,7 +35,10 @@ import org.springframework.stereotype.Controller;
 
 import eu.wauz.wazera.WazeraTool;
 import eu.wauz.wazera.controller.TasksController;
-import eu.wauz.wazera.controller.docs.BaseTreeNode.BaseTreeNodeMeta;
+import eu.wauz.wazera.controller.docs.nodes.DocumentTreeNode;
+import eu.wauz.wazera.controller.docs.nodes.FolderTreeNode;
+import eu.wauz.wazera.controller.docs.nodes.RootFolderTreeNode;
+import eu.wauz.wazera.controller.docs.nodes.BaseTreeNode.BaseTreeNodeMeta;
 import eu.wauz.wazera.model.data.auth.Permission;
 import eu.wauz.wazera.model.data.docs.DocType;
 import eu.wauz.wazera.model.data.docs.DocumentData;
@@ -124,7 +127,7 @@ public class DocsController implements Serializable {
 	private void addFolderNodes(FolderData folderNode, TreeNode treeNode, boolean isRootNode) {
 		FolderTreeNode node = null;
 		if (isRootNode) {
-			node = new RootFolderTreeNode(folderNode, treeNode);
+			node = RootFolderTreeNode.create(folderNode, treeNode);
 			node.setExpanded(true);
 			if(folderId == null && docId == null) {
 				node.setSelected(true);
@@ -133,7 +136,7 @@ public class DocsController implements Serializable {
 			}
 		}
 		else {
-			node = new FolderTreeNode(folderNode, treeNode);
+			node = FolderTreeNode.create(folderNode, treeNode);
 			node.setExpanded(folderNode.isExpanded() != null ? folderNode.isExpanded() : false);
 		}
 		
@@ -152,7 +155,7 @@ public class DocsController implements Serializable {
 	}
 
 	private void addDocumentNodes(DocumentData documentNode, TreeNode treeNode) {
-		DocumentTreeNode node = new DocumentTreeNode(documentNode, treeNode);
+		DocumentTreeNode node = DocumentTreeNode.create(documentNode, treeNode);
 		node.setExpanded(true);
 		
 		if(docId != null && Objects.equals(documentNode.getId(), docId)) {
@@ -263,7 +266,7 @@ public class DocsController implements Serializable {
 			wazeraTool.showErrorMessage(e.getMessage());
 		}
 
-		TreeNode newNode = new FolderTreeNode(folderData, selectedNode);
+		TreeNode newNode = FolderTreeNode.create(folderData, selectedNode);
 		newNode.setExpanded(true);
 		setSelectedNode(newNode);
 
@@ -287,7 +290,7 @@ public class DocsController implements Serializable {
 			wazeraTool.showErrorMessage(e.getMessage());
 		}
 
-		TreeNode newNode = new DocumentTreeNode(documentData, selectedNode);
+		TreeNode newNode = DocumentTreeNode.create(documentData, selectedNode);
 		newNode.setExpanded(true);
 		setSelectedNode(newNode);
 
@@ -313,7 +316,7 @@ public class DocsController implements Serializable {
 			wazeraTool.showErrorMessage(e.getMessage());
 		}
 
-		TreeNode newNode = new DocumentTreeNode(documentData, selectedNode);
+		TreeNode newNode = DocumentTreeNode.create(documentData, selectedNode);
 		newNode.setExpanded(true);
 		setSelectedNode(newNode);
 

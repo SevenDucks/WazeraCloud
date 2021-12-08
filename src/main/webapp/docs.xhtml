@@ -168,7 +168,14 @@
 					        	type="rootNode"
 					        	styleClass="rootNode">
 					        	<h:panelGrid
-					        		columns="2">
+					        		columns="3">
+					        		<h:link
+					        			styleClass="new-tab"
+					        			outcome="#{docsController.getDocumentLink(node.node)}"
+					        			target="_blank"
+					        			onclick="event.stopPropagation();">
+					        			&#x1F5D7;
+					        		</h:link>
 					            	<p:outputLabel styleClass="#{node.type.icon}"/>
 					            	<h:outputText value="#{node.name}"/>
 					        	</h:panelGrid>
@@ -179,7 +186,14 @@
 					        	type="directoryNode"
 					        	styleClass="directoryNode">
 					        	<h:panelGrid
-					        		columns="2">
+					        		columns="3">
+					        		<h:link
+					        			styleClass="new-tab"
+					        			outcome="#{docsController.getDocumentLink(node.node)}"
+					        			target="_blank"
+					        			onclick="event.stopPropagation();">
+					        			&#x1F5D7;
+					        		</h:link>
 					            	<p:outputLabel styleClass="#{node.type.icon}"/>
 					            	<h:outputText value="#{node.name}"/>
 					        	</h:panelGrid>
@@ -191,11 +205,13 @@
 					        	styleClass="documentNode">
 					        	<h:panelGrid
 					        		columns="3">
-					        		<!--
-					        		<h:link styleClass="new-tab" href="https://seven-ducks.com"  target="_blank">
+					        		<h:link
+					        			styleClass="new-tab"
+					        			outcome="#{docsController.getDocumentLink(node.node)}"
+					        			target="_blank"
+					        			onclick="event.stopPropagation();">
 					        			&#x1F5D7;
 					        		</h:link>
-					        		-->
 					            	<p:outputLabel styleClass="#{node.type.icon}"/>
 					            	<h:outputText value="#{node.name}"/>
 					        	</h:panelGrid>
@@ -206,7 +222,14 @@
 					        	type="workflowNode"
 					        	styleClass="workflowNode">
 					        	<h:panelGrid
-					        		columns="2">
+					        		columns="3">
+					        		<h:link
+					        			styleClass="new-tab"
+					        			outcome="#{docsController.getDocumentLink(node.node)}"
+					        			target="_blank"
+					        			onclick="event.stopPropagation();">
+					        			&#x1F5D7;
+					        		</h:link>
 					            	<p:outputLabel styleClass="#{node.type.icon}"/>
 					            	<h:outputText value="#{node.name}"/>
 					        	</h:panelGrid>
@@ -526,14 +549,23 @@
 							
 							<p:outputPanel styleClass="navigation">
 								<c:forEach items="#{docsController.selectedNode.children}" var="node" varStatus="loop">
-									<p:commandButton
-										value="#{node.data.name}"
-										icon="#{node.data.type.icon}"
-										actionListener="#{docsController.selectNavigationItem(node)}"
-										onstart="saveScrollPos();"
-										update=":documentMenuForm :mainForm"
-										oncomplete="resizeTreePanel(); resizeEditor(); loadScrollPos();"
-										styleClass="navigation-item #{node.data.type.id}"/>
+									<p:outputPanel>
+										<p:commandButton
+											value="#{node.data.name}"
+											icon="#{node.data.type.icon}"
+											actionListener="#{docsController.selectNavigationItem(node)}"
+											onstart="saveScrollPos();"
+											update=":documentMenuForm :mainForm"
+											oncomplete="resizeTreePanel(); resizeEditor(); loadScrollPos();"
+											styleClass="navigation-item #{node.data.type.id}"/>
+										<h:link
+						        			styleClass="new-tab"
+						        			outcome="#{docsController.getDocumentLink(node)}"
+						        			target="_blank"
+						        			onclick="event.stopPropagation();">
+						        			&#x1F5D7;
+						        		</h:link>
+									</p:outputPanel>
 								</c:forEach>
 							</p:outputPanel>
 						</p:scrollPanel>
@@ -556,14 +588,23 @@
 							style="width: calc(100% - 2px); height: 300px; overflow: scroll;">
 							<p:outputPanel styleClass="navigation">
 								<c:forEach items="#{docsController.selectedNode.children}" var="node" varStatus="loop">
-									<p:commandButton
-										value="#{node.data.name}"
-										icon="#{node.data.type.icon}"
-										actionListener="#{docsController.selectNavigationItem(node)}"
-										onstart="saveScrollPos();"
-										update=":documentMenuForm :mainForm"
-										oncomplete="resizeTreePanel(); resizeEditor(); loadScrollPos();"
-										styleClass="navigation-item #{node.data.type.id}"/>
+									<p:outputPanel>
+										<p:commandButton
+											value="#{node.data.name}"
+											icon="#{node.data.type.icon}"
+											actionListener="#{docsController.selectNavigationItem(node)}"
+											onstart="saveScrollPos();"
+											update=":documentMenuForm :mainForm"
+											oncomplete="resizeTreePanel(); resizeEditor(); loadScrollPos();"
+											styleClass="navigation-item #{node.data.type.id}"/>
+										<h:link
+						        			styleClass="new-tab"
+						        			outcome="#{docsController.getDocumentLink(node)}"
+						        			target="_blank"
+						        			onclick="event.stopPropagation();">
+						        			&#x1F5D7;
+						        		</h:link>
+									</p:outputPanel>
 								</c:forEach>
 							</p:outputPanel>
 						</p:scrollPanel>

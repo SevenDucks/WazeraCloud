@@ -1,4 +1,4 @@
-package eu.wauz.wazera.controller.docs;
+package eu.wauz.wazera.controller.docs.nodes;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -16,7 +16,13 @@ public class DocumentTreeNode extends BaseTreeNode {
 
 	private DocumentData documentData;
 	
-	public DocumentTreeNode(DocumentData documentData, TreeNode parent) {
+	public static DocumentTreeNode create(DocumentData documentData, TreeNode parent) {
+		DocumentTreeNode node = new DocumentTreeNode(documentData, parent);
+		node.init();
+		return node;
+	}
+	
+	protected DocumentTreeNode(DocumentData documentData, TreeNode parent) {
 		super(DocType.getFromString(documentData.getType()), documentData.getName(), parent);
 		this.documentData = documentData;
 	}

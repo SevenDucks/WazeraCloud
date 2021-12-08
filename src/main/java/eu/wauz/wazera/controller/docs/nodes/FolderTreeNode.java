@@ -1,4 +1,4 @@
-package eu.wauz.wazera.controller.docs;
+package eu.wauz.wazera.controller.docs.nodes;
 
 import org.primefaces.model.TreeNode;
 
@@ -11,12 +11,18 @@ public class FolderTreeNode extends BaseTreeNode {
 
     private FolderData folderData;
     
-    public FolderTreeNode(FolderData folderData, TreeNode parent) {
+    public static FolderTreeNode create(FolderData folderData, TreeNode parent) {
+    	FolderTreeNode node = new FolderTreeNode(folderData, parent);
+    	node.init();
+    	return node;
+    }
+    
+    protected FolderTreeNode(FolderData folderData, TreeNode parent) {
         super(DocType.DIRECTORY, folderData.getName(), parent);
         this.folderData = folderData;
     }
     
-    public FolderTreeNode(DocType nodeType, String name, FolderData folderData, TreeNode parent) {
+    protected FolderTreeNode(DocType nodeType, String name, FolderData folderData, TreeNode parent) {
         super(nodeType, name, parent);
         this.folderData = folderData;
     }
