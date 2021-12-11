@@ -169,13 +169,13 @@
 					        	styleClass="rootNode">
 					        	<h:panelGrid
 					        		columns="3">
-					        		<h:link
+					        		<h:outputLink
 					        			styleClass="new-tab"
-					        			outcome="#{docsController.getDocumentLink(node.node)}"
+					        			value="#{docsController.getDocumentLink(node.node)}"
 					        			target="_blank"
 					        			onclick="event.stopPropagation();">
 					        			&#x1F5D7;
-					        		</h:link>
+					        		</h:outputLink>
 					            	<p:outputLabel styleClass="#{node.type.icon}"/>
 					            	<h:outputText value="#{node.name}"/>
 					        	</h:panelGrid>
@@ -187,13 +187,13 @@
 					        	styleClass="directoryNode">
 					        	<h:panelGrid
 					        		columns="3">
-					        		<h:link
+					        		<h:outputLink
 					        			styleClass="new-tab"
-					        			outcome="#{docsController.getDocumentLink(node.node)}"
+					        			value="#{docsController.getDocumentLink(node.node)}"
 					        			target="_blank"
 					        			onclick="event.stopPropagation();">
 					        			&#x1F5D7;
-					        		</h:link>
+					        		</h:outputLink>
 					            	<p:outputLabel styleClass="#{node.type.icon}"/>
 					            	<h:outputText value="#{node.name}"/>
 					        	</h:panelGrid>
@@ -205,13 +205,13 @@
 					        	styleClass="documentNode">
 					        	<h:panelGrid
 					        		columns="3">
-					        		<h:link
+					        		<h:outputLink
 					        			styleClass="new-tab"
-					        			outcome="#{docsController.getDocumentLink(node.node)}"
+					        			value="#{docsController.getDocumentLink(node.node)}"
 					        			target="_blank"
 					        			onclick="event.stopPropagation();">
 					        			&#x1F5D7;
-					        		</h:link>
+					        		</h:outputLink>
 					            	<p:outputLabel styleClass="#{node.type.icon}"/>
 					            	<h:outputText value="#{node.name}"/>
 					        	</h:panelGrid>
@@ -223,13 +223,13 @@
 					        	styleClass="workflowNode">
 					        	<h:panelGrid
 					        		columns="3">
-					        		<h:link
+					        		<h:outputLink
 					        			styleClass="new-tab"
-					        			outcome="#{docsController.getDocumentLink(node.node)}"
+					        			value="#{docsController.getDocumentLink(node.node)}"
 					        			target="_blank"
 					        			onclick="event.stopPropagation();">
 					        			&#x1F5D7;
-					        		</h:link>
+					        		</h:outputLink>
 					            	<p:outputLabel styleClass="#{node.type.icon}"/>
 					            	<h:outputText value="#{node.name}"/>
 					        	</h:panelGrid>
@@ -558,13 +558,13 @@
 											update=":documentMenuForm :mainForm"
 											oncomplete="resizeTreePanel(); resizeEditor(); loadScrollPos();"
 											styleClass="navigation-item #{node.data.type.id}"/>
-										<h:link
+										<h:outputLink
 						        			styleClass="new-tab"
-						        			outcome="#{docsController.getDocumentLink(node)}"
+						        			value="#{docsController.getDocumentLink(node)}"
 						        			target="_blank"
 						        			onclick="event.stopPropagation();">
 						        			&#x1F5D7;
-						        		</h:link>
+						        		</h:outputLink>
 									</p:outputPanel>
 								</c:forEach>
 							</p:outputPanel>
@@ -597,13 +597,13 @@
 											update=":documentMenuForm :mainForm"
 											oncomplete="resizeTreePanel(); resizeEditor(); loadScrollPos();"
 											styleClass="navigation-item #{node.data.type.id}"/>
-										<h:link
+										<h:outputLink
 						        			styleClass="new-tab"
-						        			outcome="#{docsController.getDocumentLink(node)}"
+						        			value="#{docsController.getDocumentLink(node)}"
 						        			target="_blank"
 						        			onclick="event.stopPropagation();">
 						        			&#x1F5D7;
-						        		</h:link>
+						        		</h:outputLink>
 									</p:outputPanel>
 								</c:forEach>
 							</p:outputPanel>
