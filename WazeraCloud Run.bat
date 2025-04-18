@@ -1,2 +1,2 @@
 cd /D %~dp0
-java -Xms1G -Xmx3G -jar target/WazeraCloud.war
+java -Xms2G -Xmx4G -jar target/WazeraCloud.war
